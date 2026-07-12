@@ -192,5 +192,35 @@
     "speedTiers": "Speed line",
     "speedNote": "Each Pokémon's Lv.50 Speed (SP & nature applied). Check who you outspeed.",
     "disclaimer": "Teams are auto-saved in your browser (local). Account-synced saving comes in a later phase."
+  },
+  "coach": {
+    "title": "Team Auto-Diagnosis",
+    "scoreNote": "A balance score combining type balance, offensive coverage, and meta answers.",
+    "threatCoverage": "Meta threats handled {{handled}}/{{total}}",
+    "weakHoles": "Shared weaknesses (holes)",
+    "noHoles": "No shared weakness holes. Solid typing!",
+    "coverageGaps": "Offensive coverage gaps",
+    "fullCoverage": "You can hit every type without resistance.",
+    "roleBalance": "Role balance",
+    "metaThreats": "Meta threat coverage",
+    "metaNote": "Against the verified Champions meta. Whether you have an offensive (super-effective) or defensive (resist) answer.",
+    "off": "OFF",
+    "def": "DEF",
+    "gap": "GAP",
+    "suggestions": "Suggestions",
+    "roles": {
+      "physical": "Physical",
+      "special": "Special",
+      "mixed": "Mixed",
+      "wall": "Wall",
+      "support": "Support"
+    },
+    "sug": {
+      "weakness": "Multiple members are weak to {{types}}. Add a Pokémon that resists/nullifies it.",
+      "coverage": "No effective way to hit {{types}}. Add coverage moves for those types.",
+      "threats": "No answer to {{names}}. Consider coverage or a defensive counter.",
+      "speed": "Nothing at Speed 100+, making it hard to move first. Consider a Scarf or a faster Pokémon.",
+      "role": "No wall/support role. Add a tank or supporter for balance."
+    }
   }
 }

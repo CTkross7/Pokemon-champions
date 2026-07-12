@@ -10,6 +10,8 @@ import SpSliders from '@/components/SpSliders'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
 import Icon from '@/components/Icon'
+import TeamCoach from '@/components/TeamCoach'
+import type { ResolvedMon } from '@/lib/coach'
 
 const selectClass =
   'h-9 w-full rounded-lg border border-zinc-200 bg-white px-2 text-xs font-bold outline-none focus:border-volt-500 dark:border-white/10 dark:bg-card-dark dark:focus:border-volt-400'
@@ -162,7 +164,19 @@ export default function Teams() {
   }, [])
 
   const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
+  const metaRoster = useMemo(() => (pokedex ?? []).filter((s) => s.champions && !s.forme), [pokedex])
   const active = teams.find((tm) => tm.id === activeId) ?? null
+
+  const resolvedTeam = useMemo<ResolvedMon[]>(() => {
+    if (!active) return []
+    return active.mons
+      .map((mon) => {
+        if (!mon) return null
+        const species = speciesById.get(mon.speciesId)
+        return species ? { mon, species } : null
+      })
+      .filter((x): x is ResolvedMon => x !== null)
+  }, [active, speciesById])
 
   // Create a first team automatically for new users
   useEffect(() => {
@@ -384,6 +398,11 @@ export default function Teams() {
             })}
           </div>
         </section>
+      )}
+
+      {/* Auto-diagnosis & coaching (killer feature) */}
+      {resolvedTeam.length > 0 && moves && (
+        <TeamCoach team={resolvedTeam} moves={moves} metaRoster={metaRoster} />
       )}
 
       <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('teams.disclaimer')}</p>

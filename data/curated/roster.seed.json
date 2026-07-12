@@ -1,7 +1,7 @@
 {
-  "$comment": "Pokémon Champions 등장 확인 포켓몬 시드 목록 (2026-07 사용률 통계에서 확인된 개체). 전체 로스터는 Phase 1에서 확장. 이름은 Pokémon Showdown/@pkmn/dex 표기.",
+  "$comment": "Pokémon Champions 등장 확인 포켓몬 (검증된 종만). 출처: 2026-07 Reg M-B 사용률 통계 + Reg M-B 신규 추가 발표. 전체 로스터 228종 중 교차 검증된 종을 반영하며, 확인 시 계속 확장. 이름은 @pkmn/dex 표기.",
   "source": "docs/DATA_SOURCES.md #roster",
-  "verified": "usage-stats-2026-07",
+  "verified": "usage-stats-and-official-2026-07",
   "species": [
     "Garchomp",
     "Sinistcha",
@@ -24,6 +24,16 @@
     "Aerodactyl",
     "Venusaur",
     "Espathra",
-    "Tauros-Paldea-Aqua"
+    "Tauros-Paldea-Aqua",
+    "Sceptile",
+    "Blaziken",
+    "Pyroar",
+    "Scovillain",
+    "Eelektross",
+    "Dragalge",
+    "Glimmora",
+    "Baxcalibur",
+    "Tatsugiri",
+    "Annihilape"
   ]
 }

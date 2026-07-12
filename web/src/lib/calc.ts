@@ -22,8 +22,9 @@ export interface MonInput {
   item?: string
   nature: Nature
   sp: SpAllocation
-  teraType?: string
-  teraActive?: boolean
+  // Terastallization is intentionally omitted: it is disabled in Pokémon
+  // Champions (Reg M-A / M-B). Mega Evolution is the only gimmick and is
+  // expressed through the species forme (e.g. "Charizard-Mega-Y").
 }
 
 export interface FieldInput {
@@ -48,7 +49,6 @@ function buildPokemon(input: MonInput): Pokemon {
     item: input.item || undefined,
     nature: input.nature,
     evs: spToEvs(input.sp) as Partial<StatsTable>,
-    teraType: input.teraActive && input.teraType ? (input.teraType as never) : undefined,
   })
 }
 

@@ -128,6 +128,8 @@ try {
     await page.getByRole('searchbox').last().fill('Garchomp')
     await page.getByRole('button', { name: /Garchomp|한카리아스/ }).first().click()
     check(`[${viewport.tag}] team speed tier renders`, await eventually(page.getByText(/Speed line|스피드 라인/)))
+    check(`[${viewport.tag}] team coach report renders`, await eventually(page.getByText(/Auto-Diagnosis|자동 진단/)))
+    check(`[${viewport.tag}] coach meta threats`, await eventually(page.getByText(/Meta threat coverage|메타 위협 대응/)))
     await page.getByRole('button', { name: /^Export|내보내기/ }).first().click()
     const exportBox = page.locator('textarea')
     check(
