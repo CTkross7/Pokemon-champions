@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import Icon, { type IconName } from '@/components/Icon'
 
-const FEATURES: ReadonlyArray<{ key: string; to: string; icon: IconName; tint: string; ready: boolean }> = [
-  { key: 'dex', to: '/dex', icon: 'book', tint: 'from-sky-500 to-blue-600', ready: false },
-  { key: 'calc', to: '/calculator', icon: 'calc', tint: 'from-violet-500 to-purple-600', ready: false },
-  { key: 'teams', to: '/teams', icon: 'sparkles', tint: 'from-emerald-500 to-teal-600', ready: false },
-  { key: 'matchup', to: '/teams', icon: 'zap', tint: 'from-amber-500 to-orange-600', ready: false },
+const FEATURES: ReadonlyArray<{ key: string; to: string; icon: IconName; ready: boolean }> = [
+  { key: 'dex', to: '/dex', icon: 'book', ready: false },
+  { key: 'calc', to: '/calculator', icon: 'calc', ready: false },
+  { key: 'teams', to: '/teams', icon: 'sparkles', ready: false },
+  { key: 'matchup', to: '/teams', icon: 'zap', ready: false },
 ]
 
 const TRUST: ReadonlyArray<{ key: string; icon: IconName }> = [
@@ -20,35 +20,43 @@ export default function Home() {
 
   return (
     <div className="space-y-12">
-      {/* Hero */}
-      <section className="relative overflow-hidden rounded-[28px] bg-slate-950 px-6 py-14 text-white sm:px-12 sm:py-20 dark:border dark:border-white/8">
-        {/* glow blobs */}
-        <div className="pointer-events-none absolute -top-24 -left-16 size-72 rounded-full bg-brand-500/40 blur-[100px]" />
-        <div className="pointer-events-none absolute -right-20 -bottom-28 size-80 rounded-full bg-violet-glow/35 blur-[110px]" />
-        <div className="pointer-events-none absolute top-1/3 left-1/2 size-56 rounded-full bg-brand-400/20 blur-[90px]" />
+      {/* Hero — pure black, monochrome glow */}
+      <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-black px-6 py-14 text-white sm:px-12 sm:py-20">
+        <div className="pointer-events-none absolute -top-28 -left-20 size-80 rounded-full bg-white/10 blur-[110px]" />
+        <div className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-white/6 blur-[120px]" />
+        {/* fine grid texture */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)',
+            backgroundSize: '44px 44px',
+            maskImage: 'radial-gradient(ellipse 80% 70% at 50% 0%, black, transparent)',
+          }}
+        />
 
         <div className="relative">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/8 px-3 py-1 text-[11px] font-semibold tracking-wide text-brand-200">
-            <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" />
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11px] font-semibold tracking-wide text-slate-300">
+            <span className="size-1.5 animate-pulse rounded-full bg-white" />
             {t('home.badge')}
           </span>
-          <h1 className="mt-5 max-w-2xl text-[32px] leading-[1.15] font-extrabold tracking-tight sm:text-5xl">
+          <h1 className="mt-6 max-w-2xl text-[32px] leading-[1.12] font-extrabold tracking-tight sm:text-5xl">
             {t('home.heroTitle')}
           </h1>
-          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-300 sm:text-base">
+          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-slate-400 sm:text-base">
             {t('home.heroSubtitle')}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-9 flex flex-wrap gap-3">
             <Link
               to="/teams"
-              className="inline-flex h-11 items-center gap-1.5 rounded-full bg-white px-5 text-sm font-bold text-slate-900 transition-transform hover:scale-[1.03] active:scale-[0.98]"
+              className="inline-flex h-11 items-center gap-1.5 rounded-full bg-white px-6 text-sm font-bold text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
             >
               {t('home.ctaTeams')}
               <Icon name="chevronRight" size={15} strokeWidth={2.4} />
             </Link>
             <Link
               to="/calculator"
-              className="inline-flex h-11 items-center gap-1.5 rounded-full border border-white/20 bg-white/8 px-5 text-sm font-bold text-white backdrop-blur transition-colors hover:bg-white/15"
+              className="inline-flex h-11 items-center gap-1.5 rounded-full border border-white/20 px-6 text-sm font-bold text-white transition-colors hover:border-white/40 hover:bg-white/5"
             >
               {t('home.ctaCalc')}
             </Link>
@@ -56,23 +64,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Feature cards */}
+      {/* Feature cards — inverted monochrome tiles */}
       <section>
         <div className="grid gap-4 sm:grid-cols-2">
           {FEATURES.map((feature) => (
             <Link
               key={feature.key}
               to={feature.to}
-              className="group card relative p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lift"
+              className="group card relative p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-400/60 hover:shadow-lift dark:hover:border-white/25"
             >
               <div className="flex items-start justify-between">
-                <span
-                  className={`grid size-12 place-items-center rounded-2xl bg-gradient-to-br ${feature.tint} text-white shadow-soft`}
-                >
+                <span className="grid size-12 place-items-center rounded-2xl bg-black text-white shadow-soft transition-transform duration-200 group-hover:scale-105 dark:bg-white dark:text-black">
                   <Icon name={feature.icon} size={23} />
                 </span>
                 {!feature.ready && (
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-500 dark:bg-white/8 dark:text-slate-400">
+                  <span className="rounded-full border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-400 dark:border-white/10 dark:text-slate-500">
                     {t('home.comingSoon')}
                   </span>
                 )}
@@ -81,7 +87,7 @@ export default function Home() {
               <p className="mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                 {t(`home.features.${feature.key}.desc`)}
               </p>
-              <span className="mt-4 inline-flex items-center gap-0.5 text-[13px] font-bold text-brand-500 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+              <span className="mt-4 inline-flex items-center gap-0.5 text-[13px] font-bold transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
                 {t('home.openTool')}
                 <Icon name="chevronRight" size={13} strokeWidth={2.4} />
               </span>
@@ -94,7 +100,7 @@ export default function Home() {
       <section className="card grid gap-6 p-6 sm:grid-cols-3 sm:gap-4 sm:p-8">
         {TRUST.map((item) => (
           <div key={item.key} className="flex items-start gap-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/12 dark:text-brand-300">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-900 dark:bg-white/8 dark:text-white">
               <Icon name={item.icon} size={19} />
             </span>
             <div>

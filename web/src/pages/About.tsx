@@ -19,7 +19,7 @@ export default function About() {
 
       <section className="card p-6">
         <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-500/12 dark:text-brand-300">
+          <span className="grid size-9 place-items-center rounded-xl bg-slate-100 text-slate-900 dark:bg-white/8 dark:text-white">
             <Icon name="shield" size={18} />
           </span>
           <h2 className="text-[15px] font-bold">{t('about.dataTitle')}</h2>

@@ -114,7 +114,7 @@ export default function Layout() {
               className={({ isActive }) =>
                 [
                   'flex flex-col items-center gap-1 pt-2.5 pb-2 text-[10px] font-semibold transition-colors',
-                  isActive ? 'text-brand-500' : 'text-slate-400 dark:text-slate-500',
+                  isActive ? 'text-black dark:text-white' : 'text-slate-400 dark:text-slate-600',
                 ].join(' ')
               }
             >

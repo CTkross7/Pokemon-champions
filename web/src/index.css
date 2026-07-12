@@ -22,9 +22,9 @@
 
   --color-violet-glow: #7c5cff;
 
-  --color-surface-light: #f6f7fb;
-  --color-surface-dark: #0a0f1e;
-  --color-card-dark: #111731;
+  --color-surface-light: #f7f7f8;
+  --color-surface-dark: #050505;
+  --color-card-dark: #0e0e10;
 
   --shadow-soft: 0 1px 2px rgb(16 24 40 / 0.04), 0 4px 16px -4px rgb(16 24 40 / 0.08);
   --shadow-lift: 0 4px 8px -2px rgb(16 24 40 / 0.08), 0 16px 32px -8px rgb(16 24 40 / 0.14);
@@ -55,7 +55,7 @@ body {
 }
 
 ::selection {
-  @apply bg-brand-500/25;
+  @apply bg-slate-900/90 text-white dark:bg-white/90 dark:text-black;
 }
 
 /* App-like card surface */
