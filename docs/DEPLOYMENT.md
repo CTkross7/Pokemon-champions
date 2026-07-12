@@ -4,18 +4,24 @@
 
 ## ⚡ 흰 화면 문제 해결 (Workers로 배포한 경우)
 
-`*.workers.dev` 주소에서 **흰 화면만 나오는 것은 SPA 라우팅 설정이 없어서**입니다.
-`web/wrangler.toml`을 추가했으니, 아래처럼 다시 배포하면 정상 표시됩니다:
+제목("챔스노트 — ...")은 뜨는데 화면이 흰 것은 **최신 빌드 없이 이전 dist를 올렸거나
+브라우저 캐시** 때문인 경우가 대부분입니다. (설정·코드는 wrangler 엔진에서 정상 렌더링
+검증 완료.) 아래 **한 줄 명령**으로 항상 빌드→배포를 함께 실행하세요:
 
 ```bash
-cd web
-npm install
-npm run build
-npx wrangler deploy
+cd web        # ★ 반드시 web 폴더에서 실행
+npm install   # 최초 1회
+npm run deploy
 ```
 
-`wrangler.toml`의 `not_found_handling = "single-page-application"`가 모든 경로를
-`index.html`로 연결해 화면이 정상적으로 뜹니다.
+`npm run deploy`는 `npm run build && wrangler deploy`를 한 번에 실행하므로
+**빌드 누락으로 인한 흰 화면이 원천 차단**됩니다.
+
+배포 후에도 흰 화면이면 **브라우저 강력 새로고침**(주소창 옆 새로고침 길게 → 캐시 삭제)
+또는 **시크릿창**으로 접속해 이전 캐시를 우회하세요.
+
+> 참고: 반드시 `web` 폴더 안에서 실행해야 `web/wrangler.toml`(SPA 라우팅 설정)이 적용됩니다.
+> 저장소 루트에서 실행하면 설정을 못 찾아 화면이 깨집니다.
 
 ## 🔤 URL의 계정명(`junghyeonr2d2`) 제거/변경
 
