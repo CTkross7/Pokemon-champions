@@ -18,8 +18,11 @@
     "themeLight": "Light mode"
   },
   "home": {
+    "badge": "Pokémon Champions · Regulation M-B season",
     "heroTitle": "Every tool you need to win",
     "heroSubtitle": "Pokédex, damage calculator, and automated team coaching for Pokémon Champions ranked battles — all in one place.",
+    "ctaTeams": "Build a team",
+    "ctaCalc": "Damage calculator",
     "features": {
       "dex": {
         "title": "Champions Dex",
@@ -39,7 +42,21 @@
       }
     },
     "comingSoon": "Coming soon",
-    "openTool": "Open"
+    "openTool": "Open",
+    "trust": {
+      "verified": {
+        "title": "Verified data only",
+        "desc": "Every piece of game data is cross-checked against official and trusted sources"
+      },
+      "free": {
+        "title": "Free to use",
+        "desc": "All core tools work right away — no sign-up required"
+      },
+      "crossPlatform": {
+        "title": "Works everywhere",
+        "desc": "Optimized for both desktop and mobile, even mid-battle"
+      }
+    }
   },
   "about": {
     "title": "About ChampMate",
@@ -50,6 +67,7 @@
   },
   "common": {
     "underConstruction": "This feature is under construction.",
-    "underConstructionDesc": "Features ship in roadmap order. Stay tuned!"
+    "underConstructionDesc": "Features ship in roadmap order. Stay tuned!",
+    "backHome": "Back to home"
   }
 }

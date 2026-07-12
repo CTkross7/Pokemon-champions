@@ -18,8 +18,11 @@
     "themeLight": "라이트 모드"
   },
   "home": {
+    "badge": "Pokémon Champions · Regulation M-B 시즌",
     "heroTitle": "이기는 배틀을 위한 모든 도구",
     "heroSubtitle": "포켓몬 챔피언스 랭크배틀을 위한 도감, 데미지 계산기, 팀 진단 코칭까지 — 한 곳에서.",
+    "ctaTeams": "팀 만들기",
+    "ctaCalc": "데미지 계산기",
     "features": {
       "dex": {
         "title": "챔피언스 도감",
@@ -39,7 +42,21 @@
       }
     },
     "comingSoon": "준비 중",
-    "openTool": "바로가기"
+    "openTool": "바로가기",
+    "trust": {
+      "verified": {
+        "title": "검증된 데이터만",
+        "desc": "모든 게임 정보는 공식 발표와 신뢰 출처로 교차 검증 후 반영합니다"
+      },
+      "free": {
+        "title": "모든 기능 무료",
+        "desc": "핵심 도구는 회원가입 없이 지금 바로 사용할 수 있습니다"
+      },
+      "crossPlatform": {
+        "title": "어디서나",
+        "desc": "PC와 모바일 모두 최적화 — 대전 중에도 빠르게 확인하세요"
+      }
+    }
   },
   "about": {
     "title": "챔프메이트 소개",
@@ -50,6 +67,7 @@
   },
   "common": {
     "underConstruction": "이 기능은 현재 개발 중입니다.",
-    "underConstructionDesc": "로드맵에 따라 순차적으로 공개됩니다. 조금만 기다려 주세요!"
+    "underConstructionDesc": "로드맵에 따라 순차적으로 공개됩니다. 조금만 기다려 주세요!",
+    "backHome": "홈으로 돌아가기"
   }
 }

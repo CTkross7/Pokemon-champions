@@ -1,25 +1,64 @@
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-brand-50: #eef6ff;
-  --color-brand-100: #d9eaff;
-  --color-brand-200: #bcdbff;
-  --color-brand-300: #8ec4ff;
-  --color-brand-400: #59a3ff;
-  --color-brand-500: #3380fc;
-  --color-brand-600: #1d60f1;
-  --color-brand-700: #154bde;
-  --color-brand-800: #183eb4;
-  --color-brand-900: #19398e;
-  --color-brand-950: #142456;
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+
+  --color-brand-50: #eef5ff;
+  --color-brand-100: #d9e8ff;
+  --color-brand-200: #bcd7ff;
+  --color-brand-300: #8ebeff;
+  --color-brand-400: #599aff;
+  --color-brand-500: #3376fc;
+  --color-brand-600: #1d55f1;
+  --color-brand-700: #1541de;
+  --color-brand-800: #1837b4;
+  --color-brand-900: #19338e;
+  --color-brand-950: #142056;
+
+  --color-violet-glow: #7c5cff;
+
+  --color-surface-light: #f6f7fb;
+  --color-surface-dark: #0a0f1e;
+  --color-card-dark: #111731;
+
+  --shadow-soft: 0 1px 2px rgb(16 24 40 / 0.04), 0 4px 16px -4px rgb(16 24 40 / 0.08);
+  --shadow-lift: 0 4px 8px -2px rgb(16 24 40 / 0.08), 0 16px 32px -8px rgb(16 24 40 / 0.14);
+
+  --animate-fade-up: fade-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  @apply bg-surface-light text-slate-900 antialiased dark:bg-surface-dark dark:text-slate-100;
+  font-feature-settings: 'ss05';
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  @apply bg-brand-500/25;
+}
+
+/* App-like card surface */
+@utility card {
+  @apply rounded-2xl border border-slate-200/80 bg-white shadow-soft dark:border-white/8 dark:bg-card-dark;
 }
