@@ -1,0 +1,102 @@
+/**
+ * E2E smoke test: layout shell, i18n toggle, theme toggle, routing, persistence.
+ *
+ * Usage:
+ *   npm run build && npm run test:e2e
+ * (starts `vite preview` itself; needs Chromium — set CHROMIUM_PATH if
+ *  Playwright's bundled browser is unavailable)
+ */
+import { spawn } from 'node:child_process'
+import { existsSync, readdirSync } from 'node:fs'
+import { chromium } from 'playwright'
+
+const PORT = 4173
+const BASE = `http://localhost:${PORT}`
+
+function resolveChromium() {
+  if (process.env.CHROMIUM_PATH) return process.env.CHROMIUM_PATH
+  // Managed environments ship Chromium under PLAYWRIGHT_BROWSERS_PATH with a
+  // possibly different revision than the installed playwright package expects.
+  const root = process.env.PLAYWRIGHT_BROWSERS_PATH
+  if (root && existsSync(root)) {
+    const dir = readdirSync(root).find((d) => /^chromium-\d+$/.test(d))
+    if (dir) return `${root}/${dir}/chrome-linux/chrome`
+  }
+  return undefined // fall back to playwright's own resolution
+}
+
+async function waitForServer(url, tries = 50) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      const res = await fetch(url)
+      if (res.ok) return
+    } catch {
+      /* not up yet */
+    }
+    await new Promise((r) => setTimeout(r, 200))
+  }
+  throw new Error(`preview server did not start at ${url}`)
+}
+
+const results = []
+const check = (name, cond) => {
+  results.push([name, cond])
+  if (!cond) process.exitCode = 1
+}
+const eventually = (locator) =>
+  locator.waitFor({ state: 'visible', timeout: 5000 }).then(
+    () => true,
+    () => false,
+  )
+
+const preview = spawn('npx', ['vite', 'preview', '--port', String(PORT)], { stdio: 'ignore' })
+try {
+  await waitForServer(BASE)
+  const browser = await chromium.launch({ executablePath: resolveChromium() })
+
+  for (const viewport of [
+    { width: 1280, height: 800, tag: 'desktop' },
+    { width: 390, height: 844, tag: 'mobile' },
+  ]) {
+    const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height } })
+    const consoleErrors = []
+    page.on('pageerror', (e) => consoleErrors.push(String(e)))
+    page.on('console', (m) => m.type() === 'error' && consoleErrors.push(m.text()))
+
+    await page.goto(BASE, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] hero renders (ko)`, await eventually(page.getByText('이기는 배틀을 위한 모든 도구')))
+    check(`[${viewport.tag}] disclaimer footer`, await eventually(page.getByText('비공식 서비스')))
+    check(
+      `[${viewport.tag}] dark theme default`,
+      await page.evaluate(() => document.documentElement.classList.contains('dark')),
+    )
+
+    await page.getByRole('button', { name: '언어' }).click()
+    check(`[${viewport.tag}] language toggles to EN`, await eventually(page.getByText('Every tool you need to win')))
+
+    await page.getByRole('button', { name: /mode/i }).click()
+    check(
+      `[${viewport.tag}] theme toggles to light`,
+      await page.evaluate(() => !document.documentElement.classList.contains('dark')),
+    )
+
+    await page.getByRole('link', { name: 'About' }).locator('visible=true').first().click()
+    check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About ChampMate')))
+
+    await page.goto(`${BASE}/calculator`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] placeholder route`, await eventually(page.getByText(/under construction|개발 중/)))
+
+    await page.goto(BASE, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))
+    check(`[${viewport.tag}] no console errors`, consoleErrors.length === 0)
+    if (consoleErrors.length) console.error('console errors:', consoleErrors)
+
+    await page.close()
+  }
+  await browser.close()
+} finally {
+  preview.kill()
+}
+
+for (const [name, ok] of results) console.log(`${ok ? '✓' : '✗'} ${name}`)
+console.log(process.exitCode ? 'SMOKE TEST FAILED' : 'SMOKE TEST PASSED')

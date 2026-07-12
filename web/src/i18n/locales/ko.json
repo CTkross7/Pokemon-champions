@@ -1,0 +1,55 @@
+{
+  "app": {
+    "name": "챔프메이트",
+    "tagline": "포켓몬 챔피언스 배틀 파트너",
+    "disclaimer": "챔프메이트는 팬이 만든 비공식 서비스이며 The Pokémon Company, Nintendo, Game Freak과 무관합니다. Pokémon 및 관련 명칭은 각 소유자의 상표입니다."
+  },
+  "nav": {
+    "home": "홈",
+    "dex": "도감",
+    "calculator": "계산기",
+    "teams": "팀빌더",
+    "about": "소개"
+  },
+  "settings": {
+    "language": "언어",
+    "theme": "테마",
+    "themeDark": "다크 모드",
+    "themeLight": "라이트 모드"
+  },
+  "home": {
+    "heroTitle": "이기는 배틀을 위한 모든 도구",
+    "heroSubtitle": "포켓몬 챔피언스 랭크배틀을 위한 도감, 데미지 계산기, 팀 진단 코칭까지 — 한 곳에서.",
+    "features": {
+      "dex": {
+        "title": "챔피언스 도감",
+        "desc": "타입, 특성, 종족값, 습득 기술을 한국어로 빠르게 검색"
+      },
+      "calc": {
+        "title": "데미지 계산기",
+        "desc": "SP 시스템 네이티브 지원, 메가진화·날씨·필드 반영"
+      },
+      "teams": {
+        "title": "팀빌더 & 진단",
+        "desc": "팀을 만들면 약점 구멍과 개선안을 자동 분석"
+      },
+      "matchup": {
+        "title": "실전 매치업 어시스턴트",
+        "desc": "대전 중 상대 팀 입력, 3초 안에 선출 가이드 확인"
+      }
+    },
+    "comingSoon": "준비 중",
+    "openTool": "바로가기"
+  },
+  "about": {
+    "title": "챔프메이트 소개",
+    "body": "챔프메이트는 포켓몬 챔피언스 플레이어를 위한 종합 유틸리티입니다. 단순 계산기를 넘어, 팀의 약점을 자동으로 진단하고 실전 매치업까지 돕는 것을 목표로 합니다.",
+    "roadmapTitle": "개발 로드맵",
+    "dataTitle": "데이터 출처",
+    "dataBody": "게임 데이터는 커뮤니티가 검증한 공개 데이터베이스(PokéAPI, Pokémon Showdown 데이터)를 기반으로 하며, 챔피언스 고유 정보(레귤레이션, SP 규칙)는 공식 발표 및 신뢰 가능한 출처로 교차 검증 후 반영합니다."
+  },
+  "common": {
+    "underConstruction": "이 기능은 현재 개발 중입니다.",
+    "underConstructionDesc": "로드맵에 따라 순차적으로 공개됩니다. 조금만 기다려 주세요!"
+  }
+}

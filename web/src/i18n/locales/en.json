@@ -1,0 +1,55 @@
+{
+  "app": {
+    "name": "ChampMate",
+    "tagline": "Your Pokémon Champions battle partner",
+    "disclaimer": "ChampMate is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners."
+  },
+  "nav": {
+    "home": "Home",
+    "dex": "Pokédex",
+    "calculator": "Calculator",
+    "teams": "Team Builder",
+    "about": "About"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "themeDark": "Dark mode",
+    "themeLight": "Light mode"
+  },
+  "home": {
+    "heroTitle": "Every tool you need to win",
+    "heroSubtitle": "Pokédex, damage calculator, and automated team coaching for Pokémon Champions ranked battles — all in one place.",
+    "features": {
+      "dex": {
+        "title": "Champions Dex",
+        "desc": "Fast search across types, abilities, base stats, and learnsets"
+      },
+      "calc": {
+        "title": "Damage Calculator",
+        "desc": "Native SP-system support with Mega Evolution, weather, and terrain"
+      },
+      "teams": {
+        "title": "Team Builder & Coach",
+        "desc": "Build a team and get automatic weakness analysis with fixes"
+      },
+      "matchup": {
+        "title": "Live Matchup Assistant",
+        "desc": "Enter the opposing team mid-battle, get lead advice in 3 seconds"
+      }
+    },
+    "comingSoon": "Coming soon",
+    "openTool": "Open"
+  },
+  "about": {
+    "title": "About ChampMate",
+    "body": "ChampMate is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
+    "roadmapTitle": "Roadmap",
+    "dataTitle": "Data sources",
+    "dataBody": "Game data is based on community-verified public databases (PokéAPI, Pokémon Showdown data). Champions-specific information (regulations, SP rules) is cross-checked against official announcements and trusted sources before inclusion."
+  },
+  "common": {
+    "underConstruction": "This feature is under construction.",
+    "underConstructionDesc": "Features ship in roadmap order. Stay tuned!"
+  }
+}

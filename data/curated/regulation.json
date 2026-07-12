@@ -1,0 +1,32 @@
+{
+  "$comment": "Pokémon Champions 게임 규칙 큐레이션 데이터. 모든 항목의 출처는 docs/DATA_SOURCES.md 참고. verified=cross-checked(복수 출처 교차 검증) | official(공식 발표) | unverified(사용 금지)",
+  "game": {
+    "title": "Pokémon Champions",
+    "releaseSwitch": "2026-04-08",
+    "releaseMobile": "2026-06-17",
+    "crossPlatform": true,
+    "verified": "official"
+  },
+  "battleSystem": {
+    "level": 50,
+    "spTotalMax": 66,
+    "spPerStatMax": 32,
+    "spNote": "SP(스탯 포인트)가 기존 노력치/개체값을 대체. 1 SP = Lv.50 기준 +1 스탯.",
+    "megaEvolution": true,
+    "verified": "cross-checked"
+  },
+  "currentRegulation": {
+    "id": "reg-m-b",
+    "name": "Regulation M-B",
+    "asOf": "2026-07",
+    "note": "시즌마다 레귤레이션 변경. 상세 사용 가능 포켓몬 목록은 roster 확장 시 반영.",
+    "verified": "cross-checked"
+  },
+  "modes": {
+    "ranked": true,
+    "casual": true,
+    "onlineTournament": true,
+    "victoryPoints": "VP는 배틀로만 획득 가능(현금 구매 불가), 포켓몬 영입·육성에 사용",
+    "verified": "official"
+  }
+}

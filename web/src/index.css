@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-brand-50: #eef6ff;
+  --color-brand-100: #d9eaff;
+  --color-brand-200: #bcdbff;
+  --color-brand-300: #8ec4ff;
+  --color-brand-400: #59a3ff;
+  --color-brand-500: #3380fc;
+  --color-brand-600: #1d60f1;
+  --color-brand-700: #154bde;
+  --color-brand-800: #183eb4;
+  --color-brand-900: #19398e;
+  --color-brand-950: #142456;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+}

@@ -1,0 +1,29 @@
+{
+  "$comment": "Pokémon Champions 등장 확인 포켓몬 시드 목록 (2026-07 사용률 통계에서 확인된 개체). 전체 로스터는 Phase 1에서 확장. 이름은 Pokémon Showdown/@pkmn/dex 표기.",
+  "source": "docs/DATA_SOURCES.md #roster",
+  "verified": "usage-stats-2026-07",
+  "species": [
+    "Garchomp",
+    "Sinistcha",
+    "Basculegion",
+    "Whimsicott",
+    "Kingambit",
+    "Staraptor",
+    "Incineroar",
+    "Charizard",
+    "Raichu",
+    "Pelipper",
+    "Sneasler",
+    "Archaludon",
+    "Grimmsnarl",
+    "Sylveon",
+    "Swampert",
+    "Metagross",
+    "Farigiraf",
+    "Gholdengo",
+    "Aerodactyl",
+    "Venusaur",
+    "Espathra",
+    "Tauros-Paldea-Aqua"
+  ]
+}
