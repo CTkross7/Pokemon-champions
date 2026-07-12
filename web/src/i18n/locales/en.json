@@ -194,7 +194,9 @@
     "addMon": "Add Pokémon",
     "speedTiers": "Speed line",
     "speedNote": "Each Pokémon's Lv.50 Speed (SP & nature applied). Check who you outspeed.",
-    "disclaimer": "Teams are auto-saved in your browser (local). Account-synced saving comes in a later phase."
+    "disclaimer": "Teams are auto-saved in your browser (local). Account-synced saving comes in a later phase.",
+    "share": "Share",
+    "shareCopied": "Link copied ✓"
   },
   "coach": {
     "title": "Team Auto-Diagnosis",
@@ -244,5 +246,26 @@
     "both": "OFF/DEF",
     "prompt": "Add opponent Pokémon to start the analysis.",
     "disclaimer": "Instant type-matchup analysis (moves/abilities not applied). Use the calculator for precise damage."
+  },
+  "builds": {
+    "title": "Recommended builds",
+    "note": "Auto-suggested from base stats and learnset. Use as a starting point and tweak.",
+    "addToTeam": "Add to my team",
+    "added": "Added ✓",
+    "reason": {
+      "physical": "Physical attacker leveraging high Attack. SP into Atk and Speed.",
+      "fastPhysical": "Fast physical sweeper using high Speed to move first.",
+      "special": "Special attacker on high Sp. Atk. SP into SpA and Speed.",
+      "fastSpecial": "Fast special sweeper pressuring with first-strike damage.",
+      "bulky": "Bulky tank using high defenses. SP into HP and defense to endure."
+    }
+  },
+  "shared": {
+    "sharedTeam": "Shared team",
+    "copyToMine": "Copy to my teams",
+    "copied": "copy",
+    "invalid": "Invalid share link.",
+    "goTeams": "Go to team builder",
+    "note": "This team travels inside the link (no server storage). A public gallery and account saving come in a later phase."
   }
 }

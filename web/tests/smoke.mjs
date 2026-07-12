@@ -116,6 +116,7 @@ try {
     check(`[${viewport.tag}] dex detail base stats`, await eventually(page.getByText(/Base stats|종족값/)))
     check(`[${viewport.tag}] dex detail matchups`, await eventually(page.getByText(/Defensive matchups|방어 상성/)))
     check(`[${viewport.tag}] dex detail learnset rows`, await eventually(page.locator('table tbody tr').first()))
+    check(`[${viewport.tag}] dex build recommendations`, await eventually(page.getByText(/Recommended builds|추천 빌드/)))
 
     // Type chart page
     await page.goto(`${BASE}/dex/types`, { waitUntil: 'networkidle' })
@@ -150,6 +151,18 @@ try {
     await page.getByRole('button', { name: /Charizard|리자몽/ }).first().click()
     check(`[${viewport.tag}] matchup recommends leads`, await eventually(page.getByText(/Recommended leads|추천 선출/)))
     check(`[${viewport.tag}] matchup threat ranking`, await eventually(page.getByText(/Threat ranking|위협도 순위/)))
+
+    // Shared team link round-trip: encode a team the same way the app does,
+    // open /share#s=..., and expect the decoded Pokémon to render.
+    const encoded = await page.evaluate(() => {
+      const payload = { v: 1, n: 'Shared demo', m: [['garchomp', 'Rough Skin', '', 'Jolly', [0, 32, 0, 0, 0, 32], ['earthquake']], 0, 0, 0, 0, 0] }
+      const json = JSON.stringify(payload)
+      const b64 = btoa(unescape(encodeURIComponent(json)))
+      return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+    })
+    await page.goto(`${BASE}/share#s=${encoded}`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] shared team decodes`, await eventually(page.getByText(/Shared demo/)))
+    check(`[${viewport.tag}] shared team shows mon`, await eventually(page.getByText(/Garchomp|한카리아스/).first()))
 
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))

@@ -1,6 +1,39 @@
-# 배포 가이드 (Cloudflare Pages)
+# 배포 가이드 (Cloudflare)
 
-챔스노트(ChampsNote)를 Cloudflare Pages로 배포하고 `ctkross.champsnote.com` 같은
+챔스노트(ChampsNote)를 Cloudflare에 배포하고 접속하는 방법입니다.
+
+## ⚡ 흰 화면 문제 해결 (Workers로 배포한 경우)
+
+`*.workers.dev` 주소에서 **흰 화면만 나오는 것은 SPA 라우팅 설정이 없어서**입니다.
+`web/wrangler.toml`을 추가했으니, 아래처럼 다시 배포하면 정상 표시됩니다:
+
+```bash
+cd web
+npm install
+npm run build
+npx wrangler deploy
+```
+
+`wrangler.toml`의 `not_found_handling = "single-page-application"`가 모든 경로를
+`index.html`로 연결해 화면이 정상적으로 뜹니다.
+
+## 🔤 URL의 계정명(`junghyeonr2d2`) 제거/변경
+
+`champsnote.junghyeonr2d2.workers.dev`에서 `junghyeonr2d2`는 **계정의 workers.dev
+서브도메인**입니다. 세 가지 방법이 있습니다:
+
+1. **서브도메인 변경**: 대시보드 → **Workers & Pages** → 우측 **Account details** 또는
+   Workers 개요의 서브도메인 항목에서 변경(계정당 1회, 모든 Worker에 적용). 예를 들어
+   `ctkross`로 바꾸면 `champsnote.ctkross.workers.dev`가 됩니다.
+2. **Pages로 배포(가장 깔끔, 계정명 없음)**: 아래 '방법 A'로 Pages에 배포하면
+   `champsnote.pages.dev` 주소가 됩니다 — 계정명이 붙지 않습니다. **권장.**
+3. **커스텀 도메인**: `champsnote.com` 구매 후 `ctkross.champsnote.com` 연결(맨 아래 참고).
+
+---
+
+## 커스텀 도메인 접속(`ctkross.champsnote.com`) 및 Pages 배포
+
+챔스노트를 Cloudflare Pages로 배포하고 `ctkross.champsnote.com` 같은
 커스텀 도메인으로 접속하는 방법입니다.
 
 > 요약: 저장소를 Cloudflare Pages에 연결하면 자동으로 `champsnote.pages.dev` 주소가

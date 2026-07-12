@@ -20,8 +20,8 @@
 | 3 | 팀빌더 + 로컬 저장 + import/export + 스피드 티어 | ✅ 완료 |
 | 4 | ★ 팀 자동 진단·코칭 리포트 | ✅ 완료 |
 | 5 | ★ 실전 매치업 어시스턴트 | ✅ 완료 |
-| 6 | ★ 빌드 추천 + 샘플 시스템 (Workers+D1 도입, 공유 URL) | ⬜ 예정 |
-| 7 | 계정 + 커뮤니티 (게시·좋아요·댓글) | ⬜ 예정 |
+| 6 | ★ 빌드 추천 + 샘플 URL 공유 (백엔드 불필요) | ✅ 완료 |
+| 7 | 계정 + 커뮤니티 갤러리 (Workers+D1 백엔드 도입) | ⬜ 예정 |
 | 8 | 수익화(AdSense)·PWA·SEO·성능 | ⬜ 예정 |
 | 9 | 안드로이드 앱 (Capacitor+AdMob) + Play 스토어 출시 | ⬜ 예정 |
 
@@ -116,8 +116,18 @@
 - Cloudflare Pages 배포: `web/public/_redirects`(SPA 라우팅), `.github/workflows/deploy-cloudflare.yml`(자동 배포), `docs/DEPLOYMENT.md`(대시보드 연결 + ctkross.champsnote.com 커스텀 도메인 가이드)
 - 검증: 빌드·린트 ✅ / E2E 48건(매치업·개발자 크레딧 시나리오 추가) ✅ / 매치업 정확성 육안 확인(한카리아스/타부자고/뽀록나 vs 리자몽/페리퍼/대도각참)
 
-## 다음 작업 (Phase 6)
-- ★ 빌드 추천 + 샘플 시스템: 포켓몬별 역할 추천 빌드, 샘플 작성·공유(Cloudflare Workers + D1 도입, 공유 URL)
+## 배포 문제 해결 (2026-07-12, 사용자 보고)
+- 흰 화면 원인: Workers 배포 시 SPA 라우팅 미설정 → `web/wrangler.toml` 추가(assets + not_found_handling=single-page-application), wrangler dry-run으로 1,487개 에셋 정상 인식 확인. 재배포하면 해결
+- URL 계정명(junghyeonr2d2): workers.dev 서브도메인 → docs/DEPLOYMENT.md에 서브도메인 변경/Pages 사용(champsnote.pages.dev, 계정명 없음)/커스텀 도메인 3가지 방법 안내
+
+## Phase 6 완료 내역 (2026-07-12) — ★ 차별화 핵심 기능
+- 로드맵 조정: 초보 사용자·배포 편의를 위해 Phase 6는 백엔드(D1) 없이 URL 인코딩 공유로 구현. 공개 갤러리·계정은 Phase 7로 이동(백엔드 도입 시점)
+- 빌드 추천(`lib/builds.ts`): 종족값·습득기술 기반 역할별 추천 빌드(물리/특수/내구), SP 배분·성격·아이템·기술(STAB+커버리지 자동 선택)·채용 이유. 도감 상세에 '추천 빌드' 섹션 + '내 팀에 추가' 버튼
+- 샘플/팀 URL 공유(`lib/share.ts`): 팀을 base64url로 인코딩해 링크 해시(#s=)에 담음 → 서버 없이 공유. 팀빌더 '공유 링크' 버튼(클립보드 복사), `/share` 페이지에서 디코딩·읽기전용 표시·'내 팀으로 복사'
+- 검증: 빌드·린트 ✅ / E2E 54건(빌드추천·공유 왕복 시나리오 추가) ✅ / 한카리아스 추천 빌드 정확성 육안 확인
+
+## 다음 작업 (Phase 7)
+- 계정(경량) + 공개 샘플 갤러리·좋아요·댓글: Cloudflare Pages Functions + D1 백엔드 도입, 로컬 데이터 마이그레이션
 
 ## ⚠️ 사용자 조치 필요 (배포)
 - Cloudflare Pages 실제 배포는 본인 Cloudflare 계정 연결 필요(docs/DEPLOYMENT.md 방법 A 권장). 저장소 연결 시 champsnote.pages.dev 자동 생성

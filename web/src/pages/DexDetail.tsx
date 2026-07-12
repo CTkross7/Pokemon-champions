@@ -14,6 +14,7 @@ import { defensiveProfile, TYPE_COLORS, type TypeName } from '@/lib/typechart'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
 import Icon from '@/components/Icon'
+import BuildRecs from '@/components/BuildRecs'
 
 const STAT_MAX = 255
 
@@ -213,6 +214,9 @@ export default function DexDetail() {
           <p className="mt-4 text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('dex.matchupNote')}</p>
         </section>
       </div>
+
+      {/* Recommended builds */}
+      {moves && learnset && <BuildRecs species={species} learnset={learnset} moves={moves} />}
 
       {/* Learnset */}
       <section className="card p-6">

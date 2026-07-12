@@ -1,0 +1,18 @@
+# Cloudflare deployment config for the ChampsNote web app.
+#
+# Serves the built SPA (dist/) as static assets with single-page-application
+# fallback so client-side routes (/dex, /calculator, /teams, /matchup, ...)
+# resolve to index.html instead of 404-ing to a blank page.
+#
+# Deploy:  cd web && npm run build && npx wrangler deploy
+#
+# The public URL is  https://<name>.<your-subdomain>.workers.dev
+# To drop the account-name part, either change your workers.dev subdomain in the
+# Cloudflare dashboard (Workers & Pages -> your subdomain) or use Cloudflare
+# Pages instead, which serves at champsnote.pages.dev. See docs/DEPLOYMENT.md.
+name = "champsnote"
+compatibility_date = "2026-01-01"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"

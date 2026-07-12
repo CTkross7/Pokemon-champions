@@ -4,6 +4,7 @@ import { loadLearnsets, loadMoves, loadPokedex, type MoveData, type Species } fr
 import { statAtLevel50, spTotal, NATURES, COMMON_ITEMS, type Nature } from '@/lib/champions'
 import { listAbilities } from '@/lib/calc'
 import { exportTeam, importTeam } from '@/lib/showdown'
+import { shareUrl } from '@/lib/share'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import SpSliders from '@/components/SpSliders'
@@ -156,6 +157,7 @@ export default function Teams() {
   const [openSlot, setOpenSlot] = useState<number | null>(null)
   const [ioText, setIoText] = useState('')
   const [ioMode, setIoMode] = useState<'none' | 'import' | 'export'>('none')
+  const [shareMsg, setShareMsg] = useState('')
 
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
@@ -276,6 +278,22 @@ export default function Teams() {
         </button>
         <button
           type="button"
+          onClick={async () => {
+            const url = shareUrl(active)
+            try {
+              await navigator.clipboard.writeText(url)
+              setShareMsg(t('teams.shareCopied'))
+            } catch {
+              setShareMsg(url)
+            }
+            setTimeout(() => setShareMsg(''), 4000)
+          }}
+          className="rounded-lg border border-volt-500 px-3 py-1.5 text-xs font-bold text-volt-700 hover:bg-volt-400/10 dark:border-volt-400/60 dark:text-volt-300"
+        >
+          {t('teams.share')}
+        </button>
+        <button
+          type="button"
           onClick={() => {
             if (confirm(t('teams.confirmDelete'))) deleteTeam(active.id)
           }}
@@ -284,6 +302,12 @@ export default function Teams() {
           {t('teams.delete')}
         </button>
       </div>
+
+      {shareMsg && (
+        <div className="rounded-lg bg-volt-400/15 px-4 py-2 text-xs font-bold break-all text-volt-700 dark:text-volt-300">
+          {shareMsg}
+        </div>
+      )}
 
       {/* IO panel */}
       {ioMode !== 'none' && (
