@@ -41,6 +41,40 @@ export function spToEvs(sp: SpAllocation): SpAllocation {
   return evs
 }
 
+/** Positive / negative stat per nature (null = neutral). Used for stat math. */
+export const NATURE_EFFECTS: Record<string, { plus?: StatKey; minus?: StatKey }> = {
+  Serious: {},
+  Adamant: { plus: 'atk', minus: 'spa' },
+  Modest: { plus: 'spa', minus: 'atk' },
+  Jolly: { plus: 'spe', minus: 'spa' },
+  Timid: { plus: 'spe', minus: 'atk' },
+  Bold: { plus: 'def', minus: 'atk' },
+  Calm: { plus: 'spd', minus: 'atk' },
+  Impish: { plus: 'def', minus: 'spa' },
+  Careful: { plus: 'spd', minus: 'spa' },
+  Brave: { plus: 'atk', minus: 'spe' },
+  Quiet: { plus: 'spa', minus: 'spe' },
+}
+
+/**
+ * Champions final stat at Level 50: perfect-IV (31) baseline + SP, with the
+ * nature multiplier applied (non-HP only). Mirrors the engine mapping so the
+ * speed-tier view matches the calculator. HP uses the standard HP formula.
+ */
+export function statAtLevel50(base: number, key: StatKey, sp: number, nature: string): number {
+  const iv = 31
+  const ev = Math.min(252, sp * 8)
+  if (key === 'hp') {
+    if (base === 1) return 1 // Shedinja
+    return Math.floor(((2 * base + iv + Math.floor(ev / 4)) * CHAMPIONS_LEVEL) / 100) + CHAMPIONS_LEVEL + 10
+  }
+  const raw = Math.floor(((2 * base + iv + Math.floor(ev / 4)) * CHAMPIONS_LEVEL) / 100) + 5
+  const eff = NATURE_EFFECTS[nature] ?? {}
+  if (eff.plus === key) return Math.floor(raw * 1.1)
+  if (eff.minus === key) return Math.floor(raw * 0.9)
+  return raw
+}
+
 /** Neutral-by-default nature list (Champions nature usage is unconfirmed). */
 export const NATURES = [
   'Serious',

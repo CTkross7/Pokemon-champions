@@ -173,5 +173,24 @@
     "unknownStatsNote": "The opponent's SP investment is hidden in-game. Damage is estimated as a range from 0 investment (max damage) to full defensive investment (min damage).",
     "vsMaxBulk": "Max bulk",
     "vsMinBulk": "No invest"
+  },
+  "teams": {
+    "moves": "Moves",
+    "searchMove": "Search move",
+    "removeMon": "Remove this Pokémon",
+    "newTeam": "New team",
+    "import": "Import",
+    "export": "Export",
+    "delete": "Delete",
+    "confirmDelete": "Delete this team?",
+    "exportHint": "Copy the text below (SP as 0–32).",
+    "importHint": "Paste a Showdown-format team. Numbers on the SP/EVs line are read as SP (0–32).",
+    "doImport": "Run import",
+    "importedName": "Imported team",
+    "slot": "Slot",
+    "addMon": "Add Pokémon",
+    "speedTiers": "Speed line",
+    "speedNote": "Each Pokémon's Lv.50 Speed (SP & nature applied). Check who you outspeed.",
+    "disclaimer": "Teams are auto-saved in your browser (local). Account-synced saving comes in a later phase."
   }
 }

@@ -83,8 +83,8 @@ try {
     await page.getByRole('link', { name: 'About' }).locator('visible=true').first().click()
     check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About ChampsNote')))
 
-    await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
-    check(`[${viewport.tag}] placeholder route`, await eventually(page.getByText(/under construction|개발 중/)))
+    await page.goto(`${BASE}/nonexistent-route`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] catch-all placeholder`, await eventually(page.getByText(/under construction|개발 중/)))
 
     // Calculator: pick attacker + defender, choose a move, assert a result
     await page.goto(`${BASE}/calculator`, { waitUntil: 'networkidle' })
@@ -119,6 +119,24 @@ try {
     // Type chart page
     await page.goto(`${BASE}/dex/types`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] type chart renders`, await eventually(page.getByText(/Full type chart|전체 상성표/)))
+
+    // Team builder: add a Pokémon to slot 1, expect speed tier + export text
+    await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
+    const addBtn = page.getByRole('button', { name: /Add Pokémon|포켓몬 추가/ }).first()
+    await addBtn.waitFor({ state: 'visible', timeout: 5000 })
+    await addBtn.click()
+    await page.getByRole('searchbox').last().fill('Garchomp')
+    await page.getByRole('button', { name: /Garchomp|한카리아스/ }).first().click()
+    check(`[${viewport.tag}] team speed tier renders`, await eventually(page.getByText(/Speed line|스피드 라인/)))
+    await page.getByRole('button', { name: /^Export|내보내기/ }).first().click()
+    const exportBox = page.locator('textarea')
+    check(
+      `[${viewport.tag}] team export contains species`,
+      await exportBox
+        .inputValue()
+        .then((v) => /Garchomp/.test(v))
+        .catch(() => false),
+    )
 
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))

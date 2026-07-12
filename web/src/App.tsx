@@ -11,6 +11,7 @@ const Dex = lazy(() => import('@/pages/Dex'))
 const DexDetail = lazy(() => import('@/pages/DexDetail'))
 const TypeChartPage = lazy(() => import('@/pages/TypeChartPage'))
 const Calculator = lazy(() => import('@/pages/Calculator'))
+const Teams = lazy(() => import('@/pages/Teams'))
 
 function PageFallback() {
   return <div className="card h-64 animate-pulse" />
@@ -53,7 +54,14 @@ export default function App() {
             </Suspense>
           }
         />
-        <Route path="teams" element={<UnderConstruction titleKey="nav.teams" />} />
+        <Route
+          path="teams"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <Teams />
+            </Suspense>
+          }
+        />
         <Route path="about" element={<About />} />
         <Route path="*" element={<UnderConstruction titleKey="nav.home" />} />
       </Route>

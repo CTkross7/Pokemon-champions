@@ -5,7 +5,7 @@ import Icon, { type IconName } from '@/components/Icon'
 const FEATURES: ReadonlyArray<{ key: string; to: string; icon: IconName; ready: boolean }> = [
   { key: 'dex', to: '/dex', icon: 'book', ready: true },
   { key: 'calc', to: '/calculator', icon: 'calc', ready: true },
-  { key: 'teams', to: '/teams', icon: 'sparkles', ready: false },
+  { key: 'teams', to: '/teams', icon: 'sparkles', ready: true },
   { key: 'matchup', to: '/teams', icon: 'zap', ready: false },
 ]
 
