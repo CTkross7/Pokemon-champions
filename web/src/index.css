@@ -8,19 +8,17 @@
     'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
     'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
 
-  --color-brand-50: #eef5ff;
-  --color-brand-100: #d9e8ff;
-  --color-brand-200: #bcd7ff;
-  --color-brand-300: #8ebeff;
-  --color-brand-400: #599aff;
-  --color-brand-500: #3376fc;
-  --color-brand-600: #1d55f1;
-  --color-brand-700: #1541de;
-  --color-brand-800: #1837b4;
-  --color-brand-900: #19338e;
-  --color-brand-950: #142056;
-
-  --color-violet-glow: #7c5cff;
+  --color-volt-50: #fbffe5;
+  --color-volt-100: #f4ffc2;
+  --color-volt-200: #e9ff8a;
+  --color-volt-300: #dcfc51;
+  --color-volt-400: #d0f224;
+  --color-volt-500: #b8db10;
+  --color-volt-600: #90ae08;
+  --color-volt-700: #6c840c;
+  --color-volt-800: #566810;
+  --color-volt-900: #485812;
+  --color-volt-950: #253105;
 
   --color-surface-light: #f7f7f8;
   --color-surface-dark: #050505;
@@ -49,16 +47,16 @@ html {
 }
 
 body {
-  @apply bg-surface-light text-slate-900 antialiased dark:bg-surface-dark dark:text-slate-100;
+  @apply bg-surface-light text-zinc-900 antialiased dark:bg-surface-dark dark:text-zinc-100;
   font-feature-settings: 'ss05';
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  @apply bg-slate-900/90 text-white dark:bg-white/90 dark:text-black;
+  @apply bg-volt-300 text-black;
 }
 
 /* App-like card surface */
 @utility card {
-  @apply rounded-2xl border border-slate-200/80 bg-white shadow-soft dark:border-white/8 dark:bg-card-dark;
+  @apply rounded-2xl border border-zinc-200/80 bg-white shadow-soft dark:border-white/8 dark:bg-card-dark;
 }

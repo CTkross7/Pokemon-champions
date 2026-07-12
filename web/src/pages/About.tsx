@@ -11,23 +11,23 @@ export default function About() {
         <Logo size={52} />
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight">{t('about.title')}</h1>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{t('app.tagline')}</p>
+          <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{t('app.tagline')}</p>
         </div>
       </header>
 
-      <p className="text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">{t('about.body')}</p>
+      <p className="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300">{t('about.body')}</p>
 
       <section className="card p-6">
         <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-slate-100 text-slate-900 dark:bg-white/8 dark:text-white">
+          <span className="grid size-9 place-items-center rounded-xl bg-volt-100 text-volt-800 dark:bg-volt-400/12 dark:text-volt-300">
             <Icon name="shield" size={18} />
           </span>
           <h2 className="text-[15px] font-bold">{t('about.dataTitle')}</h2>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{t('about.dataBody')}</p>
+        <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{t('about.dataBody')}</p>
       </section>
 
-      <p className="text-[11px] leading-relaxed text-slate-400 dark:text-slate-500">{t('app.disclaimer')}</p>
+      <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>
     </article>
   )
 }
