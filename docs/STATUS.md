@@ -21,7 +21,7 @@
 | 4 | ★ 팀 자동 진단·코칭 리포트 | ✅ 완료 |
 | 5 | ★ 실전 매치업 어시스턴트 | ✅ 완료 |
 | 6 | ★ 빌드 추천 + 샘플 URL 공유 (백엔드 불필요) | ✅ 완료 |
-| 7 | 계정 + 커뮤니티 갤러리 (Workers+D1 백엔드 도입) | ⬜ 예정 |
+| 7 | 커뮤니티 샘플 갤러리 (Workers+D1, 선택적 백엔드) | ✅ 완료 |
 | 8 | 수익화(AdSense)·PWA·SEO·성능 | ⬜ 예정 |
 | 9 | 안드로이드 앱 (Capacitor+AdMob) + Play 스토어 출시 | ⬜ 예정 |
 
@@ -126,8 +126,20 @@
 - 샘플/팀 URL 공유(`lib/share.ts`): 팀을 base64url로 인코딩해 링크 해시(#s=)에 담음 → 서버 없이 공유. 팀빌더 '공유 링크' 버튼(클립보드 복사), `/share` 페이지에서 디코딩·읽기전용 표시·'내 팀으로 복사'
 - 검증: 빌드·린트 ✅ / E2E 54건(빌드추천·공유 왕복 시나리오 추가) ✅ / 한카리아스 추천 빌드 정확성 육안 확인
 
-## 다음 작업 (Phase 7)
-- 계정(경량) + 공개 샘플 갤러리·좋아요·댓글: Cloudflare Pages Functions + D1 백엔드 도입, 로컬 데이터 마이그레이션
+## 배포 흰화면 재발 대응 (2026-07-12)
+- wrangler dev로 실제 Workers 엔진 렌더링 확인: root HTML·/assets JS(text/javascript)·앱 마운트·콘솔 에러 0 — 코드/설정 정상 입증
+- 원인: 빌드 누락된 이전 dist 업로드 또는 캐시. `npm run deploy`(build && wrangler deploy) 스크립트 추가로 원천 차단, DEPLOYMENT.md에 web 폴더 실행·강력 새로고침 안내
+
+## Phase 7 완료 내역 (2026-07-12) — 커뮤니티 갤러리 (선택적 백엔드)
+- Worker(`web/worker/index.ts`): /api/samples 목록·생성, /api/samples/:id 조회(조회수+1), /like 좋아요. DB 미바인딩 시 503 → 정적 사이트는 그대로 작동(배포 안전). run_worker_first로 /api 라우팅, 그 외 ASSETS 위임
+- D1 스키마(`web/schema.sql`): samples(id·title·author·team·likes·views·created_at)
+- wrangler dev+로컬 D1로 생성·목록·좋아요·조회 E2E 검증 완료
+- 프론트: API 클라이언트(`lib/api.ts`, 503→configured:false 폴백), 갤러리 페이지(`pages/Gallery.tsx`, 목록·좋아요·가져오기), 팀빌더 '커뮤니티에 공개' 버튼, 데스크톱 내비 '커뮤니티'
+- 안전 설계: D1 미설정 시 갤러리 '준비 중' 표시 + 나머지 기능 정상 → 사용자의 현재 배포를 깨지 않음
+- 검증: 빌드·린트 ✅ / E2E 58건(갤러리 폴백 시나리오 추가) ✅ / 백엔드 API 4종 로컬 검증 ✅
+
+## 다음 작업 (Phase 8)
+- PWA(설치·오프라인 계산기), SEO/OG, 성능, AdSense 배치, 개인정보처리방침
 
 ## ⚠️ 사용자 조치 필요 (배포)
 - Cloudflare Pages 실제 배포는 본인 Cloudflare 계정 연결 필요(docs/DEPLOYMENT.md 방법 A 권장). 저장소 연결 시 champsnote.pages.dev 자동 생성

@@ -4,7 +4,8 @@ import { loadLearnsets, loadMoves, loadPokedex, type MoveData, type Species } fr
 import { statAtLevel50, spTotal, NATURES, COMMON_ITEMS, type Nature } from '@/lib/champions'
 import { listAbilities } from '@/lib/calc'
 import { exportTeam, importTeam } from '@/lib/showdown'
-import { shareUrl } from '@/lib/share'
+import { shareUrl, encodeTeam } from '@/lib/share'
+import { createSample } from '@/lib/api'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import SpSliders from '@/components/SpSliders'
@@ -291,6 +292,20 @@ export default function Teams() {
           className="rounded-lg border border-volt-500 px-3 py-1.5 text-xs font-bold text-volt-700 hover:bg-volt-400/10 dark:border-volt-400/60 dark:text-volt-300"
         >
           {t('teams.share')}
+        </button>
+        <button
+          type="button"
+          onClick={async () => {
+            const author = prompt(t('teams.publishAuthor')) ?? ''
+            if (author === null) return
+            setShareMsg(t('teams.publishing'))
+            const r = await createSample({ title: active.name, author: author.trim() || '익명', team: encodeTeam(active) })
+            setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
+            setTimeout(() => setShareMsg(''), 4000)
+          }}
+          className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300"
+        >
+          {t('teams.publish')}
         </button>
         <button
           type="button"

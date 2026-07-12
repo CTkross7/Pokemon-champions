@@ -89,3 +89,24 @@ npm install
 npm run build
 npm run preview   # http://localhost:4173
 ```
+
+---
+
+## 커뮤니티 갤러리 활성화 (선택 · Cloudflare D1)
+
+공개 샘플 갤러리는 **선택 기능**입니다. 설정하지 않아도 사이트는 정상 작동하며
+`/api/*`는 503을 반환하고 갤러리는 "준비 중"으로 표시됩니다. 활성화하려면(1회):
+
+```bash
+cd web
+# 1) D1 데이터베이스 생성 → 출력된 database_id 복사
+npx wrangler d1 create champsnote
+# 2) web/wrangler.toml 하단의 [[d1_databases]] 블록 주석 해제 후 database_id 붙여넣기
+# 3) 테이블 생성(원격)
+npx wrangler d1 execute champsnote --file=./schema.sql --remote
+# 4) 재배포
+npm run deploy
+```
+
+이후 팀빌더의 '커뮤니티에 공개' 버튼으로 팀을 올리면 `/gallery`에 표시되고,
+좋아요·가져오기가 동작합니다. (샘플은 D1에 저장됨)

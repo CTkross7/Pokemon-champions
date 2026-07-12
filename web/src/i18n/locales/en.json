@@ -11,7 +11,8 @@
     "calculator": "Calculator",
     "teams": "Team Builder",
     "about": "About",
-    "matchup": "Matchup"
+    "matchup": "Matchup",
+    "gallery": "Community"
   },
   "settings": {
     "language": "Language",
@@ -196,7 +197,12 @@
     "speedNote": "Each Pokémon's Lv.50 Speed (SP & nature applied). Check who you outspeed.",
     "disclaimer": "Teams are auto-saved in your browser (local). Account-synced saving comes in a later phase.",
     "share": "Share",
-    "shareCopied": "Link copied ✓"
+    "shareCopied": "Link copied ✓",
+    "publish": "Publish",
+    "publishAuthor": "Enter your author name (blank = anonymous)",
+    "publishing": "Publishing...",
+    "published": "Published to the community ✓",
+    "publishUnavailable": "Gallery backend is not set up yet"
   },
   "coach": {
     "title": "Team Auto-Diagnosis",
@@ -267,5 +273,16 @@
     "invalid": "Invalid share link.",
     "goTeams": "Go to team builder",
     "note": "This team travels inside the link (no server storage). A public gallery and account saving come in a later phase."
+  },
+  "gallery": {
+    "title": "Community samples",
+    "subtitle": "Browse teams other trainers shared and import them.",
+    "notReady": "Gallery coming soon",
+    "notReadyNote": "The public gallery activates once the D1 backend is set up. For now, share teams with the 'Share link' button in the team builder.",
+    "shareVia": "Share via link",
+    "empty": "No public samples yet. Be the first to publish!",
+    "views": "{{count}} views",
+    "import": "Import",
+    "note": "Public samples are stored on the server (Cloudflare D1). Reported content is removed."
   }
 }

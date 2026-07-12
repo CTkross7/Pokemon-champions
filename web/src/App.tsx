@@ -14,6 +14,7 @@ const Calculator = lazy(() => import('@/pages/Calculator'))
 const Teams = lazy(() => import('@/pages/Teams'))
 const Matchup = lazy(() => import('@/pages/Matchup'))
 const Shared = lazy(() => import('@/pages/Shared'))
+const Gallery = lazy(() => import('@/pages/Gallery'))
 
 function PageFallback() {
   return <div className="card h-64 animate-pulse" />
@@ -77,6 +78,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageFallback />}>
               <Shared />
+            </Suspense>
+          }
+        />
+        <Route
+          path="gallery"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <Gallery />
             </Suspense>
           }
         />

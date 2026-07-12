@@ -2,17 +2,35 @@
 #
 # Serves the built SPA (dist/) as static assets with single-page-application
 # fallback so client-side routes (/dex, /calculator, /teams, /matchup, ...)
-# resolve to index.html instead of 404-ing to a blank page.
+# resolve to index.html instead of 404-ing to a blank page. A small Worker
+# (worker/index.ts) runs first so /api/* can reach the optional gallery backend;
+# everything else is delegated to the static assets.
 #
-# Deploy:  cd web && npm run build && npx wrangler deploy
+# Deploy:  cd web && npm run deploy    (builds then `wrangler deploy`)
 #
 # The public URL is  https://<name>.<your-subdomain>.workers.dev
-# To drop the account-name part, either change your workers.dev subdomain in the
-# Cloudflare dashboard (Workers & Pages -> your subdomain) or use Cloudflare
-# Pages instead, which serves at champsnote.pages.dev. See docs/DEPLOYMENT.md.
+# To drop the account-name part, change your workers.dev subdomain in the
+# Cloudflare dashboard or use Cloudflare Pages. See docs/DEPLOYMENT.md.
 name = "champsnote"
+main = "worker/index.ts"
 compatibility_date = "2026-01-01"
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
 not_found_handling = "single-page-application"
+run_worker_first = true
+
+# ── Optional community gallery ────────────────────────────────────────────────
+# The gallery API stays disabled until a D1 database is bound. Without this block
+# the site deploys and works exactly as a static SPA; /api/* just returns 503.
+# To enable it (see docs/DEPLOYMENT.md):
+#   1) npx wrangler d1 create champsnote        # copy the printed database_id
+#   2) uncomment below and paste the id
+#   3) npx wrangler d1 execute champsnote --file=./schema.sql --remote
+#   4) npm run deploy
+#
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "champsnote"
+# database_id = "PASTE_YOUR_DATABASE_ID_HERE"

@@ -10,6 +10,7 @@ const NAV_ITEMS: ReadonlyArray<{ to: string; key: string; icon: IconName; end?: 
   { to: '/calculator', key: 'nav.calculator', icon: 'calc', tab: true },
   { to: '/teams', key: 'nav.teams', icon: 'users', tab: true },
   { to: '/matchup', key: 'nav.matchup', icon: 'zap', tab: true },
+  { to: '/gallery', key: 'nav.gallery', icon: 'sparkles', tab: false },
   { to: '/about', key: 'nav.about', icon: 'info', tab: false },
 ]
 

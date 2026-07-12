@@ -164,6 +164,14 @@ try {
     check(`[${viewport.tag}] shared team decodes`, await eventually(page.getByText(/Shared demo/)))
     check(`[${viewport.tag}] shared team shows mon`, await eventually(page.getByText(/Garchomp|한카리아스/).first()))
 
+    // Community gallery: with no backend (vite preview) it must degrade gracefully
+    await page.goto(`${BASE}/gallery`, { waitUntil: 'networkidle' })
+    check(
+      `[${viewport.tag}] gallery graceful fallback`,
+      await eventually(page.getByText(/Community samples|커뮤니티 샘플/).first()),
+    )
+    check(`[${viewport.tag}] gallery not-ready state`, await eventually(page.getByText(/coming soon|준비 중/)))
+
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))
     check(`[${viewport.tag}] no console errors`, consoleErrors.length === 0)
