@@ -94,3 +94,39 @@ if (errors.length > 0) {
   process.exit(1)
 }
 console.log('✓ Pokedex dataset validation passed')
+
+// --- COMMON_ITEMS Korean names vs authoritative PokéAPI ko-names ---
+// Guards the hand-curated item list in web/src/lib/champions.ts. Newer Gen 9
+// items absent from the CSV snapshot are allow-listed with verified names.
+const ITEM_KO_EXCEPTIONS = { 'Booster Energy': '부스트에너지', 'Clear Amulet': '클리어참' }
+try {
+  const champSrc = await readFile(path.join(webData, '..', 'src', 'lib', 'champions.ts'), 'utf8')
+  const itemRe = /\{ id: '([^']+)', ko: '([^']+)' \}/g
+  let m
+  const normI = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+  while ((m = itemRe.exec(champSrc)) !== null) {
+    const [, id, ko] = m
+    if (id === '') continue
+    const official = koNames.items[normI(id)] ?? ITEM_KO_EXCEPTIONS[id]
+    check(official === ko, `item ko-name mismatch: ${id} = "${ko}" but official is "${official ?? 'unknown'}"`)
+  }
+} catch (err) {
+  errors.push(`item ko-name check failed: ${err.message}`)
+}
+
+// --- Famous species / move Korean name spot checks ---
+const spotSpecies = { 445: '한카리아스', 6: '리자몽', 150: '뮤츠', 448: '루카리오', 149: '망나뇽' }
+for (const [num, ko] of Object.entries(spotSpecies)) {
+  check(koNames.species[num] === ko, `species #${num} ko-name: expected ${ko}, got ${koNames.species[num]}`)
+}
+const spotMoves = { earthquake: '지진', surf: '파도타기', flamethrower: '화염방사', closecombat: '인파이트', dracometeor: '용성군' }
+for (const [id, ko] of Object.entries(spotMoves)) {
+  check(koNames.moves[id] === ko, `move ${id} ko-name: expected ${ko}, got ${koNames.moves[id]}`)
+}
+
+if (errors.length > 0) {
+  console.error(`✗ Name verification failed with ${errors.length} error(s):`)
+  for (const err of errors) console.error(`  - ${err}`)
+  process.exit(1)
+}
+console.log('✓ Name verification passed (items, species, moves)')

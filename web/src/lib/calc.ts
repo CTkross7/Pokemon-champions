@@ -122,3 +122,29 @@ export function calcDamage(
     return null
   }
 }
+
+/**
+ * Champions hides the opponent's SP spread, so exact defender stats are unknown.
+ * This estimates the damage span by calculating against two realistic extremes:
+ *  - minBulk: defender with 0 SP (upper damage bound)
+ *  - maxBulk: defender with HP 32 + the move-relevant defense 32 (lower bound)
+ * Returns { best, worst } where best = vs 0-invest, worst = vs max-invest.
+ */
+export function calcDamageUnknownDefender(
+  attacker: MonInput,
+  defender: Omit<MonInput, 'sp'>,
+  moveName: string,
+  moveCategory: 'Physical' | 'Special' | 'Status',
+  field: FieldInput,
+): { best: CalcResult; worst: CalcResult } | null {
+  const defStat = moveCategory === 'Special' ? 'spd' : 'def'
+  const minBulk: MonInput = { ...defender, sp: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 } }
+  const maxBulk: MonInput = {
+    ...defender,
+    sp: { hp: 32, atk: 0, def: 0, spa: 0, spd: 0, spe: 0, [defStat]: 32 } as MonInput['sp'],
+  }
+  const best = calcDamage(attacker, minBulk, moveName, field)
+  const worst = calcDamage(attacker, maxBulk, moveName, field)
+  if (!best || !worst) return null
+  return { best, worst }
+}

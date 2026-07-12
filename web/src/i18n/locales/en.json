@@ -168,6 +168,10 @@
     "noMoves": "No damaging moves.",
     "noDamage": "No damage dealt.",
     "pickBoth": "Pick both attacker and defender to start calculating.",
-    "disclaimer": "SP maps directly to final stats (1 SP = +1). Engine is @smogon/calc (Gen 9); Champions-specific balance changes are applied once verified. Nature usage requires in-game confirmation."
+    "disclaimer": "SP maps directly to final stats (1 SP = +1). Engine is @smogon/calc (Gen 9); Champions-specific balance changes are applied once verified. Nature usage requires in-game confirmation.",
+    "unknownStats": "Unknown stats",
+    "unknownStatsNote": "The opponent's SP investment is hidden in-game. Damage is estimated as a range from 0 investment (max damage) to full defensive investment (min damage).",
+    "vsMaxBulk": "Max bulk",
+    "vsMinBulk": "No invest"
   }
 }

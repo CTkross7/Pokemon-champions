@@ -12,7 +12,14 @@ import {
   type Weather,
   type Terrain,
 } from '@/lib/champions'
-import { calcDamage, listAbilities, type FieldInput, type MonInput } from '@/lib/calc'
+import {
+  calcDamage,
+  calcDamageUnknownDefender,
+  listAbilities,
+  type CalcResult,
+  type FieldInput,
+  type MonInput,
+} from '@/lib/calc'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import SpSliders from '@/components/SpSliders'
 import TypeBadge from '@/components/TypeBadge'
@@ -35,17 +42,34 @@ function MonPanel({
   label,
   mon,
   onChange,
+  unknownDefender,
+  onToggleUnknown,
 }: {
   label: string
   mon: MonState
   onChange: (mon: MonState) => void
+  unknownDefender?: boolean
+  onToggleUnknown?: (v: boolean) => void
 }) {
   const { t, i18n } = useTranslation()
   const abilities = useMemo(() => (mon.species ? listAbilities(mon.species.name) : []), [mon.species])
 
   return (
     <div className="card space-y-3 p-4">
-      <h2 className="text-xs font-extrabold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">{label}</h2>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-xs font-extrabold tracking-wide text-zinc-500 uppercase dark:text-zinc-400">{label}</h2>
+        {onToggleUnknown && (
+          <label className="flex cursor-pointer items-center gap-1.5 text-[11px] font-bold text-zinc-500 select-none dark:text-zinc-400">
+            <input
+              type="checkbox"
+              checked={unknownDefender}
+              onChange={(e) => onToggleUnknown(e.target.checked)}
+              className="size-3.5 accent-[--color-volt-500]"
+            />
+            {t('calc.unknownStats')}
+          </label>
+        )}
+      </div>
       <SpeciesPicker
         value={mon.species}
         championsFirst
@@ -100,7 +124,13 @@ function MonPanel({
               ))}
             </select>
           </label>
-          <SpSliders sp={mon.sp} onChange={(sp) => onChange({ ...mon, sp })} />
+          {unknownDefender ? (
+            <p className="rounded-lg bg-zinc-100 px-3 py-2 text-[11px] leading-relaxed text-zinc-500 dark:bg-white/5 dark:text-zinc-400">
+              {t('calc.unknownStatsNote')}
+            </p>
+          ) : (
+            <SpSliders sp={mon.sp} onChange={(sp) => onChange({ ...mon, sp })} />
+          )}
         </>
       )}
     </div>
@@ -128,6 +158,7 @@ export default function Calculator() {
   const { t, i18n } = useTranslation()
   const [attacker, setAttacker] = useState<MonState>(initialMon)
   const [defender, setDefender] = useState<MonState>(initialMon)
+  const [unknownDefender, setUnknownDefender] = useState(true)
   const [field, setField] = useState<FieldInput>({ weather: '', terrain: '' })
   const [moves, setMoves] = useState<Record<string, MoveData> | null>(null)
   const [learnsets, setLearnsets] = useState<Record<string, string[]> | null>(null)
@@ -158,10 +189,21 @@ export default function Calculator() {
     if (!attacker.species || !defender.species) return []
     return selectedMoves.map((moveId) => {
       const move = moves?.[moveId]
-      const result = move ? calcDamage(toInput(attacker), toInput(defender), move.name, field) : null
-      return { moveId, move, result }
+      if (!move) return { moveId, move, result: null as CalcResult | null, range: null }
+      if (unknownDefender) {
+        const { sp: _sp, ...defBase } = toInput(defender)
+        const span = calcDamageUnknownDefender(toInput(attacker), defBase, move.name, move.category, field)
+        // "worst" = vs max-invest (lower %), "best" = vs 0-invest (upper %)
+        return {
+          moveId,
+          move,
+          result: span?.best ?? null,
+          range: span ? { min: span.worst.maxPercent, max: span.best.maxPercent, worst: span.worst, best: span.best } : null,
+        }
+      }
+      return { moveId, move, result: calcDamage(toInput(attacker), toInput(defender), move.name, field), range: null }
     })
-  }, [attacker, defender, selectedMoves, moves, field])
+  }, [attacker, defender, unknownDefender, selectedMoves, moves, field])
 
   const toggleMove = (id: string) =>
     setSelectedMoves((prev) =>
@@ -177,7 +219,13 @@ export default function Calculator() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <MonPanel label={t('calc.attacker')} mon={attacker} onChange={setAttacker} />
-        <MonPanel label={t('calc.defender')} mon={defender} onChange={setDefender} />
+        <MonPanel
+          label={t('calc.defender')}
+          mon={defender}
+          onChange={setDefender}
+          unknownDefender={unknownDefender}
+          onToggleUnknown={setUnknownDefender}
+        />
       </div>
 
       {/* Field */}
@@ -255,35 +303,72 @@ export default function Calculator() {
       {/* Results */}
       {results.length > 0 && (
         <div className="space-y-3">
-          {results.map(({ moveId, move, result }) => (
-            <div key={moveId} className="card p-4">
-              <div className="flex items-center gap-2">
-                {move && <TypeBadge type={move.type} />}
-                <span className="font-bold">{move && (i18n.language === 'ko' ? move.ko : move.name)}</span>
-                {result && result.maxPercent > 0 && (
-                  <span className="ml-auto text-lg font-extrabold tabular-nums">
-                    {result.minPercent}–{result.maxPercent}%
-                  </span>
+          {results.map(({ moveId, move, result, range }) => {
+            const hasDamage = result && result.maxPercent > 0
+            return (
+              <div key={moveId} className="card p-4">
+                <div className="flex items-center gap-2">
+                  {move && <TypeBadge type={move.type} />}
+                  <span className="font-bold">{move && (i18n.language === 'ko' ? move.ko : move.name)}</span>
+                  {hasDamage && (
+                    <span className="ml-auto text-lg font-extrabold tabular-nums">
+                      {range ? `${range.min}–${range.max}%` : `${result.minPercent}–${result.maxPercent}%`}
+                    </span>
+                  )}
+                </div>
+                {hasDamage ? (
+                  <>
+                    {range ? (
+                      // Unknown-defender: shaded band from worst-case (max invest) to
+                      // best-case (0 invest), so the guaranteed floor is visible.
+                      <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-white/6">
+                        <div className="relative h-full">
+                          <div
+                            className="absolute h-full rounded-full bg-volt-400/30"
+                            style={{ left: 0, width: `${Math.min(100, range.max)}%` }}
+                          />
+                          <div
+                            className={`absolute h-full rounded-full ${barColor(range.min)}`}
+                            style={{ width: `${Math.min(100, range.min)}%` }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-white/6">
+                        <div
+                          className={`h-full rounded-full ${barColor(result.maxPercent)}`}
+                          style={{ width: `${Math.min(100, result.maxPercent)}%` }}
+                        />
+                      </div>
+                    )}
+                    {range ? (
+                      <div className="mt-2 space-y-0.5 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-300">
+                        <p>
+                          <span className="font-bold text-zinc-500 dark:text-zinc-400">{t('calc.vsMaxBulk')}:</span>{' '}
+                          {range.worst.minPercent}–{range.worst.maxPercent}%
+                          {range.worst.koChance && <span className="ml-1 text-zinc-400">({range.worst.koChance})</span>}
+                        </p>
+                        <p>
+                          <span className="font-bold text-zinc-500 dark:text-zinc-400">{t('calc.vsMinBulk')}:</span>{' '}
+                          {range.best.minPercent}–{range.best.maxPercent}%
+                          {range.best.koChance && <span className="ml-1 text-zinc-400">({range.best.koChance})</span>}
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="mt-2 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-300">{result.desc}</p>
+                        {result.koChance && (
+                          <p className="mt-1 text-xs font-bold text-volt-600 dark:text-volt-400">{result.koChance}</p>
+                        )}
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <p className="mt-2 text-sm text-zinc-400">{t('calc.noDamage')}</p>
                 )}
               </div>
-              {result && result.maxPercent > 0 ? (
-                <>
-                  <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-white/6">
-                    <div
-                      className={`h-full rounded-full ${barColor(result.maxPercent)}`}
-                      style={{ width: `${Math.min(100, result.maxPercent)}%` }}
-                    />
-                  </div>
-                  <p className="mt-2 text-[13px] leading-relaxed text-zinc-600 dark:text-zinc-300">{result.desc}</p>
-                  {result.koChance && (
-                    <p className="mt-1 text-xs font-bold text-volt-600 dark:text-volt-400">{result.koChance}</p>
-                  )}
-                </>
-              ) : (
-                <p className="mt-2 text-sm text-zinc-400">{t('calc.noDamage')}</p>
-              )}
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
