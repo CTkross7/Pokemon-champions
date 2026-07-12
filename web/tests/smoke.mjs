@@ -81,10 +81,28 @@ try {
     )
 
     await page.getByRole('link', { name: 'About' }).locator('visible=true').first().click()
-    check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About MonChamps')))
+    check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About ChampsNote')))
 
-    await page.goto(`${BASE}/calculator`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] placeholder route`, await eventually(page.getByText(/under construction|개발 중/)))
+
+    // Calculator: pick attacker + defender, choose a move, assert a result
+    await page.goto(`${BASE}/calculator`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] calculator title`, await eventually(page.getByText(/Damage Calculator|데미지 계산기/).first()))
+    const pickSpecies = async (panelLabel, name) => {
+      const panel = page.locator('.card', { hasText: panelLabel }).first()
+      await panel.getByRole('button').first().click()
+      const box = page.getByRole('searchbox').last()
+      await box.fill(name)
+      await page.getByRole('button', { name: new RegExp(name) }).first().click()
+    }
+    await pickSpecies(/Attacker|공격 포켓몬/, 'Garchomp')
+    await pickSpecies(/Defender|방어 포켓몬/, 'Heatran')
+    // Select the first available move chip
+    const moveChip = page.locator('button', { hasText: /\d{2,3}$/ }).first()
+    await moveChip.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {})
+    await moveChip.click().catch(() => {})
+    check(`[${viewport.tag}] calculator produces a % result`, await eventually(page.getByText(/%/).first()))
 
     // Dex: search Korean name, open detail, check stats + matchups
     await page.goto(`${BASE}/dex`, { waitUntil: 'networkidle' })

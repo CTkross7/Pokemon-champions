@@ -1,6 +1,6 @@
-# MonChamps Web
+# ChampsNote Web
 
-몬챔스 웹 앱. 루트 [README](../README.md) 참고.
+챔스노트 웹 앱. 루트 [README](../README.md) 참고.
 
 ```bash
 npm install

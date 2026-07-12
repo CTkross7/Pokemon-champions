@@ -1,0 +1,114 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { loadPokedex, matchesQuery, type Species } from '@/lib/dex'
+import Sprite from '@/components/Sprite'
+import TypeBadge from '@/components/TypeBadge'
+
+interface SpeciesPickerProps {
+  value: Species | null
+  onChange: (species: Species) => void
+  placeholder?: string
+  championsFirst?: boolean
+}
+
+/** Searchable Pokémon selector backed by the static Pokédex. */
+export default function SpeciesPicker({ value, onChange, placeholder, championsFirst }: SpeciesPickerProps) {
+  const { t, i18n } = useTranslation()
+  const [all, setAll] = useState<Species[] | null>(null)
+  const [query, setQuery] = useState('')
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    loadPokedex().then(setAll, () => setAll([]))
+  }, [])
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', onClick)
+    return () => document.removeEventListener('mousedown', onClick)
+  }, [])
+
+  const matches = useMemo(() => {
+    if (!all) return []
+    const list = all.filter((s) => matchesQuery(s, query))
+    const sorted = championsFirst
+      ? [...list].sort((a, b) => Number(b.champions) - Number(a.champions) || a.num - b.num)
+      : list
+    return sorted.slice(0, 40)
+  }, [all, query, championsFirst])
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex h-11 w-full items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 text-left text-sm font-bold outline-none focus:border-volt-500 dark:border-white/10 dark:bg-card-dark dark:focus:border-volt-400"
+      >
+        {value ? (
+          <>
+            <Sprite species={value} size={28} />
+            <span className="truncate">{i18n.language === 'ko' ? value.ko : value.name}</span>
+            <span className="ml-auto flex gap-1">
+              {value.types.map((type) => (
+                <TypeBadge key={type} type={type} size="sm" />
+              ))}
+            </span>
+          </>
+        ) : (
+          <span className="text-zinc-400 dark:text-zinc-600">{placeholder ?? t('calc.selectPokemon')}</span>
+        )}
+      </button>
+
+      {open && (
+        <div className="absolute z-30 mt-1.5 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lift dark:border-white/10 dark:bg-card-dark">
+          <div className="p-2">
+            <input
+              autoFocus
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={t('calc.searchPokemon')}
+              className="h-9 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-sm outline-none focus:border-volt-500 dark:border-white/10 dark:bg-black/40 dark:focus:border-volt-400"
+            />
+          </div>
+          <ul className="max-h-72 overflow-y-auto pb-1">
+            {matches.map((species) => (
+              <li key={species.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange(species)
+                    setOpen(false)
+                    setQuery('')
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm hover:bg-zinc-100 dark:hover:bg-white/5"
+                >
+                  <Sprite species={species} size={26} />
+                  <span className="truncate font-semibold">
+                    {i18n.language === 'ko' ? species.ko : species.name}
+                  </span>
+                  {species.champions && (
+                    <span className="rounded bg-volt-100 px-1 py-0.5 text-[9px] font-extrabold text-volt-800 dark:bg-volt-400/15 dark:text-volt-300">
+                      PC
+                    </span>
+                  )}
+                  <span className="ml-auto flex gap-1">
+                    {species.types.map((type) => (
+                      <TypeBadge key={type} type={type} size="sm" />
+                    ))}
+                  </span>
+                </button>
+              </li>
+            ))}
+            {matches.length === 0 && (
+              <li className="px-3 py-4 text-center text-xs text-zinc-400">{t('dex.noResults')}</li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}

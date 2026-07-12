@@ -1,8 +1,8 @@
 {
   "app": {
-    "name": "MonChamps",
+    "name": "ChampsNote",
     "tagline": "Your Pokémon Champions battle partner",
-    "disclaimer": "MonChamps is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners."
+    "disclaimer": "ChampsNote is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners."
   },
   "nav": {
     "home": "Home",
@@ -59,8 +59,8 @@
     }
   },
   "about": {
-    "title": "About MonChamps",
-    "body": "MonChamps is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
+    "title": "About ChampsNote",
+    "body": "ChampsNote is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
     "roadmapTitle": "Roadmap",
     "dataTitle": "Data sources",
     "dataBody": "Game data is based on community-verified public databases (PokéAPI, Pokémon Showdown data). Champions-specific information (regulations, SP rules) is cross-checked against official announcements and trusted sources before inclusion."
@@ -137,5 +137,37 @@
     "fullChart": "Full type chart",
     "fullChartHint": "Rows = attacking type, columns = defending type. Scroll horizontally.",
     "atkDef": "Atk\\Def"
+  },
+  "calc": {
+    "title": "Damage Calculator",
+    "subtitle": "Damage calculations on the Pokémon Champions SP system (Level 50)",
+    "attacker": "Attacker",
+    "defender": "Defender",
+    "selectPokemon": "Select Pokémon",
+    "searchPokemon": "Search name (KR/EN)",
+    "ability": "Ability",
+    "item": "Item",
+    "nature": "Nature",
+    "spRemaining": "{{count}} left",
+    "field": "Field",
+    "weather": "Weather",
+    "terrain": "Terrain",
+    "weathers": {
+      "Sun": "Sun",
+      "Rain": "Rain",
+      "Sand": "Sand",
+      "Snow": "Snow"
+    },
+    "terrains": {
+      "Electric": "Electric",
+      "Grassy": "Grassy",
+      "Psychic": "Psychic",
+      "Misty": "Misty"
+    },
+    "moves": "Select moves (max 4)",
+    "noMoves": "No damaging moves.",
+    "noDamage": "No damage dealt.",
+    "pickBoth": "Pick both attacker and defender to start calculating.",
+    "disclaimer": "SP maps directly to final stats (1 SP = +1). Engine is @smogon/calc (Gen 9); Champions-specific balance changes are applied once verified. Nature usage requires in-game confirmation."
   }
 }

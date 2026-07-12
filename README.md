@@ -1,4 +1,4 @@
-# 몬챔스 (MonChamps)
+# 챔스노트 (ChampsNote)
 
 > Pokémon Champions 플레이어를 위한 종합 배틀 유틸리티 — 도감, SP 네이티브 데미지 계산기, 팀 자동 진단·코칭, 실전 매치업 어시스턴트.
 

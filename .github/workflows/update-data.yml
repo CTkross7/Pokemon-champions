@@ -1,0 +1,51 @@
+name: Auto-update Pokémon data
+
+# Keeps the Pokédex, moves, learnsets, Korean names, and sprites current with
+# no manual work: when new Pokémon ship (via @pkmn/dex / PokéAPI updates), this
+# regenerates every dataset and commits the diff. Runs weekly and on demand.
+on:
+  schedule:
+    - cron: '0 3 * * 1' # Mondays 03:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/pokemon-champion-app-design-ynor2x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install data pipeline deps (latest @pkmn/dex)
+        working-directory: data
+        run: |
+          npm install
+          npm install @pkmn/dex@latest
+
+      - name: Regenerate datasets
+        working-directory: data
+        run: |
+          npm run fetch:ko-names
+          npm run build:pokedex
+          npm run fetch:sprites
+          npm run validate
+
+      - name: Commit changes if any
+        run: |
+          git config user.name "champsnote-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/generated data/package.json data/package-lock.json web/public/data web/public/sprites
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('web/public/data/pokedex.json')).species.length)")
+            git commit -m "chore(data): auto-refresh Pokémon datasets ($COUNT species)"
+            git push origin claude/pokemon-champion-app-design-ynor2x
+          fi
