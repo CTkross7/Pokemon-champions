@@ -36,9 +36,11 @@
 ## 포켓몬 기반 데이터 (mechanics)
 - 종족값·타입·특성·기술 데이터: `@pkmn/dex` (Pokémon Showdown 데이터, MIT) — 커뮤니티 표준, 대전 시뮬레이터 검증 데이터
 - 한글명(종/기술/특성/아이템/타입/성격): PokéAPI CSV (https://github.com/PokeAPI/pokeapi, data/v2/csv) — 게임 원본 텍스트 기반
+- 스프라이트: PokéAPI sprites 저장소 (https://github.com/PokeAPI/sprites) 96px 프론트 스프라이트 자체 호스팅 (web/public/sprites)
+- 타입 상성표: 6세대 이후 본가 시리즈 공통 차트 (web/src/lib/typechart.ts에 하드코딩, Showdown 데이터와 일치)
 - ⚠️ Champions 고유 밸런스 변경(기술 위력 조정 등)이 존재할 경우 큐레이션 오버라이드 파일로 관리 예정 (Phase 2)
 
 ## 지식재산권 관련
 - 본 서비스는 비공식 팬메이드 유틸리티. The Pokémon Company/Nintendo/Game Freak과 무관함을 전 페이지 푸터에 고지
 - 공식 아트웍 사용 금지. 스프라이트는 커뮤니티 관행(PokéAPI 스프라이트) 범위에서 사용하되 권리자 요청 시 즉시 제거 방침
-- 서비스명·아이콘에 "Pokémon" 상표 미사용 (가칭: ChampMate)
+- 서비스명·아이콘에 "Pokémon" 상표 직접 미사용 (확정: 몬챔스/MonChamps)

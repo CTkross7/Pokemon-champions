@@ -1,8 +1,8 @@
 {
   "app": {
-    "name": "챔프메이트",
+    "name": "몬챔스",
     "tagline": "포켓몬 챔피언스 배틀 파트너",
-    "disclaimer": "챔프메이트는 팬이 만든 비공식 서비스이며 The Pokémon Company, Nintendo, Game Freak과 무관합니다. Pokémon 및 관련 명칭은 각 소유자의 상표입니다."
+    "disclaimer": "몬챔스는 팬이 만든 비공식 서비스이며 The Pokémon Company, Nintendo, Game Freak과 무관합니다. Pokémon 및 관련 명칭은 각 소유자의 상표입니다."
   },
   "nav": {
     "home": "홈",
@@ -59,8 +59,8 @@
     }
   },
   "about": {
-    "title": "챔프메이트 소개",
-    "body": "챔프메이트는 포켓몬 챔피언스 플레이어를 위한 종합 유틸리티입니다. 단순 계산기를 넘어, 팀의 약점을 자동으로 진단하고 실전 매치업까지 돕는 것을 목표로 합니다.",
+    "title": "몬챔스 소개",
+    "body": "몬챔스는 포켓몬 챔피언스 플레이어를 위한 종합 유틸리티입니다. 단순 계산기를 넘어, 팀의 약점을 자동으로 진단하고 실전 매치업까지 돕는 것을 목표로 합니다.",
     "roadmapTitle": "개발 로드맵",
     "dataTitle": "데이터 출처",
     "dataBody": "게임 데이터는 커뮤니티가 검증한 공개 데이터베이스(PokéAPI, Pokémon Showdown 데이터)를 기반으로 하며, 챔피언스 고유 정보(레귤레이션, SP 규칙)는 공식 발표 및 신뢰 가능한 출처로 교차 검증 후 반영합니다."
@@ -69,5 +69,73 @@
     "underConstruction": "이 기능은 현재 개발 중입니다.",
     "underConstructionDesc": "로드맵에 따라 순차적으로 공개됩니다. 조금만 기다려 주세요!",
     "backHome": "홈으로 돌아가기"
+  },
+  "dex": {
+    "tabPokemon": "포켓몬",
+    "tabTypes": "타입 상성",
+    "searchPlaceholder": "포켓몬 이름 검색 (한글/영어/도감번호)",
+    "filterAll": "전체",
+    "championsOnly": "챔피언스 확인",
+    "includeFormes": "폼 포함",
+    "sortLabel": "정렬",
+    "sort": {
+      "num": "도감번호순",
+      "total": "종족값 총합",
+      "hp": "HP",
+      "atk": "공격",
+      "def": "방어",
+      "spa": "특수공격",
+      "spd": "특수방어",
+      "spe": "스피드"
+    },
+    "results": "{{count}}마리",
+    "loadMore": "더 보기 (+{{count}})",
+    "noResults": "검색 결과가 없습니다.",
+    "loadError": "데이터를 불러오지 못했습니다. 새로고침 해주세요.",
+    "championsBadge": "챔피언스 등장 확인",
+    "rosterNote": "'챔피언스 확인' 배지는 2026-07 랭크배틀 사용률 통계에서 등장이 교차 검증된 포켓몬입니다. 전체 로스터는 지속 업데이트됩니다.",
+    "notFound": "해당 포켓몬을 찾을 수 없습니다.",
+    "backToDex": "도감으로",
+    "baseStats": "종족값",
+    "statsTotal": "총합",
+    "stats": {
+      "hp": "HP",
+      "atk": "공격",
+      "def": "방어",
+      "spa": "특수공격",
+      "spd": "특수방어",
+      "spe": "스피드"
+    },
+    "abilities": "특성",
+    "matchups": "방어 상성",
+    "matchupNote": "타입 기준 배율입니다. 특성(부유·저수 등)에 따른 무효/반감은 반영되지 않습니다.",
+    "formes": "다른 폼",
+    "learnset": "습득 기술",
+    "learnsetNote": "시리즈 통합 데이터 기준입니다. 챔피언스 내 습득 가능 여부는 게임 내에서 확인하세요.",
+    "move": {
+      "name": "기술",
+      "type": "타입",
+      "category": "분류",
+      "power": "위력",
+      "accuracy": "명중"
+    },
+    "category": {
+      "physical": "물리",
+      "special": "특수",
+      "status": "변화"
+    }
+  },
+  "types": {
+    "whenAttacking": "공격할 때",
+    "whenDefending": "방어할 때",
+    "superEffective": "효과가 굉장함 (×2)",
+    "notVeryEffective": "효과가 별로 (×0.5)",
+    "noEffect": "효과 없음 (×0)",
+    "weakTo": "약점 (×2)",
+    "resists": "반감 (×0.5)",
+    "immuneTo": "무효 (×0)",
+    "fullChart": "전체 상성표",
+    "fullChartHint": "행 = 공격 타입, 열 = 방어 타입. 좌우로 스크롤할 수 있습니다.",
+    "atkDef": "공\\수"
   }
 }

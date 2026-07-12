@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Icon, { type IconName } from '@/components/Icon'
 
 const FEATURES: ReadonlyArray<{ key: string; to: string; icon: IconName; ready: boolean }> = [
-  { key: 'dex', to: '/dex', icon: 'book', ready: false },
+  { key: 'dex', to: '/dex', icon: 'book', ready: true },
   { key: 'calc', to: '/calculator', icon: 'calc', ready: false },
   { key: 'teams', to: '/teams', icon: 'sparkles', ready: false },
   { key: 'matchup', to: '/teams', icon: 'zap', ready: false },

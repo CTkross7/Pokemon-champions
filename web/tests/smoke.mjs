@@ -81,10 +81,26 @@ try {
     )
 
     await page.getByRole('link', { name: 'About' }).locator('visible=true').first().click()
-    check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About ChampMate')))
+    check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About MonChamps')))
 
     await page.goto(`${BASE}/calculator`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] placeholder route`, await eventually(page.getByText(/under construction|개발 중/)))
+
+    // Dex: search Korean name, open detail, check stats + matchups
+    await page.goto(`${BASE}/dex`, { waitUntil: 'networkidle' })
+    const search = page.getByRole('searchbox')
+    await search.waitFor({ state: 'visible', timeout: 5000 })
+    await search.fill('피카츄')
+    const pikachuCard = page.getByRole('link', { name: /피카츄|Pikachu/ }).first()
+    check(`[${viewport.tag}] dex search finds Pikachu`, await eventually(pikachuCard))
+    await pikachuCard.click()
+    check(`[${viewport.tag}] dex detail base stats`, await eventually(page.getByText(/Base stats|종족값/)))
+    check(`[${viewport.tag}] dex detail matchups`, await eventually(page.getByText(/Defensive matchups|방어 상성/)))
+    check(`[${viewport.tag}] dex detail learnset rows`, await eventually(page.locator('table tbody tr').first()))
+
+    // Type chart page
+    await page.goto(`${BASE}/dex/types`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] type chart renders`, await eventually(page.getByText(/Full type chart|전체 상성표/)))
 
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))

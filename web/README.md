@@ -1,6 +1,6 @@
-# ChampMate Web
+# MonChamps Web
 
-챔프메이트 웹 앱. 루트 [README](../README.md) 참고.
+몬챔스 웹 앱. 루트 [README](../README.md) 참고.
 
 ```bash
 npm install

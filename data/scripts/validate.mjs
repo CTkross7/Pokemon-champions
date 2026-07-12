@@ -69,3 +69,28 @@ if (errors.length > 0) {
   process.exit(1)
 }
 console.log(`✓ Data validation passed (${roster.species.length} roster species, ${Object.keys(koNames.species).length} ko species names)`)
+
+// --- pokedex dataset (generated into web/public/data) ---
+const webData = path.join(root, '..', 'web', 'public')
+try {
+  const { species: dex } = JSON.parse(await readFile(path.join(webData, 'data', 'pokedex.json'), 'utf8'))
+  const byId = new Map(dex.map((s) => [s.id, s]))
+  const pika = byId.get('pikachu')
+  check(pika?.ko === '피카츄' && pika?.types.includes('Electric'), 'pokedex: pikachu entry broken')
+  check(byId.has('charizardmegax'), 'pokedex: mega formes missing')
+  check(byId.get('taurospaldeaaqua')?.champions === true, 'pokedex: champions flag missing on roster species')
+  check(dex.length >= 1300, `pokedex: suspiciously few species (${dex.length})`)
+  const { readdir } = await import('node:fs/promises')
+  const sprites = new Set(await readdir(path.join(webData, 'sprites')))
+  const noSprite = dex.filter((s) => !sprites.has(`${s.id}.png`))
+  check(noSprite.length === 0, `pokedex: ${noSprite.length} species missing sprites (${noSprite.slice(0, 5).map((s) => s.id).join(', ')})`)
+} catch (err) {
+  errors.push(`pokedex dataset unreadable: ${err.message}`)
+}
+
+if (errors.length > 0) {
+  console.error(`✗ Pokedex validation failed with ${errors.length} error(s):`)
+  for (const err of errors) console.error(`  - ${err}`)
+  process.exit(1)
+}
+console.log('✓ Pokedex dataset validation passed')

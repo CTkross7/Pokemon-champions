@@ -1,12 +1,14 @@
 {
-  "name": "@champmate/data",
+  "name": "@monchamps/data",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Data pipeline for ChampMate: Korean name maps + curated Pokémon Champions data",
+  "description": "Data pipeline for MonChamps: Korean name maps + curated Pokémon Champions data",
   "scripts": {
     "fetch:ko-names": "node scripts/fetch-ko-names.mjs",
-    "validate": "node scripts/validate.mjs"
+    "validate": "node scripts/validate.mjs",
+    "build:pokedex": "node scripts/build-pokedex.mjs",
+    "fetch:sprites": "node scripts/fetch-sprites.mjs"
   },
   "dependencies": {
     "@pkmn/dex": "^0.10.11"

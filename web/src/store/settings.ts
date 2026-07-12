@@ -30,7 +30,7 @@ export const useSettings = create<SettingsState>()(
       },
     }),
     {
-      name: 'champmate-settings',
+      name: 'monchamps-settings',
       onRehydrateStorage: () => (state) => {
         if (state) {
           applyTheme(state.theme)

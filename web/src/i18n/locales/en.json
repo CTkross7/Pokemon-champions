@@ -1,8 +1,8 @@
 {
   "app": {
-    "name": "ChampMate",
+    "name": "MonChamps",
     "tagline": "Your Pokémon Champions battle partner",
-    "disclaimer": "ChampMate is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners."
+    "disclaimer": "MonChamps is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners."
   },
   "nav": {
     "home": "Home",
@@ -59,8 +59,8 @@
     }
   },
   "about": {
-    "title": "About ChampMate",
-    "body": "ChampMate is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
+    "title": "About MonChamps",
+    "body": "MonChamps is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
     "roadmapTitle": "Roadmap",
     "dataTitle": "Data sources",
     "dataBody": "Game data is based on community-verified public databases (PokéAPI, Pokémon Showdown data). Champions-specific information (regulations, SP rules) is cross-checked against official announcements and trusted sources before inclusion."
@@ -69,5 +69,73 @@
     "underConstruction": "This feature is under construction.",
     "underConstructionDesc": "Features ship in roadmap order. Stay tuned!",
     "backHome": "Back to home"
+  },
+  "dex": {
+    "tabPokemon": "Pokémon",
+    "tabTypes": "Type chart",
+    "searchPlaceholder": "Search by name (Korean/English/number)",
+    "filterAll": "All",
+    "championsOnly": "In Champions",
+    "includeFormes": "Include forms",
+    "sortLabel": "Sort",
+    "sort": {
+      "num": "Dex number",
+      "total": "Base stat total",
+      "hp": "HP",
+      "atk": "Attack",
+      "def": "Defense",
+      "spa": "Sp. Atk",
+      "spd": "Sp. Def",
+      "spe": "Speed"
+    },
+    "results": "{{count}} found",
+    "loadMore": "Load more (+{{count}})",
+    "noResults": "No results.",
+    "loadError": "Failed to load data. Please refresh.",
+    "championsBadge": "Confirmed in Champions",
+    "rosterNote": "The 'In Champions' badge marks Pokémon cross-verified in ranked usage stats as of July 2026. The roster is updated continuously.",
+    "notFound": "Pokémon not found.",
+    "backToDex": "Back to Pokédex",
+    "baseStats": "Base stats",
+    "statsTotal": "Total",
+    "stats": {
+      "hp": "HP",
+      "atk": "Attack",
+      "def": "Defense",
+      "spa": "Sp. Atk",
+      "spd": "Sp. Def",
+      "spe": "Speed"
+    },
+    "abilities": "Abilities",
+    "matchups": "Defensive matchups",
+    "matchupNote": "Type-based multipliers only. Ability-based immunities (Levitate, Water Absorb, ...) are not applied.",
+    "formes": "Other forms",
+    "learnset": "Learnset",
+    "learnsetNote": "Union of series data. Verify in-game availability within Champions.",
+    "move": {
+      "name": "Move",
+      "type": "Type",
+      "category": "Category",
+      "power": "Power",
+      "accuracy": "Acc."
+    },
+    "category": {
+      "physical": "Physical",
+      "special": "Special",
+      "status": "Status"
+    }
+  },
+  "types": {
+    "whenAttacking": "When attacking",
+    "whenDefending": "When defending",
+    "superEffective": "Super effective (×2)",
+    "notVeryEffective": "Not very effective (×0.5)",
+    "noEffect": "No effect (×0)",
+    "weakTo": "Weak to (×2)",
+    "resists": "Resists (×0.5)",
+    "immuneTo": "Immune to (×0)",
+    "fullChart": "Full type chart",
+    "fullChartHint": "Rows = attacking type, columns = defending type. Scroll horizontally.",
+    "atkDef": "Atk\\Def"
   }
 }
