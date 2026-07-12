@@ -80,8 +80,9 @@ try {
       await page.evaluate(() => !document.documentElement.classList.contains('dark')),
     )
 
-    await page.getByRole('link', { name: 'About' }).locator('visible=true').first().click()
+    await page.goto(`${BASE}/about`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] about page renders`, await eventually(page.getByText('About ChampsNote')))
+    check(`[${viewport.tag}] developer credit`, await eventually(page.getByText('CTkross').first()))
 
     await page.goto(`${BASE}/nonexistent-route`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] catch-all placeholder`, await eventually(page.getByText(/under construction|개발 중/)))
@@ -139,6 +140,16 @@ try {
         .then((v) => /Garchomp/.test(v))
         .catch(() => false),
     )
+
+    // Live matchup assistant: uses the saved team + an opponent
+    await page.goto(`${BASE}/matchup`, { waitUntil: 'networkidle' })
+    const oppPicker = page.getByRole('button', { name: /Add opponent|상대 포켓몬 추가/ }).first()
+    await oppPicker.waitFor({ state: 'visible', timeout: 5000 })
+    await oppPicker.click()
+    await page.getByRole('searchbox').last().fill('Charizard')
+    await page.getByRole('button', { name: /Charizard|리자몽/ }).first().click()
+    check(`[${viewport.tag}] matchup recommends leads`, await eventually(page.getByText(/Recommended leads|추천 선출/)))
+    check(`[${viewport.tag}] matchup threat ranking`, await eventually(page.getByText(/Threat ranking|위협도 순위/)))
 
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))

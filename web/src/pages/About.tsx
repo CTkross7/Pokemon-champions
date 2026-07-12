@@ -27,6 +27,16 @@ export default function About() {
         <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{t('about.dataBody')}</p>
       </section>
 
+      <section className="card flex items-center gap-3.5 p-6">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-zinc-900 text-sm font-black text-white dark:bg-volt-400 dark:text-black">
+          CK
+        </span>
+        <div>
+          <h2 className="text-[13px] font-bold text-zinc-500 dark:text-zinc-400">{t('about.developer')}</h2>
+          <p className="text-lg font-extrabold tracking-tight">CTkross</p>
+        </div>
+      </section>
+
       <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>
     </article>
   )

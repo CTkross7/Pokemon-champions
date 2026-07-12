@@ -4,13 +4,16 @@ import { useSettings } from '@/store/settings'
 import Icon, { type IconName } from '@/components/Icon'
 import Logo from '@/components/Logo'
 
-const NAV_ITEMS: ReadonlyArray<{ to: string; key: string; icon: IconName; end?: boolean }> = [
-  { to: '/', key: 'nav.home', icon: 'home', end: true },
-  { to: '/dex', key: 'nav.dex', icon: 'book' },
-  { to: '/calculator', key: 'nav.calculator', icon: 'calc' },
-  { to: '/teams', key: 'nav.teams', icon: 'users' },
-  { to: '/about', key: 'nav.about', icon: 'info' },
+const NAV_ITEMS: ReadonlyArray<{ to: string; key: string; icon: IconName; end?: boolean; tab?: boolean }> = [
+  { to: '/', key: 'nav.home', icon: 'home', end: true, tab: true },
+  { to: '/dex', key: 'nav.dex', icon: 'book', tab: true },
+  { to: '/calculator', key: 'nav.calculator', icon: 'calc', tab: true },
+  { to: '/teams', key: 'nav.teams', icon: 'users', tab: true },
+  { to: '/matchup', key: 'nav.matchup', icon: 'zap', tab: true },
+  { to: '/about', key: 'nav.about', icon: 'info', tab: false },
 ]
+
+const TAB_ITEMS = NAV_ITEMS.filter((i) => i.tab)
 
 function HeaderControls() {
   const { t } = useTranslation()
@@ -92,9 +95,11 @@ export default function Layout() {
 
       <footer className="mb-20 border-t border-zinc-200/70 py-6 sm:mb-0 dark:border-white/6">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 sm:px-6">
-          <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400 dark:text-zinc-500">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-zinc-400 dark:text-zinc-500">
             <Logo size={16} />
             {t('app.name')} · {t('app.tagline')}
+            <span className="text-zinc-300 dark:text-zinc-700">·</span>
+            <span>{t('app.developedBy', { name: 'CTkross' })}</span>
           </div>
           <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>
         </div>
@@ -106,7 +111,7 @@ export default function Layout() {
         aria-label="mobile"
       >
         <div className="grid grid-cols-5">
-          {NAV_ITEMS.map((item) => (
+          {TAB_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

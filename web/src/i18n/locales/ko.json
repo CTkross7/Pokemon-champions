@@ -2,14 +2,16 @@
   "app": {
     "name": "챔스노트",
     "tagline": "포켓몬 챔피언스 배틀 파트너",
-    "disclaimer": "챔스노트는 팬이 만든 비공식 서비스이며 The Pokémon Company, Nintendo, Game Freak과 무관합니다. Pokémon 및 관련 명칭은 각 소유자의 상표입니다."
+    "disclaimer": "챔스노트는 팬이 만든 비공식 서비스이며 The Pokémon Company, Nintendo, Game Freak과 무관합니다. Pokémon 및 관련 명칭은 각 소유자의 상표입니다.",
+    "developedBy": "개발 {{name}}"
   },
   "nav": {
     "home": "홈",
     "dex": "도감",
     "calculator": "계산기",
     "teams": "팀빌더",
-    "about": "소개"
+    "about": "소개",
+    "matchup": "매치업"
   },
   "settings": {
     "language": "언어",
@@ -63,7 +65,8 @@
     "body": "챔스노트는 포켓몬 챔피언스 플레이어를 위한 종합 유틸리티입니다. 단순 계산기를 넘어, 팀의 약점을 자동으로 진단하고 실전 매치업까지 돕는 것을 목표로 합니다.",
     "roadmapTitle": "개발 로드맵",
     "dataTitle": "데이터 출처",
-    "dataBody": "게임 데이터는 커뮤니티가 검증한 공개 데이터베이스(PokéAPI, Pokémon Showdown 데이터)를 기반으로 하며, 챔피언스 고유 정보(레귤레이션, SP 규칙)는 공식 발표 및 신뢰 가능한 출처로 교차 검증 후 반영합니다."
+    "dataBody": "게임 데이터는 커뮤니티가 검증한 공개 데이터베이스(PokéAPI, Pokémon Showdown 데이터)를 기반으로 하며, 챔피언스 고유 정보(레귤레이션, SP 규칙)는 공식 발표 및 신뢰 가능한 출처로 교차 검증 후 반영합니다.",
+    "developer": "개발자"
   },
   "common": {
     "underConstruction": "이 기능은 현재 개발 중입니다.",
@@ -222,5 +225,24 @@
       "speed": "스피드 100 이상이 없어 선공이 어렵습니다. 스카프나 빠른 포켓몬을 검토하세요.",
       "role": "내구/서포트 역할이 없습니다. 밸런스를 위해 탱커나 서포터를 추가하세요."
     }
+  },
+  "matchup": {
+    "title": "실전 매치업 어시스턴트",
+    "subtitle": "대전 중 상대 포켓몬을 입력하면 유리한 선출과 위협을 즉시 분석합니다.",
+    "myTeam": "내 팀",
+    "noTeam": "저장된 팀이 없습니다. 먼저 팀을 만들어 주세요.",
+    "goBuild": "팀 만들러 가기",
+    "opponent": "상대 포켓몬",
+    "addOpponent": "상대 포켓몬 추가",
+    "leads": "추천 선출",
+    "leadsNote": "상대 팀 기준 공격·방어 상성이 유리한 순서입니다.",
+    "offDef": "공{{off}} 방{{def}}",
+    "threats": "위협도 순위",
+    "pressures": "{{count}}마리 압박",
+    "answers": "상대별 대응",
+    "uncovered": "대응 없음",
+    "both": "공/방",
+    "prompt": "상대 포켓몬을 추가하면 분석이 시작됩니다.",
+    "disclaimer": "타입 상성 기반 즉석 분석입니다(기술·특성 미반영). 정밀 데미지는 계산기를 이용하세요."
   }
 }

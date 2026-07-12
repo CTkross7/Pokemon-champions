@@ -6,7 +6,7 @@ const FEATURES: ReadonlyArray<{ key: string; to: string; icon: IconName; ready: 
   { key: 'dex', to: '/dex', icon: 'book', ready: true },
   { key: 'calc', to: '/calculator', icon: 'calc', ready: true },
   { key: 'teams', to: '/teams', icon: 'sparkles', ready: true },
-  { key: 'matchup', to: '/teams', icon: 'zap', ready: false },
+  { key: 'matchup', to: '/matchup', icon: 'zap', ready: true },
 ]
 
 const TRUST: ReadonlyArray<{ key: string; icon: IconName }> = [

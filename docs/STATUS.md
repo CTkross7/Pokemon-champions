@@ -7,7 +7,8 @@
 - **목표**: Pokémon Champions 종합 유틸리티 (웹 우선 → Capacitor 안드로이드 앱)
 - **차별화 축**: 팀 자동 진단·코칭 / 실전 매치업 어시스턴트 / 빌드 추천 / 샘플 공유·커뮤니티
 - **언어**: 한국어 기본 + 영어 병행 (i18next)
-- **호스팅**: Cloudflare Pages (Phase 6+ Workers + D1)
+- **호스팅**: Cloudflare Pages (배포 설정 완료, docs/DEPLOYMENT.md) / 도메인 ctkross.champsnote.com 연결 안내
+- **개발자**: CTkross
 
 ## 전체 로드맵
 
@@ -18,7 +19,7 @@
 | 2 | 데미지 계산기 (SP 시스템 네이티브, @smogon/calc 어댑터) | ✅ 완료 |
 | 3 | 팀빌더 + 로컬 저장 + import/export + 스피드 티어 | ✅ 완료 |
 | 4 | ★ 팀 자동 진단·코칭 리포트 | ✅ 완료 |
-| 5 | ★ 실전 매치업 어시스턴트 | ⬜ 예정 |
+| 5 | ★ 실전 매치업 어시스턴트 | ✅ 완료 |
 | 6 | ★ 빌드 추천 + 샘플 시스템 (Workers+D1 도입, 공유 URL) | ⬜ 예정 |
 | 7 | 계정 + 커뮤니티 (게시·좋아요·댓글) | ⬜ 예정 |
 | 8 | 수익화(AdSense)·PWA·SEO·성능 | ⬜ 예정 |
@@ -108,8 +109,19 @@
 - 리포트 UI(`components/TeamCoach.tsx`): 점수 링, 약점 칩, 사각지대, 역할 배지, 메타 위협 그리드(미대응 강조), 제안 카드 — 팀빌더에 통합
 - 검증: 빌드·린트 ✅ / E2E 42건(진단·메타위협 시나리오 추가) ✅ / 리자몽·한카리아스·뽀록나·타부자고 팀으로 공격 사각지대(노말/비행/악) 정확성 육안 확인
 
-## 다음 작업 (Phase 5)
-- ★ 실전 매치업 어시스턴트: 대전 중 상대 6마리 빠른 입력 → 내 팀 기준 위협도·유리 선출·주의 기술 즉시 제시
+## Phase 5 완료 내역 (2026-07-12) — ★ 차별화 핵심 기능
+- 매치업 엔진(`lib/matchup.ts`, 순수함수): 상대 6마리 입력 → 추천 선출(공/방 상성 점수순), 위협도 순위(상대가 압박하는 내 포켓몬 수), 상대별 대응(공격/방어/양날, 미대응 강조) — 타입 상성 기반 즉석 분석(3초 이내)
+- 매치업 UI(`pages/Matchup.tsx`): 내 팀 선택, 상대 빠른 추가(모바일 최적화), 결과 3섹션. 모바일 하단 탭바에 '매치업' 추가(About는 헤더/푸터로 이동, 탭 5개 유지)
+- 개발자 정보: About 페이지 개발자 섹션 + 전 페이지 푸터에 'CTkross' 표기
+- Cloudflare Pages 배포: `web/public/_redirects`(SPA 라우팅), `.github/workflows/deploy-cloudflare.yml`(자동 배포), `docs/DEPLOYMENT.md`(대시보드 연결 + ctkross.champsnote.com 커스텀 도메인 가이드)
+- 검증: 빌드·린트 ✅ / E2E 48건(매치업·개발자 크레딧 시나리오 추가) ✅ / 매치업 정확성 육안 확인(한카리아스/타부자고/뽀록나 vs 리자몽/페리퍼/대도각참)
+
+## 다음 작업 (Phase 6)
+- ★ 빌드 추천 + 샘플 시스템: 포켓몬별 역할 추천 빌드, 샘플 작성·공유(Cloudflare Workers + D1 도입, 공유 URL)
+
+## ⚠️ 사용자 조치 필요 (배포)
+- Cloudflare Pages 실제 배포는 본인 Cloudflare 계정 연결 필요(docs/DEPLOYMENT.md 방법 A 권장). 저장소 연결 시 champsnote.pages.dev 자동 생성
+- ctkross.champsnote.com 접속은 champsnote.com 도메인 소유 후 커스텀 도메인 연결 필요
 
 ## 발생한 에러 / 이슈
 - (Phase 0) 없음

@@ -2,14 +2,16 @@
   "app": {
     "name": "ChampsNote",
     "tagline": "Your Pokémon Champions battle partner",
-    "disclaimer": "ChampsNote is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners."
+    "disclaimer": "ChampsNote is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners.",
+    "developedBy": "by {{name}}"
   },
   "nav": {
     "home": "Home",
     "dex": "Pokédex",
     "calculator": "Calculator",
     "teams": "Team Builder",
-    "about": "About"
+    "about": "About",
+    "matchup": "Matchup"
   },
   "settings": {
     "language": "Language",
@@ -63,7 +65,8 @@
     "body": "ChampsNote is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
     "roadmapTitle": "Roadmap",
     "dataTitle": "Data sources",
-    "dataBody": "Game data is based on community-verified public databases (PokéAPI, Pokémon Showdown data). Champions-specific information (regulations, SP rules) is cross-checked against official announcements and trusted sources before inclusion."
+    "dataBody": "Game data is based on community-verified public databases (PokéAPI, Pokémon Showdown data). Champions-specific information (regulations, SP rules) is cross-checked against official announcements and trusted sources before inclusion.",
+    "developer": "Developer"
   },
   "common": {
     "underConstruction": "This feature is under construction.",
@@ -222,5 +225,24 @@
       "speed": "Nothing at Speed 100+, making it hard to move first. Consider a Scarf or a faster Pokémon.",
       "role": "No wall/support role. Add a tank or supporter for balance."
     }
+  },
+  "matchup": {
+    "title": "Live Matchup Assistant",
+    "subtitle": "Enter the opponent's Pokémon mid-battle for instant lead and threat analysis.",
+    "myTeam": "My team",
+    "noTeam": "No saved team. Build one first.",
+    "goBuild": "Go build a team",
+    "opponent": "Opponent",
+    "addOpponent": "Add opponent Pokémon",
+    "leads": "Recommended leads",
+    "leadsNote": "Ordered by favorable offense/defense against the opponent.",
+    "offDef": "Off {{off}} Def {{def}}",
+    "threats": "Threat ranking",
+    "pressures": "pressures {{count}}",
+    "answers": "Answers per opponent",
+    "uncovered": "No answer",
+    "both": "OFF/DEF",
+    "prompt": "Add opponent Pokémon to start the analysis.",
+    "disclaimer": "Instant type-matchup analysis (moves/abilities not applied). Use the calculator for precise damage."
   }
 }

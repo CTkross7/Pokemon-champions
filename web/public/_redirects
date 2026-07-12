@@ -1,0 +1,4 @@
+# SPA fallback: serve index.html for client-side routes. Existing files
+# (/assets/*, /data/*, /sprites/*, /favicon.svg) are served directly by
+# Cloudflare Pages before this rule applies.
+/*    /index.html    200
