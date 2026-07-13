@@ -93,6 +93,34 @@ const PATHS = {
       <path d="M10 19a2 2 0 0 0 4 0" />
     </>
   ),
+  mail: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="m4 7 8 6 8-6" />
+    </>
+  ),
+  heart: <path d="M12 20.3 4.3 12.6a4.6 4.6 0 0 1 6.5-6.5l1.2 1.2 1.2-1.2a4.6 4.6 0 0 1 6.5 6.5Z" />,
+  doc: (
+    <>
+      <path d="M6 3h7l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+      <path d="M13 3v5h5M8.5 13h7M8.5 16.5h7" />
+    </>
+  ),
+  external: (
+    <>
+      <path d="M14 4h6v6M20 4l-8.5 8.5" />
+      <path d="M18 13.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5.5" />
+    </>
+  ),
+  chat: (
+    <path d="M4.5 5.5h15a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 3.5V16.5H4.5a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Z" />
+  ),
+  copy: (
+    <>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M5 15V5a1 1 0 0 1 1-1h9" />
+    </>
+  ),
 } as const
 
 export type IconName = keyof typeof PATHS

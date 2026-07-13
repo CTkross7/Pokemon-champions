@@ -30,7 +30,22 @@
     "themeSystem": "시스템 값",
     "themeDesc": "앱의 밝기 테마를 선택합니다. 시스템 값은 기기 설정을 따릅니다.",
     "languageDesc": "인터페이스 언어를 선택합니다.",
-    "account": "계정"
+    "account": "계정",
+    "support": "후원하기",
+    "supportDesc": "서버·운영 비용에 보탬이 됩니다. 후원 문의는 이메일로 부탁드려요.",
+    "supportInquiry": "후원 문의",
+    "contact": "문의하기",
+    "contactDesc": "버그 제보·기능 제안·제휴 문의를 환영합니다.",
+    "devEmail": "개발자 이메일",
+    "emailCopied": "이메일이 복사되었습니다",
+    "policies": "약관 및 정책",
+    "privacy": "개인정보처리방침",
+    "terms": "이용약관",
+    "dataSources": "데이터 및 통계 출처",
+    "info": "정보",
+    "version": "버전",
+    "developer": "개발자",
+    "openSource": "오픈소스·데이터 출처"
   },
   "home": {
     "badge": "Pokémon Champions · Regulation M-B 시즌",

@@ -30,7 +30,22 @@
     "themeSystem": "System",
     "themeDesc": "Choose the app brightness. System follows your device setting.",
     "languageDesc": "Choose the interface language.",
-    "account": "Account"
+    "account": "Account",
+    "support": "Support",
+    "supportDesc": "Helps cover server and running costs. For donations, please email.",
+    "supportInquiry": "Donation inquiry",
+    "contact": "Contact",
+    "contactDesc": "Bug reports, feature ideas, and partnerships are welcome.",
+    "devEmail": "Developer email",
+    "emailCopied": "Email copied",
+    "policies": "Terms & Policies",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "dataSources": "Data & stats sources",
+    "info": "About",
+    "version": "Version",
+    "developer": "Developer",
+    "openSource": "Open source · data sources"
   },
   "home": {
     "badge": "Pokémon Champions · Regulation M-B season",
