@@ -7,10 +7,13 @@
  *  - Korean names: data/generated/ko-names.json (run fetch:ko-names first)
  *
  * Outputs (into web/public/data/):
- *  - pokedex.json    all species incl. forms (megas, regional forms)
- *  - moves.json      all moves with Korean names and battle data
- *  - learnsets.json  speciesId -> array of move ids (union across generations,
- *                    since Champions imports Pokémon from every game via HOME)
+ *  - pokedex.json      all species incl. forms (megas, regional forms)
+ *  - moves.json        all moves with Korean names and battle data
+ *  - learnsets.json    speciesId -> array of move ids (union across generations,
+ *                      since Champions imports Pokémon from every game via HOME)
+ *  - translations.json Korean names for items / abilities / natures, keyed by
+ *                      normalized id. Consumed by the Battle Data (usage) page
+ *                      so items, abilities and spread natures render in Korean.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -141,8 +144,26 @@ const write = async (file, obj) => {
   console.log(`  ${file}: ${kb} KB`)
 }
 
+// Korean translation tables for the Battle Data (usage) page. Items, abilities
+// and natures come straight from the PokéAPI-derived ko-names map, re-keyed by
+// the normalized id the usage pipeline emits (lowercase, alphanumeric only).
+const reKey = (obj) => {
+  const out = {}
+  for (const [name, ko] of Object.entries(obj ?? {})) out[normalize(name)] = ko
+  return out
+}
+const translations = {
+  items: reKey(koNames.items),
+  abilities: reKey(koNames.abilities),
+  natures: reKey(koNames.natures),
+}
+
 console.log(`Writing datasets to ${outDir}`)
 await write('pokedex.json', { generatedAt: new Date().toISOString(), species })
 await write('moves.json', moves)
 await write('learnsets.json', learnsets)
-console.log(`species=${species.length} moves=${Object.keys(moves).length} learnsets=${Object.keys(learnsets).length}`)
+await write('translations.json', translations)
+console.log(
+  `species=${species.length} moves=${Object.keys(moves).length} learnsets=${Object.keys(learnsets).length} ` +
+    `items=${Object.keys(translations.items).length} abilities=${Object.keys(translations.abilities).length} natures=${Object.keys(translations.natures).length}`,
+)

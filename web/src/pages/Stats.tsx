@@ -2,7 +2,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
-import { loadUsage, groupByTier, type UsageData } from '@/lib/stats'
+import {
+  loadUsage,
+  loadTranslations,
+  groupByTier,
+  abilityKo,
+  itemKo,
+  spreadKo,
+  type UsageData,
+  type UsageOption,
+  type Translations,
+} from '@/lib/stats'
 import DexTabs from '@/components/DexTabs'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
@@ -23,12 +33,14 @@ export default function Stats() {
   const [pokedex, setPokedex] = useState<Species[] | null>(null)
   const [usage, setUsage] = useState<UsageData | null>(null)
   const [moves, setMoves] = useState<Record<string, MoveData> | null>(null)
+  const [tr, setTr] = useState<Translations | null>(null)
   const [open, setOpen] = useState<string | null>(null)
 
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
     loadUsage().then(setUsage)
     loadMoves().then(setMoves)
+    loadTranslations().then(setTr)
   }, [])
 
   const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
@@ -86,11 +98,28 @@ export default function Stats() {
                     <span className="w-12 shrink-0 text-right text-sm font-extrabold tabular-nums">{u.usage}%</span>
                   </button>
                   {isOpen && (
-                    <dl className="space-y-1.5 border-t border-zinc-200/70 p-3 text-[11px] dark:border-white/8">
-                      <StatRow label={t('stats.moves')} items={u.moves.map((m) => (ko && moves?.[m.toLowerCase().replace(/[^a-z0-9]/g, '')]?.ko) || m)} />
-                      <StatRow label={t('stats.items')} items={u.items} />
-                      <StatRow label={t('stats.abilities')} items={u.abilities} />
-                      <StatRow label={t('stats.spreads')} items={u.spreads} />
+                    <dl className="space-y-2.5 border-t border-zinc-200/70 p-3 text-[11px] dark:border-white/8">
+                      <StatBars
+                        label={t('stats.moves')}
+                        options={u.moves}
+                        localize={(m) => (ko && moves?.[m.toLowerCase().replace(/[^a-z0-9]/g, '')]?.ko) || moves?.[m.toLowerCase().replace(/[^a-z0-9]/g, '')]?.name || m}
+                      />
+                      <StatBars
+                        label={t('stats.items')}
+                        options={u.items}
+                        localize={(name) => (ko && tr ? itemKo(tr, name) : name)}
+                      />
+                      <StatBars
+                        label={t('stats.abilities')}
+                        options={u.abilities}
+                        localize={(name) => (ko && tr ? abilityKo(tr, name) : name)}
+                      />
+                      <StatBars
+                        label={t('stats.spreads')}
+                        options={u.spreads}
+                        localize={(name) => (ko && tr ? spreadKo(tr, name) : name)}
+                        mono
+                      />
                     </dl>
                   )}
                 </div>
@@ -147,16 +176,50 @@ export default function Stats() {
   )
 }
 
-function StatRow({ label, items }: { label: string; items: string[] }) {
-  if (!items || items.length === 0) return null
+/**
+ * Renders a labelled group of usage options as horizontal bars, each showing
+ * the localized name and its adoption percentage (ladder usage ratio). Bars are
+ * scaled to the group's top option so the leading choice fills the row.
+ */
+function StatBars({
+  label,
+  options,
+  localize,
+  mono,
+}: {
+  label: string
+  options: UsageOption[]
+  localize: (name: string) => string
+  mono?: boolean
+}) {
+  if (!options || options.length === 0) return null
+  const max = Math.max(...options.map((o) => o.pct), 1)
+  const hasPct = options.some((o) => o.pct > 0)
   return (
     <div className="flex gap-2">
-      <dt className="w-14 shrink-0 font-bold text-zinc-400 dark:text-zinc-600">{label}</dt>
-      <dd className="flex flex-wrap gap-1">
-        {items.map((it) => (
-          <span key={it} className="rounded bg-zinc-100 px-1.5 py-0.5 font-semibold dark:bg-white/6">
-            {it}
-          </span>
+      <dt className="w-12 shrink-0 pt-0.5 font-bold text-zinc-400 dark:text-zinc-600">{label}</dt>
+      <dd className="flex-1 space-y-1">
+        {options.map((o) => (
+          <div key={o.name} className="flex items-center gap-2">
+            <div className="relative min-w-0 flex-1 overflow-hidden rounded bg-zinc-100 dark:bg-white/6">
+              {hasPct && (
+                <div
+                  className="absolute inset-y-0 left-0 rounded bg-volt-500/25 dark:bg-volt-400/20"
+                  style={{ width: `${(o.pct / max) * 100}%` }}
+                />
+              )}
+              <span
+                className={`relative block truncate px-1.5 py-0.5 font-semibold ${mono ? 'font-mono text-[10px]' : ''}`}
+              >
+                {localize(o.name)}
+              </span>
+            </div>
+            {hasPct && (
+              <span className="w-10 shrink-0 text-right tabular-nums font-bold text-zinc-500 dark:text-zinc-400">
+                {o.pct}%
+              </span>
+            )}
+          </div>
         ))}
       </dd>
     </div>

@@ -14,8 +14,12 @@
  * `fallback: true` so the UI can label the source honestly.
  *
  * Output: web/public/data/usage.json
- *   { month, format, cutoff, fallback?, pokemon: [{ id, name, usage, moves[],
- *     items[], abilities[], spreads[], teammates[] }] }  (top ~80 by usage)
+ *   { month, format, cutoff, fallback?, pokemon: [{ id, name, usage,
+ *     moves[], items[], abilities[], spreads[], teammates[] }] }  (top ~80 by usage)
+ *
+ *   moves/items/abilities/spreads are arrays of { name, pct } sorted by pct
+ *   (adoption rate within that Pokémon's sets), so the UI can render usage
+ *   bars for every field — mirroring the ladder usage ratio shown per mon.
  */
 import { mkdir, writeFile, readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -53,12 +57,33 @@ async function fetchChaos() {
 }
 
 const toId = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+/** Plain top-N names (used for teammates, which are rendered as Pokémon links). */
 const topEntries = (obj, n) =>
   Object.entries(obj ?? {})
     .filter(([, v]) => v > 0)
     .sort((a, b) => b[1] - a[1])
     .slice(0, n)
     .map(([k]) => k)
+
+/**
+ * Top-N entries with adoption percentages. Smogon "chaos" JSON stores each
+ * field (Moves/Items/Abilities/Spreads) as a { name: weight } map; the weights
+ * are proportional to how often top players run that option. We normalize each
+ * entry against the total weight of the category so `pct` reads as an adoption
+ * share, then keep the strongest N. This lets the UI draw a usage bar per row.
+ */
+const topEntriesPct = (obj, n, { skip } = {}) => {
+  const entries = Object.entries(obj ?? {}).filter(
+    ([k, v]) => v > 0 && k !== '' && !(skip && skip.includes(k)),
+  )
+  const total = entries.reduce((sum, [, v]) => sum + v, 0)
+  if (total <= 0) return []
+  return entries
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, n)
+    .map(([name, v]) => ({ name, pct: Math.round((v / total) * 1000) / 10 }))
+}
 
 /**
  * Fallback ranking when Smogon is unreachable. Derives a plausible usage order
@@ -135,10 +160,10 @@ if (result) {
       id: toId(name),
       name,
       usage: Math.round(((p.usage ?? 0) * 1000)) / 10, // percent, 1 decimal
-      moves: topEntries(p.Moves, 6).filter((m) => m && m !== ''),
-      items: topEntries(p.Items, 4).filter((i) => i && i !== 'nothing'),
-      abilities: topEntries(p.Abilities, 3),
-      spreads: topEntries(p.Spreads, 3),
+      moves: topEntriesPct(p.Moves, 6),
+      items: topEntriesPct(p.Items, 4, { skip: ['nothing'] }),
+      abilities: topEntriesPct(p.Abilities, 3),
+      spreads: topEntriesPct(p.Spreads, 3),
       teammates: topEntries(p.Teammates, 4).map(toId),
     }))
     .sort((a, b) => b.usage - a.usage)
