@@ -40,13 +40,23 @@ async function fetchJson<T>(path: string): Promise<T> {
   return res.json() as Promise<T>
 }
 
+let pokedexAllPromise: Promise<Species[]> | null = null
+/**
+ * Full Pokédex including non-Champions species. Display-resolution only (e.g.
+ * mapping a Champions-exclusive Mega like `floettemega` back to its base
+ * species for sprite/Korean name when the base isn't in the Champions roster).
+ * Feature lists must keep using the Champions-filtered loadPokedex().
+ */
+export function loadPokedexAll(): Promise<Species[]> {
+  pokedexAllPromise ??= fetchJson<{ species: Species[] }>('/data/pokedex.json').then((d) => d.species)
+  return pokedexAllPromise
+}
+
 let pokedexPromise: Promise<Species[]> | null = null
 export function loadPokedex(): Promise<Species[]> {
   // ChampsNote is a Champions-only service, so the whole app sees only species
   // verified to exist in Pokémon Champions (Showdown champions roster).
-  pokedexPromise ??= fetchJson<{ species: Species[] }>('/data/pokedex.json').then((d) =>
-    d.species.filter((s) => s.champions),
-  )
+  pokedexPromise ??= loadPokedexAll().then((all) => all.filter((s) => s.champions))
   return pokedexPromise
 }
 

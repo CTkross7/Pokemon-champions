@@ -125,24 +125,5 @@ export type Weather = (typeof WEATHERS)[number]
 export const TERRAINS = ['', 'Electric', 'Grassy', 'Psychic', 'Misty'] as const
 export type Terrain = (typeof TERRAINS)[number]
 
-/**
- * Common held items that are actually LEGAL in Pokémon Champions (Reg M-B).
- * Verified against Pokémon Showdown's `champions` mod items.ts — items marked
- * isNonstandard "Past" there are NOT in the game and are excluded (e.g. Choice
- * Band/Specs, Assault Vest, Rocky Helmet, Weakness Policy, Booster Energy,
- * Clear Amulet, Safety Goggles). Mega Evolution is handled via species
- * selection, so Mega Stones are not listed here.
- */
-export const COMMON_ITEMS: ReadonlyArray<{ id: string; ko: string }> = [
-  { id: '', ko: '없음' },
-  { id: 'Choice Scarf', ko: '구애스카프' },
-  { id: 'Life Orb', ko: '생명의구슬' },
-  { id: 'Leftovers', ko: '먹다남은음식' },
-  { id: 'Focus Sash', ko: '기합의띠' },
-  { id: 'Sitrus Berry', ko: '자뭉열매' },
-  { id: 'Expert Belt', ko: '달인의띠' },
-  { id: 'Mystic Water', ko: '신비의물방울' },
-  { id: 'Charcoal', ko: '목탄' },
-  { id: 'Magnet', ko: '자석' },
-  { id: 'Miracle Seed', ko: '기적의씨' },
-]
+// Held items now come from the generated Champions-legal dataset
+// (web/public/data/items.json via lib/items.ts) — see fetch-champions-items.mjs.

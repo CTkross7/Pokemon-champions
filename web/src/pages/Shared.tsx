@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
 import { spTotal, natureLabel } from '@/lib/champions'
 import { decodeTeam, type DecodedTeam } from '@/lib/share'
+import { loadItems, type ItemEntry } from '@/lib/items'
 import { useTeams } from '@/store/teams'
 import { useAuth } from '@/lib/auth'
 import Sprite from '@/components/Sprite'
@@ -18,6 +19,7 @@ export default function Shared() {
   const user = useAuth((s) => s.user)
   const [pokedex, setPokedex] = useState<Species[] | null>(null)
   const [moves, setMoves] = useState<Record<string, MoveData> | null>(null)
+  const [items, setItems] = useState<ItemEntry[]>([])
 
   const decoded = useMemo<DecodedTeam | null>(() => {
     const hash = typeof window !== 'undefined' ? window.location.hash : ''
@@ -28,10 +30,17 @@ export default function Shared() {
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
     loadMoves().then(setMoves)
+    loadItems().then(setItems)
   }, [])
 
   const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
-  const name = (s: Species) => (i18n.language === 'ko' ? s.ko : s.name)
+  const ko = i18n.language === 'ko'
+  const name = (s: Species) => (ko ? s.ko : s.name)
+  const itemLabel = (item: string) => (ko ? (items.find((it) => it.name === item)?.ko ?? item) : item)
+  const abilityLabel = (species: Species, ability: string) => {
+    if (!ko) return ability
+    return species.abilities.find((a) => a.name === ability)?.ko ?? ability
+  }
 
   const copyToMyTeams = () => {
     if (!decoded) return
@@ -100,13 +109,13 @@ export default function Shared() {
                 {mon.ability && (
                   <div className="flex justify-between">
                     <dt className="text-zinc-400 dark:text-zinc-600">{t('calc.ability')}</dt>
-                    <dd className="font-bold">{mon.ability}</dd>
+                    <dd className="font-bold">{abilityLabel(species, mon.ability)}</dd>
                   </div>
                 )}
                 {mon.item && (
                   <div className="flex justify-between">
                     <dt className="text-zinc-400 dark:text-zinc-600">{t('calc.item')}</dt>
-                    <dd className="font-bold">{mon.item}</dd>
+                    <dd className="font-bold">{itemLabel(mon.item)}</dd>
                   </div>
                 )}
                 <div className="flex justify-between">

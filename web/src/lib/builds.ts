@@ -96,7 +96,8 @@ export function recommendBuilds(
     builds.push({
       roleKey: 'physical',
       nature: fast ? 'Jolly' : 'Adamant',
-      item: bs.atk >= 110 ? 'Life Orb' : 'Choice Band',
+      // Muscle Band, not Choice Band — Choice Band/Specs are Past in Champions.
+      item: bs.atk >= 110 ? 'Life Orb' : 'Muscle Band',
       sp: spread('atk', 'spe', 'hp'),
       moves: pickMoves(species, learnset, moves, 'Physical'),
       reasonKey: fast ? 'fastPhysical' : 'physical',
@@ -105,7 +106,7 @@ export function recommendBuilds(
     builds.push({
       roleKey: 'special',
       nature: fast ? 'Timid' : 'Modest',
-      item: bs.spa >= 110 ? 'Life Orb' : 'Choice Specs',
+      item: bs.spa >= 110 ? 'Life Orb' : 'Wise Glasses',
       sp: spread('spa', 'spe', 'hp'),
       moves: pickMoves(species, learnset, moves, 'Special'),
       reasonKey: fast ? 'fastSpecial' : 'special',

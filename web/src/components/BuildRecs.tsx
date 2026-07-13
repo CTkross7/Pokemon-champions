@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { recommendBuilds } from '@/lib/builds'
-import { COMMON_ITEMS, STAT_KEYS, natureLabel } from '@/lib/champions'
+import { STAT_KEYS, natureLabel } from '@/lib/champions'
+import { loadItems, type ItemEntry } from '@/lib/items'
 import { useTeams, type TeamMon } from '@/store/teams'
 import type { MoveData, Species } from '@/lib/dex'
 import TypeBadge from '@/components/TypeBadge'
@@ -25,7 +26,11 @@ export default function BuildRecs({
   const { teams, activeId, createTeam, setMon } = useTeams()
   const [added, setAdded] = useState<number | null>(null)
   const builds = useMemo(() => recommendBuilds(species, learnset, moves), [species, learnset, moves])
-  const itemKo = (id: string) => COMMON_ITEMS.find((it) => it.id === id)?.ko ?? id
+  const [items, setItems] = useState<ItemEntry[]>([])
+  useEffect(() => {
+    loadItems().then(setItems)
+  }, [])
+  const itemKo = (name: string) => items.find((it) => it.name === name)?.ko ?? name
 
   if (builds.length === 0) return null
 

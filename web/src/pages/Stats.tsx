@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
+import { loadMoves, loadPokedex, loadPokedexAll, type MoveData, type Species } from '@/lib/dex'
 import {
   loadUsage,
   loadTranslations,
@@ -33,6 +33,7 @@ export default function Stats() {
   const { t, i18n } = useTranslation()
   const ko = i18n.language === 'ko'
   const [pokedex, setPokedex] = useState<Species[] | null>(null)
+  const [pokedexAll, setPokedexAll] = useState<Species[] | null>(null)
   const [usage, setUsage] = useState<UsageData | null>(null)
   const [moves, setMoves] = useState<Record<string, MoveData> | null>(null)
   const [tr, setTr] = useState<Translations | null>(null)
@@ -40,12 +41,16 @@ export default function Stats() {
 
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
+    loadPokedexAll().then(setPokedexAll, () => setPokedexAll([]))
     loadUsage().then(setUsage)
     loadMoves().then(setMoves)
     loadTranslations().then(setTr)
   }, [])
 
-  const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
+  // Usage entries can reference Champions-exclusive Megas whose BASE species
+  // isn't in the Champions roster (e.g. floettemega → floette), so display
+  // resolution uses the full dex; the tier ranking stays Champions-filtered.
+  const speciesById = useMemo(() => new Map((pokedexAll ?? []).map((s) => [s.id, s])), [pokedexAll])
   const tiers = useMemo(() => (pokedex ? groupByTier(pokedex) : []), [pokedex])
   const name = (s: Species) => (ko ? s.ko : s.name)
 
