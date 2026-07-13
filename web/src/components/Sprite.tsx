@@ -7,11 +7,23 @@ interface SpriteProps {
   className?: string
 }
 
-/** Pokémon sprite with a monochrome pokeball fallback when unavailable. */
+/**
+ * Pokémon sprite. Champions-exclusive Megas have no PokéAPI artwork, so a
+ * missing sprite first falls back to the base species' sprite, then to a
+ * monochrome pokeball.
+ */
 export default function Sprite({ species, size = 64, className = '' }: SpriteProps) {
-  const [failed, setFailed] = useState(false)
+  // 0 = own sprite, 1 = base-species sprite, 2 = pokeball placeholder
+  const [stage, setStage] = useState(0)
 
-  if (failed) {
+  const src =
+    stage === 0
+      ? spriteUrl(species)
+      : stage === 1 && species.baseSpecies
+        ? `/sprites/${species.baseSpecies}.png`
+        : null
+
+  if (!src) {
     return (
       <svg viewBox="0 0 24 24" width={size} height={size} className={`opacity-20 ${className}`} aria-hidden="true">
         <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.6" />
@@ -22,13 +34,13 @@ export default function Sprite({ species, size = 64, className = '' }: SpritePro
   }
   return (
     <img
-      src={spriteUrl(species)}
+      src={src}
       alt={species.name}
       width={size}
       height={size}
       loading="lazy"
       decoding="async"
-      onError={() => setFailed(true)}
+      onError={() => setStage(stage === 0 && species.baseSpecies ? 1 : 2)}
       className={`select-none [image-rendering:pixelated] ${className}`}
     />
   )

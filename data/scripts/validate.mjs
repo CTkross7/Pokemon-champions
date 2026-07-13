@@ -82,7 +82,11 @@ try {
   check(dex.length >= 1300, `pokedex: suspiciously few species (${dex.length})`)
   const { readdir } = await import('node:fs/promises')
   const sprites = new Set(await readdir(path.join(webData, 'sprites')))
-  const noSprite = dex.filter((s) => !sprites.has(`${s.id}.png`))
+  // Champions-exclusive Megas have no PokéAPI artwork; the UI falls back to
+  // the base species' sprite, so a species passes if either sprite exists.
+  const noSprite = dex.filter(
+    (s) => !sprites.has(`${s.id}.png`) && !(s.baseSpecies && sprites.has(`${s.baseSpecies}.png`)),
+  )
   check(noSprite.length === 0, `pokedex: ${noSprite.length} species missing sprites (${noSprite.slice(0, 5).map((s) => s.id).join(', ')})`)
 } catch (err) {
   errors.push(`pokedex dataset unreadable: ${err.message}`)
@@ -140,8 +144,15 @@ try {
   const learnsets = JSON.parse(await readFile(path.join(webData, 'data', 'learnsets.json'), 'utf8'))
   const champ = dex.filter((s) => s.champions)
 
+  // Champions-new abilities PokéAPI hasn't localized yet. We do NOT invent
+  // Korean names — these display in English until the weekly ko-names refresh
+  // picks up the official translation (then remove them from this list).
+  const PENDING_ABILITY_KO = new Set(['Eelevate', 'Fire Mane'])
   const untranslatedAbilities = new Set()
-  for (const s of champ) for (const a of s.abilities) if (a.ko === a.name && /[A-Za-z]/.test(a.name)) untranslatedAbilities.add(a.name)
+  for (const s of champ)
+    for (const a of s.abilities)
+      if (a.ko === a.name && /[A-Za-z]/.test(a.name) && !PENDING_ABILITY_KO.has(a.name))
+        untranslatedAbilities.add(a.name)
   check(untranslatedAbilities.size === 0, `untranslated Champions abilities: ${[...untranslatedAbilities].slice(0, 8).join(', ')}`)
 
   const untranslatedMoves = new Set()

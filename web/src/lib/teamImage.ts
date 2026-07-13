@@ -26,20 +26,27 @@ const TYPE_HEX: Record<string, string> = {
 const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-async function spriteDataUri(url: string): Promise<string> {
-  try {
-    const res = await fetch(url)
-    if (!res.ok) return ''
-    const blob = await res.blob()
-    return await new Promise((resolve) => {
-      const r = new FileReader()
-      r.onload = () => resolve(String(r.result))
-      r.onerror = () => resolve('')
-      r.readAsDataURL(blob)
-    })
-  } catch {
-    return ''
+async function spriteDataUri(m: ImageMon): Promise<string> {
+  // Champions-exclusive Megas have no own sprite → fall back to base species.
+  const candidates = [m.sprite]
+  if (m.species.baseSpecies) candidates.push(`/sprites/${m.species.baseSpecies}.png`)
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url)
+      if (!res.ok) continue
+      const blob = await res.blob()
+      const uri = await new Promise<string>((resolve) => {
+        const r = new FileReader()
+        r.onload = () => resolve(String(r.result))
+        r.onerror = () => resolve('')
+        r.readAsDataURL(blob)
+      })
+      if (uri) return uri
+    } catch {
+      /* try next candidate */
+    }
   }
+  return ''
 }
 
 const CARD_W = 348
@@ -50,7 +57,7 @@ const HEADER = 64
 
 /** Builds the team image SVG (with embedded sprites). */
 export async function buildTeamSvg(title: string, mons: ImageMon[], brand = 'ChampsNote'): Promise<string> {
-  const sprites = await Promise.all(mons.map((m) => spriteDataUri(m.sprite)))
+  const sprites = await Promise.all(mons.map((m) => spriteDataUri(m)))
   const cols = 2
   const rows = Math.ceil(mons.length / cols)
   const W = PAD * 2 + CARD_W * cols + GAP

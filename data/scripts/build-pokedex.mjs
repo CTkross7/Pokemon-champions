@@ -92,6 +92,9 @@ const FORME_KO = {
   f: '암컷',
   female: '암컷',
   male: '수컷',
+  // Champions Meowstic megas keep the gender split
+  'f-mega': '암컷 메가',
+  'm-mega': '수컷 메가',
 }
 
 function koFormeName(baseKo, forme) {
@@ -112,7 +115,12 @@ const championsTiers = championsRoster.tiers ?? {}
 
 const species = []
 for (const s of Dex.species.all()) {
-  if (s.isNonstandard && EXCLUDED_NONSTANDARD.has(s.isNonstandard)) continue
+  // Champions-exclusive Megas (Meganium-Mega, Floette-Mega, …) are tagged
+  // isNonstandard "Future" in @pkmn/dex because they don't exist in the main
+  // series — but they DO exist in Champions. Roster membership (the Showdown
+  // champions formats-data, our legality authority) overrides the exclusion,
+  // importing their official base stats/types/abilities from the same source.
+  if (s.isNonstandard && EXCLUDED_NONSTANDARD.has(s.isNonstandard) && !rosterIds.has(s.id)) continue
   if (s.num <= 0) continue // missingno / pokestar
   const baseNum = s.baseSpecies ? Dex.species.get(s.baseSpecies).num : s.num
   const baseKo = koNames.species[String(baseNum)]
@@ -128,46 +136,11 @@ for (const s of Dex.species.all()) {
     forme: s.forme || null,
     baseSpecies: s.baseSpecies && s.baseSpecies !== s.name ? Dex.species.get(s.baseSpecies).id : null,
     champions: rosterIds.has(s.id),
-    tier: championsTiers[s.id] ?? null,
+    // "(OU)" → "OU": parenthesized Smogon tiers are technicalities that would
+    // otherwise miss the tier color/order maps in the UI.
+    tier: championsTiers[s.id]?.replace(/[()]/g, '') ?? null,
   })
 }
-// Merge Champions-exclusive Mega formes (Meganium-Mega, Floette-Mega, …). These
-// are invented by Pokémon Champions and are NOT in the base @pkmn/dex data, so
-// their base stats/types come from a curated file sourced from the official
-// Champions data. Only fully-specified entries (types + 6 base stats) are
-// merged; placeholders are skipped so we never ship fabricated stats.
-let championsMegas = []
-try {
-  const raw = await readFile(new URL('../curated/champions-megas.json', import.meta.url), 'utf8')
-  championsMegas = JSON.parse(raw)
-} catch {
-  /* optional */
-}
-let mergedMega = 0
-for (const m of championsMegas) {
-  const bs = m.baseStats
-  const statsOk = bs && ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].every((k) => Number.isFinite(bs[k]))
-  if (!statsOk || !Array.isArray(m.types) || m.types.length === 0) continue
-  const base = Dex.species.get(m.baseSpecies)
-  if (!base) continue
-  const baseKo = koNames.species[String(base.num)]
-  species.push({
-    id: m.id,
-    num: base.num,
-    name: `${base.name}-Mega`,
-    ko: koFormeName(baseKo ?? base.name, 'Mega'),
-    types: m.types,
-    baseStats: bs,
-    abilities: (m.abilities ?? []).map((a) => ({ name: a, ko: abilityKo(a) })),
-    forme: 'Mega',
-    baseSpecies: base.id,
-    champions: true,
-    tier: m.tier ?? championsTiers[m.id] ?? null,
-  })
-  mergedMega++
-}
-if (mergedMega) console.log(`Merged ${mergedMega} Champions-exclusive Mega formes.`)
-
 species.sort((a, b) => a.num - b.num || a.id.localeCompare(b.id))
 
 const moves = {}
