@@ -5,6 +5,7 @@ import { loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
 import { spTotal, natureLabel } from '@/lib/champions'
 import { decodeTeam, type DecodedTeam } from '@/lib/share'
 import { useTeams } from '@/store/teams'
+import { useAuth } from '@/lib/auth'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
 import ShareImageButton from '@/components/ShareImageButton'
@@ -14,6 +15,7 @@ export default function Shared() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { importTeam } = useTeams()
+  const user = useAuth((s) => s.user)
   const [pokedex, setPokedex] = useState<Species[] | null>(null)
   const [moves, setMoves] = useState<Record<string, MoveData> | null>(null)
 
@@ -33,6 +35,10 @@ export default function Shared() {
 
   const copyToMyTeams = () => {
     if (!decoded) return
+    if (!user) {
+      navigate('/login')
+      return
+    }
     importTeam({
       id: crypto.randomUUID(),
       name: `${decoded.name} (${t('shared.copied')})`,

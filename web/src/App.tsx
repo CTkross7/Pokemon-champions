@@ -6,6 +6,7 @@ import About from '@/pages/About'
 import Privacy from '@/pages/Privacy'
 import Terms from '@/pages/Terms'
 import DataSources from '@/pages/DataSources'
+import AuthGate from '@/components/AuthGate'
 import UnderConstruction from '@/pages/UnderConstruction'
 
 // Route-level code splitting keeps the initial bundle small; @smogon/calc and
@@ -68,17 +69,21 @@ export default function App() {
         <Route
           path="teams"
           element={
-            <Suspense fallback={<PageFallback />}>
-              <Teams />
-            </Suspense>
+            <AuthGate>
+              <Suspense fallback={<PageFallback />}>
+                <Teams />
+              </Suspense>
+            </AuthGate>
           }
         />
         <Route
           path="matchup"
           element={
-            <Suspense fallback={<PageFallback />}>
-              <Matchup />
-            </Suspense>
+            <AuthGate>
+              <Suspense fallback={<PageFallback />}>
+                <Matchup />
+              </Suspense>
+            </AuthGate>
           }
         />
         <Route

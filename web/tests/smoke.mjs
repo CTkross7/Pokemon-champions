@@ -126,6 +126,31 @@ try {
     await page.goto(`${BASE}/stats`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] stats tier ranking`, await eventually(page.getByText(/Meta Pokémon|메타 포켓몬/)))
 
+    // Auth gate: the team builder requires sign-in when logged out
+    await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] teams gated when logged out`, await eventually(page.getByText(/Sign-in required|로그인이 필요/)))
+
+    // Login page: Google-only sign-in (no demo/username flow)
+    await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] login google button`, await eventually(page.getByText(/Continue with Google|Google로 계속하기/)))
+
+    // Seed a signed-in session (server cookie is unavailable under vite preview)
+    // so the gated team/matchup/share/community flows can be exercised.
+    await page.evaluate(() =>
+      localStorage.setItem(
+        'champsnote-auth',
+        JSON.stringify({
+          state: {
+            user: {
+              id: 'u1', username: 'tester', displayName: 'Tester', email: null,
+              provider: 'google', avatarUrl: null, createdAt: Date.now(), isAdmin: false,
+            },
+          },
+          version: 0,
+        }),
+      ),
+    )
+
     // Team builder: add a Pokémon to slot 1, expect speed tier + export text
     await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
     const addBtn = page.getByRole('button', { name: /Add Pokémon|포켓몬 추가/ }).first()
@@ -191,20 +216,6 @@ try {
       `[${viewport.tag}] settings theme system option`,
       await eventually(page.getByRole('button', { name: /System|시스템 값/ })),
     )
-
-    // Login page: social provider + username picker present
-    await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' })
-    check(`[${viewport.tag}] login google button`, await eventually(page.getByText(/Continue with Google|Google로 계속하기/)))
-    const usernameBox = page.getByPlaceholder(/chars|자/)
-    await usernameBox.waitFor({ state: 'visible', timeout: 5000 })
-    await usernameBox.fill('trainer_demo')
-    check(`[${viewport.tag}] username availability`, await eventually(page.getByText(/available|사용 가능/)))
-    // Demo login (no backend) creates a local account and routes to the profile
-    await page.getByRole('button', { name: /Continue with username|아이디로 계속/ }).click()
-    check(`[${viewport.tag}] demo login → profile`, await eventually(page.getByText(/@trainer_demo/)))
-    // Logout returns to the login screen
-    await page.getByRole('button', { name: /Log out|로그아웃/ }).click()
-    check(`[${viewport.tag}] logout returns to login`, await eventually(page.getByText(/Continue with Google|Google로 계속하기/)))
 
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))

@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { listSamples, likeSample, getSample, type SampleMeta } from '@/lib/api'
 import { decodeTeam } from '@/lib/share'
 import { useTeams } from '@/store/teams'
+import { useAuth } from '@/lib/auth'
 import Icon from '@/components/Icon'
 
 export default function Gallery() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { importTeam } = useTeams()
+  const user = useAuth((s) => s.user)
   const [state, setState] = useState<'loading' | 'ready' | 'unconfigured'>('loading')
   const [samples, setSamples] = useState<SampleMeta[]>([])
   const [liked, setLiked] = useState<Record<string, boolean>>({})
@@ -22,6 +25,7 @@ export default function Gallery() {
   }, [])
 
   const onLike = async (id: string) => {
+    if (!user) return navigate('/login')
     if (liked[id]) return
     const r = await likeSample(id)
     if (r.configured) {
@@ -31,6 +35,7 @@ export default function Gallery() {
   }
 
   const onImport = async (id: string, title: string) => {
+    if (!user) return navigate('/login')
     const r = await getSample(id)
     if (!r.configured) return
     const decoded = decodeTeam(r.data.sample.team)

@@ -416,11 +416,11 @@
     "signup": "Sign up",
     "logout": "Log out",
     "title": "Log in · Sign up",
-    "subtitle": "An account syncs your teams and settings across devices and lets you join the community.",
+    "subtitle": "Sign in with Google to save teams and join the community.",
     "google": "Continue with Google",
     "apple": "Continue with Apple",
     "providerUnavailable": "Coming soon",
-    "providerHint": "Social login activates once the service is deployed.",
+    "providerHint": "Google sign-in activates once the service is deployed and configured.",
     "username": "Username",
     "usernamePlaceholder": "3–20 chars, letters/numbers/underscore",
     "usernameRule": "3–20 chars, lowercase letters, numbers, underscore (_) only",
@@ -444,7 +444,11 @@
     "setupDesc": "Choose a username for the community.",
     "backendPending": "The account server (login/sync) activates when the backend is deployed. For now, username preview and format checks work.",
     "demoNote": "Note: without a backend, the account is stored only on this device.",
-    "continueDemo": "Continue with username (demo)"
+    "continueDemo": "Continue with username (demo)",
+    "subtitle2": "No separate sign-up — start right away with your Google account.",
+    "privacyNote": "By signing in you agree to the Terms of Service and Privacy Policy.",
+    "gateTitle": "Sign-in required",
+    "gateBody": "Building/saving teams and community actions (upload, like, report) require signing in."
   },
   "notices": {
     "title": "Notices",

@@ -1,145 +1,54 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth, checkUsername, isValidUsername, type CheckResult } from '@/lib/auth'
-
-/** OAuth kicks off a full-page redirect handled by the Worker backend. */
-const startGoogle = () => {
-  window.location.href = '/api/auth/google/start'
-}
+import { useAuth, startGoogleLogin } from '@/lib/auth'
 
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { user, providers, init, setLocalUser } = useAuth()
-  const [username, setUsername] = useState('')
-  const [status, setStatus] = useState<CheckResult | 'idle' | 'checking'>('idle')
+  const { user, providers, init } = useAuth()
 
   useEffect(() => {
     void init()
   }, [init])
 
-  // Already logged in → go to profile.
+  // Already signed in → go to profile.
   useEffect(() => {
     if (user) navigate('/profile', { replace: true })
   }, [user, navigate])
 
-  // Debounced availability check as the user types.
-  useEffect(() => {
-    const u = username.trim().toLowerCase()
-    if (!u) return setStatus('idle')
-    if (!isValidUsername(u)) return setStatus('invalid')
-    setStatus('checking')
-    const id = setTimeout(async () => {
-      const r = await checkUsername(u)
-      setStatus(r)
-    }, 400)
-    return () => clearTimeout(id)
-  }, [username])
-
-  const canContinue = useMemo(
-    () => isValidUsername(username.trim().toLowerCase()) && status !== 'taken' && status !== 'checking',
-    [username, status],
-  )
-
-  const statusText =
-    status === 'checking'
-      ? { text: t('auth.checking'), cls: 'text-zinc-400' }
-      : status === 'available' || status === 'unknown'
-        ? username.trim()
-          ? { text: t('auth.available'), cls: 'text-emerald-500' }
-          : null
-        : status === 'taken'
-          ? { text: t('auth.taken'), cls: 'text-red-500' }
-          : status === 'invalid'
-            ? { text: t('auth.invalid'), cls: 'text-red-500' }
-            : null
-
-  // providers === null while loading; treat as unconfigured (button disabled).
   const googleOn = providers?.google ?? false
 
   return (
-    <div className="mx-auto max-w-md space-y-5">
+    <div className="mx-auto max-w-md space-y-6">
       <div className="text-center">
         <h1 className="text-2xl font-extrabold tracking-tight">{t('auth.title')}</h1>
         <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{t('auth.subtitle')}</p>
       </div>
 
-      {/* Social provider */}
-      <div className="space-y-2.5">
+      <div className="card space-y-3 p-6">
         <button
           type="button"
           disabled={!googleOn}
-          onClick={startGoogle}
+          onClick={startGoogleLogin}
           className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-800 transition-colors enabled:hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-white"
         >
           <GoogleMark />
           {t('auth.google')}
-          {!googleOn && <Badge>{t('auth.providerUnavailable')}</Badge>}
         </button>
         {!googleOn && (
-          <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>
+          <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">
+            {t('auth.providerHint')}
+          </p>
         )}
+        <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('auth.subtitle2')}</p>
       </div>
 
-      <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-300 dark:text-zinc-700">
-        <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />
-        {t('auth.username')}
-        <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />
-      </div>
-
-      {/* Username picker (works as a demo account without a backend) */}
-      <div className="card space-y-2 p-4">
-        <label className="block text-xs font-bold text-zinc-500 dark:text-zinc-400" htmlFor="username">
-          {t('auth.username')}
-        </label>
-        <div className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 focus-within:border-volt-500 dark:border-white/10">
-          <span className="text-sm font-bold text-zinc-400">@</span>
-          <input
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())}
-            placeholder={t('auth.usernamePlaceholder')}
-            autoCapitalize="none"
-            autoComplete="off"
-            className="w-full bg-transparent py-2.5 text-sm font-semibold outline-none"
-          />
-        </div>
-        {statusText ? (
-          <p className={`text-[12px] font-bold ${statusText.cls}`}>{statusText.text}</p>
-        ) : (
-          <p className="text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.usernameRule')}</p>
-        )}
-        <button
-          type="button"
-          disabled={!canContinue}
-          onClick={() => {
-            setLocalUser(username.trim().toLowerCase())
-            navigate('/profile', { replace: true })
-          }}
-          className="mt-1 w-full rounded-xl bg-volt-400 px-4 py-2.5 text-sm font-bold text-black transition-colors enabled:hover:bg-volt-300 disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          {t('auth.continueDemo')}
-        </button>
-        <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('auth.demoNote')}</p>
-      </div>
-
-      <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">
-        {t('auth.backendPending')}
-      </p>
+      <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('auth.privacyNote')}</p>
     </div>
   )
 }
 
-function Badge({ children }: { children: ReactNode }) {
-  return (
-    <span className="ml-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-extrabold text-zinc-500 dark:bg-white/10 dark:text-zinc-300">
-      {children}
-    </span>
-  )
-}
-
-/* Brand marks (inline, no external assets). */
 function GoogleMark() {
   return (
     <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">

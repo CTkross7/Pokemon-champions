@@ -6,7 +6,6 @@ import Icon from '@/components/Icon'
 
 const PROVIDER_LABEL: Record<Provider, string> = {
   google: 'Google',
-  local: 'ChampsNote',
 }
 
 export default function Profile() {

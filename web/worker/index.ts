@@ -11,7 +11,7 @@
  *   POST /api/samples/:id/like   increment like count
  */
 import type { D1Database } from './d1'
-import { handleAuth, type AuthEnv } from './auth'
+import { handleAuth, currentUser, type AuthEnv } from './auth'
 import { handleNotices } from './notices'
 
 export interface Env extends AuthEnv {
@@ -40,6 +40,9 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       return json({ samples: results ?? [] })
     }
     if (request.method === 'POST') {
+      // Publishing a sample requires a signed-in account.
+      const user = await currentUser(db, request)
+      if (!user) return json({ error: 'auth_required' }, 401)
       let body: Record<string, unknown>
       try {
         body = (await request.json()) as Record<string, unknown>
@@ -47,7 +50,7 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
         return json({ error: 'invalid_json' }, 400)
       }
       const title = clampStr(body.title, 60).trim() || '무제 팀'
-      const author = clampStr(body.author, 30).trim() || '익명'
+      const author = user.display_name || clampStr(body.author, 30).trim() || '익명'
       const team = clampStr(body.team, MAX_TEAM_BYTES)
       if (!team) return json({ error: 'missing_team' }, 400)
       const id = crypto.randomUUID().slice(0, 8)
@@ -64,6 +67,8 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
   if (parts[0] === 'samples' && parts[1]) {
     const id = parts[1]
     if (parts[2] === 'like' && request.method === 'POST') {
+      const user = await currentUser(db, request)
+      if (!user) return json({ error: 'auth_required' }, 401)
       await db.prepare('UPDATE samples SET likes = likes + 1 WHERE id = ?').bind(id).run()
       const row = await db.prepare('SELECT likes FROM samples WHERE id = ?').bind(id).first<{ likes: number }>()
       return row ? json({ likes: row.likes }) : json({ error: 'not_found' }, 404)
