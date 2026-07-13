@@ -75,10 +75,45 @@ export function loadTranslations(): Promise<Translations> {
 
 const normalizeId = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 
+/**
+ * Champions-specific names missing from the base PokéAPI-derived tables. The
+ * Champions-exclusive Mega stones follow the official Korean mega-stone pattern
+ * ("{species}나이트", e.g. 한카리아스나이트); the moves/items use their official
+ * Korean names. Kept in code so a data auto-refresh can't drop them.
+ */
+const CHAMPIONS_ITEM_KO: Record<string, string> = {
+  fairyfeather: '페어리의깃털',
+  floettite: '플라엣테나이트',
+  starminite: '아쿠스타나이트',
+  delphoxite: '마폭시나이트',
+  dragoninite: '망나뇽나이트',
+  meganiumite: '메가니움나이트',
+  glimmoranite: '킬라플로르나이트',
+  clefablite: '픽시나이트',
+  greninjite: '개굴닌자나이트',
+  scovillainite: '스코빌런나이트',
+  skarmorite: '무장조나이트',
+  froslassite: '눈여아나이트',
+}
+const CHAMPIONS_MOVE_KO: Record<string, string> = {
+  kingsshield: '킹실드',
+  lightofruin: '멸망의빛',
+}
+
 /** Korean item name (falls back to the raw name when untranslated). */
-export const itemKo = (t: Translations, name: string) => t.items[normalizeId(name)] ?? name
+export const itemKo = (t: Translations, name: string) =>
+  t.items[normalizeId(name)] ?? CHAMPIONS_ITEM_KO[normalizeId(name)] ?? name
 /** Korean ability name (falls back to the raw name when untranslated). */
 export const abilityKo = (t: Translations, name: string) => t.abilities[normalizeId(name)] ?? name
+
+/** Korean move name from the moves table, with Champions-specific fallbacks. */
+export const moveKo = (moves: Record<string, { ko?: string; name?: string }> | null, name: string, ko: boolean) => {
+  const id = normalizeId(name)
+  const entry = moves?.[id]
+  if (ko && entry?.ko) return entry.ko
+  if (ko && CHAMPIONS_MOVE_KO[id]) return CHAMPIONS_MOVE_KO[id]
+  return entry?.name ?? CHAMPIONS_MOVE_KO[id] ?? name
+}
 
 /**
  * Localizes a Smogon spread string. Spreads look like "Jolly:2/32/0/0/0/32"

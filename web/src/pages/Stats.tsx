@@ -9,6 +9,7 @@ import {
   resolveUsageMon,
   abilityKo,
   itemKo,
+  moveKo,
   spreadKo,
   type UsageData,
   type UsageOption,
@@ -119,11 +120,7 @@ export default function Stats() {
                   </button>
                   {isOpen && (
                     <dl className="space-y-2.5 border-t border-zinc-200/70 p-3 text-[11px] dark:border-white/8">
-                      <StatBars
-                        label={t('stats.moves')}
-                        options={u.moves}
-                        localize={(m) => (ko && moves?.[m.toLowerCase().replace(/[^a-z0-9]/g, '')]?.ko) || moves?.[m.toLowerCase().replace(/[^a-z0-9]/g, '')]?.name || m}
-                      />
+                      <StatBars label={t('stats.moves')} options={u.moves} localize={(m) => moveKo(moves, m, ko)} />
                       <StatBars
                         label={t('stats.items')}
                         options={u.items}
