@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { loadLearnsets, loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
 import { statAtLevel50, spTotal, NATURES, natureLabel, COMMON_ITEMS, type Nature } from '@/lib/champions'
-import { listAbilities } from '@/lib/calc'
 import { exportTeam, importTeam } from '@/lib/showdown'
 import { shareUrl, encodeTeam } from '@/lib/share'
 import { createSample } from '@/lib/api'
@@ -34,7 +33,7 @@ function MonEditor({
   onRemove: () => void
 }) {
   const { t, i18n } = useTranslation()
-  const abilities = useMemo(() => listAbilities(species.name), [species])
+  const abilities = species.abilities
   const moveOptions = useMemo(() => {
     const ids = learnsets[species.id] ?? []
     return ids
@@ -68,8 +67,8 @@ function MonEditor({
           <select value={mon.ability} onChange={(e) => onChange({ ...mon, ability: e.target.value })} className={selectClass}>
             {abilities.length === 0 && <option value="">—</option>}
             {abilities.map((a) => (
-              <option key={a} value={a}>
-                {a}
+              <option key={a.name} value={a.name}>
+                {i18n.language === 'ko' ? a.ko : a.name}
               </option>
             ))}
           </select>
@@ -400,7 +399,7 @@ export default function Teams() {
                     championsFirst
                     placeholder={t('teams.addMon')}
                     onChange={(s) => {
-                      setMon(active.id, slot, { ...emptyMon(s.id), ability: listAbilities(s.name)[0] ?? '' })
+                      setMon(active.id, slot, { ...emptyMon(s.id), ability: s.abilities[0]?.name ?? '' })
                       setOpenSlot(slot)
                     }}
                   />

@@ -16,7 +16,6 @@ import {
 import {
   calcDamage,
   calcDamageUnknownDefender,
-  listAbilities,
   type CalcResult,
   type FieldInput,
   type MonInput,
@@ -53,7 +52,9 @@ function MonPanel({
   onToggleUnknown?: (v: boolean) => void
 }) {
   const { t, i18n } = useTranslation()
-  const abilities = useMemo(() => (mon.species ? listAbilities(mon.species.name) : []), [mon.species])
+  // Abilities come from the Pokédex dataset (has Korean names), not the raw
+  // engine list, so Korean mode shows Korean ability names.
+  const abilities = mon.species?.abilities ?? []
 
   return (
     <div className="card space-y-3 p-4">
@@ -75,7 +76,7 @@ function MonPanel({
         value={mon.species}
         championsFirst
         onChange={(species) =>
-          onChange({ ...mon, species, ability: listAbilities(species.name)[0] ?? '' })
+          onChange({ ...mon, species, ability: species.abilities[0]?.name ?? '' })
         }
       />
       {mon.species && (
@@ -90,8 +91,8 @@ function MonPanel({
               >
                 {abilities.length === 0 && <option value="">—</option>}
                 {abilities.map((a) => (
-                  <option key={a} value={a}>
-                    {a}
+                  <option key={a.name} value={a.name}>
+                    {i18n.language === 'ko' ? a.ko : a.name}
                   </option>
                 ))}
               </select>
