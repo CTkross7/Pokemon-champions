@@ -32,7 +32,7 @@
     "languageDesc": "Choose the interface language.",
     "account": "Account",
     "support": "Support",
-    "supportDesc": "Helps cover server and running costs. For donations, please email.",
+    "supportDesc": "Helps cover server and running costs. Donations to the account below are hugely appreciated.",
     "supportInquiry": "Donation inquiry",
     "contact": "Contact",
     "contactDesc": "Bug reports, feature ideas, and partnerships are welcome.",
@@ -45,7 +45,11 @@
     "info": "About",
     "version": "Version",
     "developer": "Developer",
-    "openSource": "Open source · data sources"
+    "openSource": "Open source · data sources",
+    "bankAccount": "Toss Bank 1002-5275-3724",
+    "bankHolder": "Holder: CTkross",
+    "copyAccount": "Copy account number",
+    "accountCopied": "Account number copied"
   },
   "home": {
     "badge": "Pokémon Champions · Regulation M-B season",
@@ -92,9 +96,55 @@
     "title": "About ChampsNote",
     "body": "ChampsNote is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
     "roadmapTitle": "Roadmap",
-    "dataTitle": "Data sources",
-    "dataBody": "Game data is based on community-verified public databases (PokéAPI, Pokémon Showdown data). Champions-specific information (regulations, SP rules) is cross-checked against official announcements and trusted sources before inclusion.",
-    "developer": "Developer"
+    "dataTitle": "Data & stats sources",
+    "dataBody": "All game data comes only from verifiable official/open sources. No hand-entered guesses; datasets refresh automatically via GitHub Actions to track game updates.",
+    "developer": "Developer",
+    "intro": "ChampsNote is an all-in-one toolkit for ranked battles in Pokémon Champions. Damage math, team building, auto-diagnosis & coaching, live matchup analysis, and meta stats — all in one place. It uses only verified official/open data and auto-updates as the game changes.",
+    "featuresTitle": "Key features",
+    "features": [
+      {
+        "t": "Champions Pokédex",
+        "d": "Only Champions-legal Pokémon — stats, types, abilities, and learnsets"
+      },
+      {
+        "t": "Damage calculator",
+        "d": "Precise math with the SP system, Mega Evolution, weather, terrain, items, abilities"
+      },
+      {
+        "t": "Team builder & coaching",
+        "d": "Build a team of six with auto-diagnosis of weaknesses, speed tiers, and meta coverage"
+      },
+      {
+        "t": "Live matchup",
+        "d": "Enter the opponent team for instant lead picks, threat ranking, and answers"
+      },
+      {
+        "t": "Battle data",
+        "d": "Ladder usage & adoption (moves/items/abilities/spreads) and competitive tiers"
+      },
+      {
+        "t": "Community",
+        "d": "Share team samples and read notices — sign in to sync across devices"
+      }
+    ],
+    "dataSources": [
+      {
+        "t": "PokéAPI",
+        "d": "Korean/English names and base stats for Pokémon, moves, abilities, items"
+      },
+      {
+        "t": "Pokémon Showdown (champions mod)",
+        "d": "Champions roster, tiers, and mechanics (officially-mirrored open source)"
+      },
+      {
+        "t": "Smogon usage stats",
+        "d": "Ladder usage & adoption rates (auto-collected monthly)"
+      }
+    ],
+    "termsTitle": "Terms of Service (summary)",
+    "termsBody": "ChampsNote is a free, fan-made tool. The service is provided “as is” with no guarantee of calculation/stat accuracy. You are responsible for content you share, must not infringe others’ rights or post unlawful content, and the service may change or stop without notice.",
+    "contactTitle": "Contact & reports",
+    "contactBody": "For bug reports, feature ideas, data corrections, or partnership/donation inquiries, email us below. We’ll get back to you as soon as we can."
   },
   "common": {
     "underConstruction": "This feature is under construction.",

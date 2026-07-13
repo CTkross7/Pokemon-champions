@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth'
 import Icon, { type IconName } from '@/components/Icon'
 
 const DEV_EMAIL = 'ctkross.dev@gmail.com'
+const BANK_ACCOUNT = '1002-5275-3724'
 const APP_VERSION = '1.0.0'
 
 const THEME_OPTIONS: { value: Theme; icon: IconName; labelKey: string }[] = [
@@ -18,13 +19,13 @@ export default function Settings() {
   const { t } = useTranslation()
   const { theme, language, setTheme, setLanguage } = useSettings()
   const user = useAuth((s) => s.user)
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState<'email' | 'account' | null>(null)
 
-  const copyEmail = async () => {
+  const copy = async (which: 'email' | 'account', value: string) => {
     try {
-      await navigator.clipboard.writeText(DEV_EMAIL)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2500)
+      await navigator.clipboard.writeText(value)
+      setCopied(which)
+      setTimeout(() => setCopied(null), 2500)
     } catch {
       /* clipboard blocked */
     }
@@ -66,16 +67,25 @@ export default function Settings() {
         )}
       </Section>
 
-      {/* Support / donation */}
+      {/* Support / donation — copy bank account number */}
       <Section title={t('settings.support')}>
         <p className="mb-2 text-[12px] text-zinc-500 dark:text-zinc-400">{t('settings.supportDesc')}</p>
-        <Row
-          href={`mailto:${DEV_EMAIL}?subject=${encodeURIComponent('[챔스노트] 후원 문의')}`}
-          icon="heart"
-          label={t('settings.supportInquiry')}
-          sub={DEV_EMAIL}
-          external
-        />
+        <button
+          type="button"
+          onClick={() => copy('account', BANK_ACCOUNT)}
+          className="flex w-full items-center gap-3 rounded-xl border border-zinc-200 p-3 text-left transition-colors hover:border-volt-500 dark:border-white/10 dark:hover:border-volt-400/50"
+        >
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-pink-100 text-pink-600 dark:bg-pink-400/12 dark:text-pink-400">
+            <Icon name="heart" size={17} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold">{t('settings.bankAccount')}</span>
+            <span className="block truncate text-[12px] text-zinc-500 dark:text-zinc-400">{t('settings.bankHolder')}</span>
+          </span>
+          <span className="shrink-0 text-[11px] font-bold text-zinc-400 dark:text-zinc-500">
+            {copied === 'account' ? t('settings.accountCopied') : <Icon name="copy" size={15} />}
+          </span>
+        </button>
       </Section>
 
       {/* Contact */}
@@ -83,7 +93,7 @@ export default function Settings() {
         <p className="mb-2 text-[12px] text-zinc-500 dark:text-zinc-400">{t('settings.contactDesc')}</p>
         <button
           type="button"
-          onClick={copyEmail}
+          onClick={() => copy('email', DEV_EMAIL)}
           className="flex w-full items-center gap-3 rounded-xl border border-zinc-200 p-3 text-left transition-colors hover:border-volt-500 dark:border-white/10 dark:hover:border-volt-400/50"
         >
           <RowIcon icon="mail" />
@@ -92,7 +102,7 @@ export default function Settings() {
             <span className="block truncate text-[12px] text-zinc-500 dark:text-zinc-400">{DEV_EMAIL}</span>
           </span>
           <span className="shrink-0 text-[11px] font-bold text-zinc-400 dark:text-zinc-500">
-            {copied ? t('settings.emailCopied') : <Icon name="copy" size={15} />}
+            {copied === 'email' ? t('settings.emailCopied') : <Icon name="copy" size={15} />}
           </span>
         </button>
       </Section>
