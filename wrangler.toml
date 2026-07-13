@@ -28,10 +28,11 @@ binding = "DB"
 database_name = "champsnote"
 database_id = "f8d9c5c4-6f0d-49d4-a0a4-fd8fe677bff6"
 
-# ── Optional account login (Google / Apple) ───────────────────────────────────
-# Public vars below; secrets (AUTH_SECRET, GOOGLE_CLIENT_SECRET, APPLE_PRIVATE_KEY,
-# etc.) go via `npx wrangler secret put ...`. A provider activates only when all
-# its credentials are present. See docs/DEPLOYMENT.md.
+# ── Optional account login (Google) ───────────────────────────────────────────
+# For the WORKERS deploy, set secrets via `npx wrangler secret put AUTH_SECRET`,
+# `... GOOGLE_CLIENT_ID`, `... GOOGLE_CLIENT_SECRET` and APP_URL in [vars] below.
+# For the PAGES deploy, set these in the Pages dashboard instead (see
+# docs/DEPLOYMENT.md). Google activates only when all its values are present.
 #
 # [vars]
 # APP_URL = "https://champsnote.pages.dev"   # public base URL for OAuth redirects

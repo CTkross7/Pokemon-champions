@@ -251,3 +251,11 @@
 - 검증: 빌드·린트·E2E 70건 ✅ / 통계·홈 라이트·다크 렌더링 스크린샷 확인
 - ⬜ 남은 디자인 작업: 하단 내비/탭 활성색·상세/도감/계산기 페이지 톤 정리, 설정 페이지에 후원/문의/약관·정책/정보 섹션(포케챔스 참고) — Phase 13과 연계
 - ⬜ 남은 데이터 작업: 챔피언스 전용 메가 11종 종족값·타입·특성 종 데이터 임포트(mod scripts.ts 파싱) → 계산기·팀빌더에서도 빌드 가능하게
+
+## Phase 12.6 — Cloudflare Pages 배포 지원 + Apple 로그인 제거 (2026-07-13, 사용자 요청)
+- ✅ 최종 배포 타깃을 Pages(champsnote.pages.dev)로: 빌드가 `worker/index.ts`를 `dist/_worker.js`로 번들(esbuild) → Pages 고급 모드로 동일 Worker가 `/api/*`+정적+SPA 폴백 처리. `wrangler pages dev`로 로컬 검증(/, /dex/pikachu 폴백, /api/auth/config, D1 연결 확인)
+- ✅ Worker에 SPA 폴백 추가(Pages용): ASSETS 404+HTML 요청 시 index.html 반환. Workers는 기존 wrangler.toml not_found_handling 유지(양쪽 호환)
+- ✅ D1 바인딩: `wrangler.toml`(Workers용) + Pages는 대시보드 바인딩(DB) 안내(DEPLOYMENT.md). database_id `f8d9c5c4-...` 연결됨
+- ✅ Apple 로그인 제거(연회비 회피): worker/auth.ts에서 Apple OAuth·ES256 서명 코드 삭제, config는 google만, 클라이언트 Login/Profile/auth.ts에서 Apple 제거. Google 단독 플로우로 정리
+- ✅ 문서: Pages 고급모드 원리 + Pages 대시보드 D1 바인딩 + Google OAuth(대시보드 시크릿·리디렉션 URI) 설정법 재작성
+- 검증: 빌드(+_worker.js 9.9KB)·린트·E2E 70건 ✅ / Pages 로컬 서버 검증 완료

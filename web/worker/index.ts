@@ -96,7 +96,17 @@ export default {
         return json({ error: 'server_error', detail: String(err) }, 500)
       }
     }
-    // Everything else: static assets (with SPA fallback via wrangler.toml).
-    return env.ASSETS.fetch(request)
+    // Everything else: static assets. On Workers the SPA fallback comes from
+    // wrangler.toml (not_found_handling); on Pages advanced mode (_worker.js)
+    // we serve index.html for client-side routes that don't map to a file.
+    const res = await env.ASSETS.fetch(request)
+    if (
+      res.status === 404 &&
+      request.method === 'GET' &&
+      (request.headers.get('accept') || '').includes('text/html')
+    ) {
+      return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request))
+    }
+    return res
   },
 }

@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { useAuth, checkUsername, isValidUsername, type CheckResult } from '@/lib/auth'
 
 /** OAuth kicks off a full-page redirect handled by the Worker backend. */
-const startOAuth = (provider: 'google' | 'apple') => {
-  window.location.href = `/api/auth/${provider}/start`
+const startGoogle = () => {
+  window.location.href = '/api/auth/google/start'
 }
 
 export default function Login() {
@@ -55,9 +55,8 @@ export default function Login() {
             ? { text: t('auth.invalid'), cls: 'text-red-500' }
             : null
 
-  // providers === null while loading; treat as unconfigured (buttons disabled).
+  // providers === null while loading; treat as unconfigured (button disabled).
   const googleOn = providers?.google ?? false
-  const appleOn = providers?.apple ?? false
 
   return (
     <div className="mx-auto max-w-md space-y-5">
@@ -66,29 +65,19 @@ export default function Login() {
         <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{t('auth.subtitle')}</p>
       </div>
 
-      {/* Social providers */}
+      {/* Social provider */}
       <div className="space-y-2.5">
         <button
           type="button"
           disabled={!googleOn}
-          onClick={() => startOAuth('google')}
+          onClick={startGoogle}
           className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-800 transition-colors enabled:hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-white"
         >
           <GoogleMark />
           {t('auth.google')}
           {!googleOn && <Badge>{t('auth.providerUnavailable')}</Badge>}
         </button>
-        <button
-          type="button"
-          disabled={!appleOn}
-          onClick={() => startOAuth('apple')}
-          className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-900 bg-black px-4 py-3 text-sm font-bold text-white transition-colors enabled:hover:bg-zinc-900 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15"
-        >
-          <AppleMark />
-          {t('auth.apple')}
-          {!appleOn && <Badge dark>{t('auth.providerUnavailable')}</Badge>}
-        </button>
-        {!googleOn && !appleOn && (
+        {!googleOn && (
           <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>
         )}
       </div>
@@ -142,14 +131,9 @@ export default function Login() {
   )
 }
 
-function Badge({ children, dark }: { children: ReactNode; dark?: boolean }) {
+function Badge({ children }: { children: ReactNode }) {
   return (
-    <span
-      className={[
-        'ml-1 rounded-full px-2 py-0.5 text-[10px] font-extrabold',
-        dark ? 'bg-white/15 text-white' : 'bg-zinc-100 text-zinc-500 dark:bg-white/10 dark:text-zinc-300',
-      ].join(' ')}
-    >
+    <span className="ml-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-extrabold text-zinc-500 dark:bg-white/10 dark:text-zinc-300">
       {children}
     </span>
   )
@@ -163,13 +147,6 @@ function GoogleMark() {
       <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.1 5.3-4.6 7l7.1 5.5c4.2-3.9 6.6-9.6 6.6-16.5Z" />
       <path fill="#FBBC05" d="M10.4 28.3c-.5-1.4-.7-2.8-.7-4.3s.3-3 .7-4.3l-7.8-6.1C1 16.9 0 20.3 0 24s1 7.1 2.6 10.4l7.8-6.1Z" />
       <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.1-5.5c-2 1.3-4.5 2.1-8.8 2.1-6.3 0-11.7-3.8-13.6-9.3l-7.8 6.1C6.5 42.6 14.6 48 24 48Z" />
-    </svg>
-  )
-}
-function AppleMark() {
-  return (
-    <svg width="16" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M16.4 12.7c0-2.6 2.1-3.9 2.2-4-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.1 2.5-1.8 3-.5 7.5 1.3 9.9.9 1.2 1.9 2.5 3.2 2.5 1.3-.1 1.8-.8 3.3-.8 1.5 0 2 .8 3.3.8 1.4 0 2.2-1.2 3.1-2.4.6-.9.9-1.4 1.4-2.4-3.6-1.4-3.1-4.6-3.1-4.6ZM14 4.9c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3 1.5-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3-1.4Z" />
     </svg>
   )
 }

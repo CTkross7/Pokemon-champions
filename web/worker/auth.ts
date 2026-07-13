@@ -1,19 +1,17 @@
 /**
- * Account backend for ChampsNote (Cloudflare Worker + D1).
+ * Account backend for ChampsNote (Cloudflare Worker/Pages + D1).
  *
- * Standard OAuth 2.0 authorization-code flow for Google and Sign in with Apple,
- * plus username uniqueness, session cookies, and profile endpoints. Everything
- * is optional and self-gating: with no D1 bound the routes return 503, and each
- * provider only activates when its credentials are present in the environment,
- * so the static site keeps working untouched until the operator configures it.
+ * Standard OAuth 2.0 authorization-code flow for Google, plus username
+ * uniqueness, session cookies, and profile endpoints. Everything is optional
+ * and self-gating: with no D1 bound the routes return 503, and Google only
+ * activates when its credentials are present in the environment, so the static
+ * site keeps working untouched until the operator configures it.
  *
- * Required environment (set as Worker secrets / vars):
+ * Required environment (set as Worker/Pages secrets / vars):
  *   AUTH_SECRET          random string (session token salt)
- *   APP_URL              public base URL, e.g. https://champsnote.example.com
+ *   APP_URL              public base URL, e.g. https://champsnote.pages.dev
  *   GOOGLE_CLIENT_ID     Google OAuth client id      (enables Google)
  *   GOOGLE_CLIENT_SECRET Google OAuth client secret
- *   APPLE_CLIENT_ID      Apple Service ID            (enables Apple)
- *   APPLE_TEAM_ID / APPLE_KEY_ID / APPLE_PRIVATE_KEY  Apple sign-in key (PKCS8)
  */
 import type { D1Database } from './d1'
 
@@ -23,10 +21,6 @@ export interface AuthEnv {
   APP_URL?: string
   GOOGLE_CLIENT_ID?: string
   GOOGLE_CLIENT_SECRET?: string
-  APPLE_CLIENT_ID?: string
-  APPLE_TEAM_ID?: string
-  APPLE_KEY_ID?: string
-  APPLE_PRIVATE_KEY?: string
 }
 
 interface UserRow {
@@ -175,51 +169,6 @@ async function upsertUser(
   return id
 }
 
-// ---- Apple client secret (ES256 JWT) --------------------------------------
-
-function pemToArrayBuffer(pem: string): ArrayBuffer {
-  const b64 = pem
-    .replace(/-----BEGIN [^-]+-----/g, '')
-    .replace(/-----END [^-]+-----/g, '')
-    .replace(/\s+/g, '')
-  const bin = atob(b64)
-  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0))
-  return bytes.buffer
-}
-
-function b64url(bytes: Uint8Array): string {
-  let bin = ''
-  for (const b of bytes) bin += String.fromCharCode(b)
-  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-}
-
-async function appleClientSecret(env: AuthEnv): Promise<string> {
-  const now = Math.floor(Date.now() / 1000)
-  const header = { alg: 'ES256', kid: env.APPLE_KEY_ID }
-  const payload = {
-    iss: env.APPLE_TEAM_ID,
-    iat: now,
-    exp: now + 60 * 30,
-    aud: 'https://appleid.apple.com',
-    sub: env.APPLE_CLIENT_ID,
-  }
-  const enc = (obj: unknown) => b64url(new TextEncoder().encode(JSON.stringify(obj)))
-  const signingInput = `${enc(header)}.${enc(payload)}`
-  const key = await crypto.subtle.importKey(
-    'pkcs8',
-    pemToArrayBuffer(env.APPLE_PRIVATE_KEY ?? ''),
-    { name: 'ECDSA', namedCurve: 'P-256' },
-    false,
-    ['sign'],
-  )
-  const sig = await crypto.subtle.sign(
-    { name: 'ECDSA', hash: 'SHA-256' },
-    key,
-    new TextEncoder().encode(signingInput),
-  )
-  return `${signingInput}.${b64url(new Uint8Array(sig))}`
-}
-
 // ---- route handler ---------------------------------------------------------
 
 export async function handleAuth(request: Request, env: AuthEnv, url: URL): Promise<Response> {
@@ -231,7 +180,6 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
     return json({
       providers: {
         google: Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET),
-        apple: Boolean(env.APPLE_CLIENT_ID && env.APPLE_PRIVATE_KEY),
       },
     })
   }
@@ -298,71 +246,6 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
     const claims = decodeJwtPayload<{ sub: string; email?: string; name?: string; picture?: string }>(tok.id_token)
 
     const userId = await upsertUser(db, 'google', claims.sub, claims.email ?? null, claims.name ?? null, claims.picture ?? null)
-    const session = await createSession(db, userId)
-    return new Response(null, {
-      status: 302,
-      headers: {
-        location: `${appUrl}/profile`,
-        'set-cookie': cookie(SESSION_COOKIE, session, SESSION_TTL_MS / 1000),
-      },
-    })
-  }
-
-  // ---- Apple --------------------------------------------------------------
-  if (path === 'apple/start') {
-    if (!env.APPLE_CLIENT_ID) return json({ error: 'apple_disabled' }, 503)
-    const state = randomToken()
-    const auth = new URL('https://appleid.apple.com/auth/authorize')
-    auth.searchParams.set('client_id', env.APPLE_CLIENT_ID)
-    auth.searchParams.set('redirect_uri', `${appUrl}/api/auth/apple/callback`)
-    auth.searchParams.set('response_type', 'code')
-    auth.searchParams.set('scope', 'name email')
-    auth.searchParams.set('response_mode', 'form_post')
-    auth.searchParams.set('state', state)
-    return new Response(null, {
-      status: 302,
-      headers: { location: auth.toString(), 'set-cookie': cookie(STATE_COOKIE, state, 600) },
-    })
-  }
-
-  if (path === 'apple/callback' && request.method === 'POST') {
-    if (!env.APPLE_CLIENT_ID || !env.APPLE_PRIVATE_KEY) return json({ error: 'apple_disabled' }, 503)
-    const form = await request.formData()
-    const code = String(form.get('code') ?? '')
-    const state = String(form.get('state') ?? '')
-    const cookieState = parseCookies(request.headers.get('cookie'))[STATE_COOKIE]
-    if (!code || !state || state !== cookieState) return json({ error: 'invalid_state' }, 400)
-
-    // Apple sends the name only on first consent, as JSON in `user`.
-    let appleName: string | null = null
-    try {
-      const u = form.get('user')
-      if (u) {
-        const parsed = JSON.parse(String(u)) as { name?: { firstName?: string; lastName?: string } }
-        appleName = [parsed.name?.firstName, parsed.name?.lastName].filter(Boolean).join(' ') || null
-      }
-    } catch {
-      /* no name provided */
-    }
-
-    const secret = await appleClientSecret(env)
-    const tokenRes = await fetch('https://appleid.apple.com/auth/token', {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        code,
-        client_id: env.APPLE_CLIENT_ID,
-        client_secret: secret,
-        redirect_uri: `${appUrl}/api/auth/apple/callback`,
-        grant_type: 'authorization_code',
-      }),
-    })
-    if (!tokenRes.ok) return json({ error: 'token_exchange_failed' }, 502)
-    const tok = (await tokenRes.json()) as { id_token?: string }
-    if (!tok.id_token) return json({ error: 'no_id_token' }, 502)
-    const claims = decodeJwtPayload<{ sub: string; email?: string }>(tok.id_token)
-
-    const userId = await upsertUser(db, 'apple', claims.sub, claims.email ?? null, appleName, null)
     const session = await createSession(db, userId)
     return new Response(null, {
       status: 302,

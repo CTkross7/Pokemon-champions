@@ -9,7 +9,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type Provider = 'google' | 'apple' | 'local'
+export type Provider = 'google' | 'local'
 
 export interface AuthUser {
   id: string
@@ -23,7 +23,6 @@ export interface AuthUser {
 
 export interface ProviderConfig {
   google: boolean
-  apple: boolean
 }
 
 /** Usernames: 3–20 chars, lowercase letters, digits, underscore. */
@@ -50,11 +49,11 @@ export async function checkUsername(username: string): Promise<CheckResult> {
 async function fetchConfig(): Promise<ProviderConfig> {
   try {
     const res = await fetch('/api/auth/config')
-    if (!res.ok) return { google: false, apple: false }
+    if (!res.ok) return { google: false }
     const body = (await res.json()) as { providers?: Partial<ProviderConfig> }
-    return { google: Boolean(body.providers?.google), apple: Boolean(body.providers?.apple) }
+    return { google: Boolean(body.providers?.google) }
   } catch {
-    return { google: false, apple: false }
+    return { google: false }
   }
 }
 

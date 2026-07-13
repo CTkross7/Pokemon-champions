@@ -111,45 +111,67 @@ npx wrangler d1 execute champsnote --file=web/schema.sql --remote
 
 ---
 
-## 계정 로그인 활성화 (선택 · Google / Apple)
+## Cloudflare Pages에서 API(갤러리·계정) 동작 원리
 
-로그인/회원가입도 **선택 기능**입니다. 설정 전에는 로그인 페이지의 소셜 버튼이
+Pages는 정적 파일만 올리는 게 기본이지만, 빌드 산출물(`web/dist`)에 **`_worker.js`**가
+있으면 **고급 모드(advanced mode)**로 전환되어 그 Worker가 모든 요청을 처리합니다.
+`npm run build`가 자동으로 `worker/index.ts`를 `dist/_worker.js`로 번들하므로,
+Pages에서도 `/api/*`(갤러리·계정)와 SPA 라우팅이 그대로 동작합니다. (별도 설정 불필요)
+
+- 정적 파일: `_worker.js`가 `env.ASSETS`로 서빙
+- 클라이언트 라우트(`/dex/...` 등): 파일이 없으면 `index.html` 폴백
+- `/api/*`: 갤러리·계정 핸들러
+
+> Pages 대시보드 빌드 설정: Build command `cd web && npm install && npm run build`,
+> Build output directory `web/dist`.
+
+## Pages에 D1 바인딩 연결 (대시보드)
+
+`wrangler.toml`의 D1 설정은 **Workers 배포**용입니다. **Pages 배포**는 대시보드에서
+바인딩을 따로 지정해야 합니다:
+
+1. **Workers & Pages → (Pages 프로젝트) champsnote → Settings → Bindings**
+   (또는 Functions → D1 database bindings)
+2. **Add binding** → Variable name `DB`, D1 database `champsnote` 선택 → 저장
+3. D1 콘솔에서 `web/schema.sql`의 테이블(samples·users·sessions)을 1회 실행
+4. 재배포 후 `/api/samples`가 `{"samples":[]}`(200)이면 정상
+
+---
+
+## 계정 로그인 활성화 (선택 · Google)
+
+로그인/회원가입은 **선택 기능**입니다. 설정 전에는 로그인 페이지의 Google 버튼이
 '준비 중'으로 비활성화되고, 사용자는 **아이디만 정해 이 기기에 저장되는 데모 계정**을
-쓸 수 있습니다(사이트는 정상 작동). 실제 소셜 로그인·기기 간 동기화를 켜려면:
+쓸 수 있습니다(사이트는 정상 작동). 실제 Google 로그인·기기 간 동기화를 켜려면:
 
-### 1) D1(위 갤러리 절차)로 users·sessions 테이블 생성
-`web/schema.sql`에 이미 포함되어 있으므로, 위 D1 활성화 절차를 그대로 실행하면
-`users`·`sessions` 테이블이 함께 생성됩니다.
+### 1) D1의 users·sessions 테이블 (위 절차)
+`web/schema.sql`에 포함되어 있으니 위 D1 절차대로 실행하면 함께 생성됩니다.
 
-### 2) Worker 환경변수/시크릿 등록
-루트 `wrangler.toml`의 `[vars]`(공개값)와 `wrangler secret`(비밀값)로 등록합니다.
+### 2) 환경변수/시크릿 등록 (Pages 대시보드)
+**Pages 프로젝트 → Settings → Variables and Secrets** 에서:
 
-```bash
-# 공통
-npx wrangler secret put AUTH_SECRET     # 임의의 긴 랜덤 문자열
-# APP_URL 은 wrangler.toml [vars] 에 공개 배포 URL 로 지정 (예: https://champsnote.pages.dev)
+| 이름 | 종류 | 값 |
+|---|---|---|
+| `AUTH_SECRET` | Secret(암호화) | 임의의 긴 랜덤 문자열 |
+| `APP_URL` | Text | 배포 주소(예: `https://champsnote.pages.dev`, 끝 슬래시 없이) |
+| `GOOGLE_CLIENT_ID` | Secret | Google OAuth 클라이언트 ID |
+| `GOOGLE_CLIENT_SECRET` | Secret | Google OAuth 클라이언트 보안 비밀 |
 
-# Google (https://console.cloud.google.com → API 및 서비스 → 사용자 인증 정보 → OAuth 클라이언트 ID)
-#   승인된 리디렉션 URI: {APP_URL}/api/auth/google/callback
-npx wrangler secret put GOOGLE_CLIENT_ID
-npx wrangler secret put GOOGLE_CLIENT_SECRET
+### 3) Google OAuth 클라이언트 만들기
+1. https://console.cloud.google.com → 프로젝트 생성/선택
+2. **API 및 서비스 → OAuth 동의 화면** → External → 앱 이름·이메일 입력 저장
+   (테스트 상태면 "테스트 사용자"에 본인 계정 추가)
+3. **API 및 서비스 → 사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID → 웹 애플리케이션**
+4. **승인된 리디렉션 URI**: `{APP_URL}/api/auth/google/callback`
+   (예: `https://champsnote.pages.dev/api/auth/google/callback`)
+5. 발급된 클라이언트 ID·보안 비밀을 위 2)의 시크릿으로 등록 → 재배포
 
-# Apple (https://developer.apple.com → Certificates, Identifiers & Profiles)
-#   Service ID(=클라이언트 ID), Sign in with Apple 키(.p8, PKCS8)
-#   Return URL: {APP_URL}/api/auth/apple/callback
-npx wrangler secret put APPLE_CLIENT_ID    # Service ID
-npx wrangler secret put APPLE_TEAM_ID
-npx wrangler secret put APPLE_KEY_ID
-npx wrangler secret put APPLE_PRIVATE_KEY   # .p8 파일 내용 전체(-----BEGIN PRIVATE KEY----- 포함)
-```
-
-각 provider는 자격증명이 모두 있을 때만 활성화됩니다(`/api/auth/config`가 자동 판별).
-Google만 등록하면 Google 버튼만 켜지는 식으로 안전하게 부분 활성화됩니다.
+Google 자격증명이 모두 있을 때만 버튼이 활성화됩니다(`/api/auth/config`가 자동 판별).
 
 ### 동작 방식
-- `/api/auth/google/start`·`/api/auth/apple/start` → 공급자 동의 화면으로 리디렉션
-- 콜백에서 토큰 교환 → `users` 업서트 → 세션 쿠키(`cn_session`, HttpOnly·Secure) 발급 → `/profile`로 이동
-- 아이디 중복은 `GET /api/auth/username-available?u=` 로 실시간 검증(로그인 화면에서 사용)
+- `/api/auth/google/start` → Google 동의 화면 리디렉션
+- 콜백에서 토큰 교환 → `users` 업서트 → 세션 쿠키(`cn_session`, HttpOnly·Secure) 발급 → `/profile`
+- 아이디 중복은 `GET /api/auth/username-available?u=` 로 실시간 검증
 
-> ⚠️ 소셜 로그인은 실제 공급자 자격증명이 있어야 검증됩니다. 배포 후
-> Google/Apple 콘솔의 리디렉션 URI를 배포 URL로 맞추고, 실제 로그인 1회로 확인하세요.
+> ⚠️ 실제 Google 로그인은 자격증명 등록 후 검증됩니다. 배포 후 리디렉션 URI가
+> 배포 주소와 정확히 일치하는지 확인하고 실제 로그인 1회로 확인하세요.
