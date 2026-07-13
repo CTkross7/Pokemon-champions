@@ -37,10 +37,23 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
-            urlPattern: /\/(data|sprites)\/.*/,
+            // Game data changes on updates — serve fresh, fall back to cache
+            // offline. (CacheFirst here caused stale data to persist after
+            // redeploys, e.g. old English move names.)
+            urlPattern: /\/data\/.*\.json$/,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'champsnote-data',
+              networkTimeoutSeconds: 4,
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 7 },
+            },
+          },
+          {
+            // Sprites are content-hashed by filename and effectively immutable.
+            urlPattern: /\/sprites\/.*/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'champsnote-assets',
+              cacheName: 'champsnote-sprites',
               expiration: { maxEntries: 2000, maxAgeSeconds: 60 * 60 * 24 * 30 },
             },
           },
