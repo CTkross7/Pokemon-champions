@@ -5,7 +5,7 @@ const tabClass = ({ isActive }: { isActive: boolean }) =>
   [
     'rounded-full px-4 py-1.5 text-sm font-bold transition-colors',
     isActive
-      ? 'bg-zinc-900 text-white dark:bg-volt-400 dark:text-black'
+      ? 'bg-volt-400 text-black dark:bg-volt-400 dark:text-black'
       : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white',
   ].join(' ')
 

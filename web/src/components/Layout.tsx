@@ -122,7 +122,7 @@ export default function Layout() {
                   [
                     'rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
                     isActive
-                      ? 'bg-zinc-900 text-white shadow-soft dark:bg-volt-400 dark:text-black'
+                      ? 'bg-volt-400 text-black shadow-soft dark:bg-volt-400 dark:text-black'
                       : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white',
                   ].join(' ')
                 }
@@ -179,13 +179,20 @@ export default function Layout() {
               end={item.end}
               className={({ isActive }) =>
                 [
-                  'flex flex-col items-center gap-1 pt-2.5 pb-2 text-[10px] font-semibold transition-colors',
-                  isActive ? 'text-black dark:text-volt-400' : 'text-zinc-400 dark:text-zinc-600',
+                  'relative flex flex-col items-center gap-1 pt-3 pb-2 text-[10px] font-semibold transition-colors',
+                  isActive ? 'text-volt-600 dark:text-volt-400' : 'text-zinc-400 dark:text-zinc-600',
                 ].join(' ')
               }
             >
-              <Icon name={item.icon} size={21} />
-              {t(item.key)}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <span className="absolute inset-x-5 top-0 h-0.5 rounded-full bg-volt-500 dark:bg-volt-400" />
+                  )}
+                  <Icon name={item.icon} size={21} />
+                  {t(item.key)}
+                </>
+              )}
             </NavLink>
           ))}
         </div>
