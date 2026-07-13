@@ -10,7 +10,10 @@
  *   GET  /api/samples/:id        fetch one sample (increments view count)
  *   POST /api/samples/:id/like   increment like count
  */
-export interface Env {
+import type { D1Database } from './d1'
+import { handleAuth, type AuthEnv } from './auth'
+
+export interface Env extends AuthEnv {
   ASSETS: { fetch: (request: Request) => Promise<Response> }
   DB?: D1Database
 }
@@ -79,6 +82,13 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
+    if (url.pathname.startsWith('/api/auth')) {
+      try {
+        return await handleAuth(request, env, url)
+      } catch (err) {
+        return json({ error: 'server_error', detail: String(err) }, 500)
+      }
+    }
     if (url.pathname.startsWith('/api/')) {
       try {
         return await handleApi(request, env, url)
@@ -89,15 +99,4 @@ export default {
     // Everything else: static assets (with SPA fallback via wrangler.toml).
     return env.ASSETS.fetch(request)
   },
-}
-
-// Minimal D1 typings (avoids pulling @cloudflare/workers-types into the app build).
-interface D1Database {
-  prepare(query: string): D1PreparedStatement
-}
-interface D1PreparedStatement {
-  bind(...values: unknown[]): D1PreparedStatement
-  first<T = unknown>(colName?: string): Promise<T | null>
-  run(): Promise<unknown>
-  all<T = unknown>(): Promise<{ results: T[] }>
 }

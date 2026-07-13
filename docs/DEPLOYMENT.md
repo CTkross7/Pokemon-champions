@@ -108,3 +108,48 @@ npx wrangler d1 execute champsnote --file=web/schema.sql --remote
 
 이후 팀빌더의 '커뮤니티에 공개' 버튼으로 팀을 올리면 `/gallery`에 표시되고,
 좋아요·가져오기가 동작합니다. (샘플은 D1에 저장됨)
+
+---
+
+## 계정 로그인 활성화 (선택 · Google / Apple)
+
+로그인/회원가입도 **선택 기능**입니다. 설정 전에는 로그인 페이지의 소셜 버튼이
+'준비 중'으로 비활성화되고, 사용자는 **아이디만 정해 이 기기에 저장되는 데모 계정**을
+쓸 수 있습니다(사이트는 정상 작동). 실제 소셜 로그인·기기 간 동기화를 켜려면:
+
+### 1) D1(위 갤러리 절차)로 users·sessions 테이블 생성
+`web/schema.sql`에 이미 포함되어 있으므로, 위 D1 활성화 절차를 그대로 실행하면
+`users`·`sessions` 테이블이 함께 생성됩니다.
+
+### 2) Worker 환경변수/시크릿 등록
+루트 `wrangler.toml`의 `[vars]`(공개값)와 `wrangler secret`(비밀값)로 등록합니다.
+
+```bash
+# 공통
+npx wrangler secret put AUTH_SECRET     # 임의의 긴 랜덤 문자열
+# APP_URL 은 wrangler.toml [vars] 에 공개 배포 URL 로 지정 (예: https://champsnote.pages.dev)
+
+# Google (https://console.cloud.google.com → API 및 서비스 → 사용자 인증 정보 → OAuth 클라이언트 ID)
+#   승인된 리디렉션 URI: {APP_URL}/api/auth/google/callback
+npx wrangler secret put GOOGLE_CLIENT_ID
+npx wrangler secret put GOOGLE_CLIENT_SECRET
+
+# Apple (https://developer.apple.com → Certificates, Identifiers & Profiles)
+#   Service ID(=클라이언트 ID), Sign in with Apple 키(.p8, PKCS8)
+#   Return URL: {APP_URL}/api/auth/apple/callback
+npx wrangler secret put APPLE_CLIENT_ID    # Service ID
+npx wrangler secret put APPLE_TEAM_ID
+npx wrangler secret put APPLE_KEY_ID
+npx wrangler secret put APPLE_PRIVATE_KEY   # .p8 파일 내용 전체(-----BEGIN PRIVATE KEY----- 포함)
+```
+
+각 provider는 자격증명이 모두 있을 때만 활성화됩니다(`/api/auth/config`가 자동 판별).
+Google만 등록하면 Google 버튼만 켜지는 식으로 안전하게 부분 활성화됩니다.
+
+### 동작 방식
+- `/api/auth/google/start`·`/api/auth/apple/start` → 공급자 동의 화면으로 리디렉션
+- 콜백에서 토큰 교환 → `users` 업서트 → 세션 쿠키(`cn_session`, HttpOnly·Secure) 발급 → `/profile`로 이동
+- 아이디 중복은 `GET /api/auth/username-available?u=` 로 실시간 검증(로그인 화면에서 사용)
+
+> ⚠️ 소셜 로그인은 실제 공급자 자격증명이 있어야 검증됩니다. 배포 후
+> Google/Apple 콘솔의 리디렉션 URI를 배포 URL로 맞추고, 실제 로그인 1회로 확인하세요.

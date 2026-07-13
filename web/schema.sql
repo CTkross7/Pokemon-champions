@@ -12,3 +12,26 @@ CREATE TABLE IF NOT EXISTS samples (
 );
 
 CREATE INDEX IF NOT EXISTS idx_samples_created_at ON samples (created_at DESC);
+
+-- Accounts (Google / Apple sign-in + username). Optional: only needed when the
+-- login backend is enabled. See docs/DEPLOYMENT.md for provider setup.
+CREATE TABLE IF NOT EXISTS users (
+  id           TEXT PRIMARY KEY,      -- uuid
+  username     TEXT NOT NULL UNIQUE,  -- lowercase [a-z0-9_], 3-20
+  display_name TEXT NOT NULL,
+  email        TEXT,
+  provider     TEXT NOT NULL,         -- 'google' | 'apple' | 'local'
+  provider_id  TEXT NOT NULL,         -- subject id from the provider
+  avatar_url   TEXT,
+  created_at   INTEGER NOT NULL,      -- epoch millis
+  UNIQUE (provider, provider_id)
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  token      TEXT PRIMARY KEY,        -- opaque random session id
+  user_id    TEXT NOT NULL REFERENCES users (id),
+  expires_at INTEGER NOT NULL,        -- epoch millis
+  created_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions (user_id);

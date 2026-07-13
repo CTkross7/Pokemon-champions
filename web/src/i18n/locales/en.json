@@ -13,13 +13,23 @@
     "about": "About",
     "matchup": "Matchup",
     "gallery": "Community",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "settings": "Settings",
+    "profile": "Profile",
+    "login": "Log in"
   },
   "settings": {
     "language": "Language",
     "theme": "Theme",
     "themeDark": "Dark mode",
-    "themeLight": "Light mode"
+    "themeLight": "Light mode",
+    "title": "Settings",
+    "subtitle": "Manage appearance, language, and your account.",
+    "appearance": "Appearance",
+    "themeSystem": "System",
+    "themeDesc": "Choose the app brightness. System follows your device setting.",
+    "languageDesc": "Choose the interface language.",
+    "account": "Account"
   },
   "home": {
     "badge": "Pokémon Champions · Regulation M-B season",
@@ -333,5 +343,40 @@
     "items": "Items",
     "abilities": "Abilities",
     "spreads": "Spreads"
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "title": "Log in · Sign up",
+    "subtitle": "An account syncs your teams and settings across devices and lets you join the community.",
+    "google": "Continue with Google",
+    "apple": "Continue with Apple",
+    "providerUnavailable": "Coming soon",
+    "providerHint": "Social login activates once the service is deployed.",
+    "username": "Username",
+    "usernamePlaceholder": "3–20 chars, letters/numbers/underscore",
+    "usernameRule": "3–20 chars, lowercase letters, numbers, underscore (_) only",
+    "checking": "Checking…",
+    "available": "Username is available",
+    "taken": "Username is already taken",
+    "invalid": "Invalid username format",
+    "save": "Save",
+    "saving": "Saving…",
+    "profile": "Profile",
+    "profileTitle": "My profile",
+    "displayName": "Display name",
+    "email": "Email",
+    "provider": "Sign-in method",
+    "memberSince": "Member since",
+    "notLoggedIn": "You are not logged in",
+    "loginPrompt": "Log in to use your profile and sync features.",
+    "loginCta": "Log in / Sign up",
+    "editProfile": "Edit profile",
+    "setupTitle": "Set up profile",
+    "setupDesc": "Choose a username for the community.",
+    "backendPending": "The account server (login/sync) activates when the backend is deployed. For now, username preview and format checks work.",
+    "demoNote": "Note: without a backend, the account is stored only on this device.",
+    "continueDemo": "Continue with username (demo)"
   }
 }

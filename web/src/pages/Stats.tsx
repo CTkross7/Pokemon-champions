@@ -58,20 +58,32 @@ export default function Stats() {
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{t('stats.subtitle')}</p>
       </div>
 
-      {/* Usage stats (from the Smogon pipeline) — shown when available */}
-      {usage && usage.pokemon.length > 0 && (
-        <section className="card p-5">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="text-[15px] font-bold">{t('stats.usageTitle')}</h2>
+      {/* Usage ranking — always visible. Real ladder data arrives via the
+          auto-update pipeline; until then we show a clear collecting state. */}
+      <section className="card p-5">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-[15px] font-bold">{t('stats.usageTitle')}</h2>
+          {usage && usage.pokemon.length > 0 && (
             <span className="shrink-0 text-right text-[11px] font-bold text-zinc-400 dark:text-zinc-600">
               {usage.fallback ? t('stats.sourceFallback') : t('stats.source', { month: usage.month })}
             </span>
-          </div>
-          {usage.fallback && (
-            <p className="mt-1 text-[11px] leading-relaxed text-amber-600 dark:text-amber-400">
-              {t('stats.fallbackNote')}
-            </p>
           )}
+        </div>
+
+        {(!usage || usage.pokemon.length === 0) && (
+          <div className="mt-3 grid place-items-center gap-2 rounded-xl border border-dashed border-zinc-300 py-8 text-center dark:border-white/10">
+            <span className="size-2.5 animate-pulse rounded-full bg-volt-500" />
+            <p className="text-[12px] font-semibold text-zinc-500 dark:text-zinc-400">{t('stats.usagePending')}</p>
+          </div>
+        )}
+
+        {usage && usage.fallback && usage.pokemon.length > 0 && (
+          <p className="mt-1 text-[11px] leading-relaxed text-amber-600 dark:text-amber-400">
+            {t('stats.fallbackNote')}
+          </p>
+        )}
+
+        {usage && usage.pokemon.length > 0 && (
           <div className="mt-3 space-y-1.5">
             {usage.pokemon.slice(0, 30).map((u, i) => {
               const s = speciesById.get(u.id)
@@ -126,8 +138,8 @@ export default function Stats() {
               )
             })}
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* Tier rankings — always available (competitive, usage-derived) */}
       <section className="card p-5">
@@ -169,9 +181,6 @@ export default function Stats() {
         </div>
       </section>
 
-      {!usage && (
-        <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('stats.usagePending')}</p>
-      )}
     </div>
   )
 }

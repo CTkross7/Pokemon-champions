@@ -229,3 +229,16 @@
   - `components/MobileActionBar.tsx`: 단일 요소가 브레이크포인트로 재배치(max-lg 고정 하단바 ↔ lg 인라인) — DOM 중복 없음, 세이프에어리어 대응, 하단 탭바 위에 부유
   - 팀빌더 액션 툴바(가져오기·내보내기·공유·공개·삭제)를 모바일에서 엄지 닿는 화면 하단 고정바로 이동, 데스크톱은 인라인 유지
 - 검증: 빌드·린트·E2E 62건 ✅ (모바일 뷰포트에서 하단바 내보내기 클릭 정상)
+
+## Phase 12 시작 — 계정 시스템 + 설정 + 사용률 노출 (2026-07-13)
+- ✅ 사용률 순위 노출 수정(사용자 지적: '사용률 순위가 안보임'): 데이터 없을 때 섹션을 숨기던 로직 → **항상 표시** + '수집 중(자동 갱신)' 상태. 실제 래더 데이터는 파이프라인이 채움(이 환경은 smogon 차단으로 빈 상태)
+- ✅ 설정 페이지(`/settings`): 테마 3종(**라이트/다크/시스템 값(기본 지원)**)·언어·계정 섹션. settings 스토어 Theme에 'system' 추가(matchMedia로 OS 추종+변경 실시간 반영), 헤더 퀵토글은 유효 테마 기준 라이트↔다크
+- ✅ 계정(로그인/회원가입): 
+  - 클라이언트(`lib/auth.ts` zustand): 세션 조회·공급자 설정 조회·아이디 실시간 중복검증·데모 로컬계정 폴백(백엔드 없어도 UI 동작)
+  - 로그인 페이지(`/login`): **Google·Apple 버튼**(자격증명 없으면 '준비 중' 비활성), **아이디 중복 검증**(실시간, 3~20자 영문소문자·숫자·_), 데모 계정 생성
+  - 프로필 페이지(`/profile`): 아바타·표시이름·아이디·로그인방식·가입일·로그아웃
+  - 헤더에 설정·계정 아이콘 추가, 라우트/타이틀 연결
+- ✅ 백엔드(선택·Cloudflare Worker+D1): `worker/auth.ts` — OAuth2 code flow(Google/Apple, Apple은 ES256 client_secret JWT WebCrypto 서명), 세션 쿠키(HttpOnly·Secure), `/api/auth/{config,me,logout,username-available,google,apple}`. D1 `users`·`sessions` 스키마 추가. DB/자격증명 없으면 503→데모 폴백(정적 배포 무해)
+- ✅ 문서: DEPLOYMENT.md에 계정 활성화 절차(Google/Apple 콘솔·wrangler secret·리디렉션 URI) 추가
+- ⚠️ 실제 소셜 로그인은 사용자의 Google Cloud OAuth 클라이언트 / Apple Service ID·키 발급 후 활성화(이 환경에선 공급자 차단으로 미검증). 지금은 아이디 데모 계정으로 프로필·설정 사용 가능
+- 검증: 빌드·린트·E2E(설정 테마·로그인·아이디검증·데모로그인·로그아웃 시나리오 추가) 예정 통과 확인

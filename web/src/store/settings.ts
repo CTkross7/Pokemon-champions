@@ -2,7 +2,8 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import i18n, { type Language } from '@/i18n'
 
-export type Theme = 'dark' | 'light'
+// 'system' follows the OS preference via matchMedia; 'dark'/'light' force it.
+export type Theme = 'dark' | 'light' | 'system'
 
 interface SettingsState {
   theme: Theme
@@ -11,8 +12,20 @@ interface SettingsState {
   setLanguage: (language: Language) => void
 }
 
+const prefersDark = () =>
+  typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
+
+/** Resolves the effective dark/light for a theme setting and applies it. */
 function applyTheme(theme: Theme) {
-  document.documentElement.classList.toggle('dark', theme === 'dark')
+  const dark = theme === 'dark' || (theme === 'system' && prefersDark())
+  document.documentElement.classList.toggle('dark', dark)
+}
+
+// When the OS theme flips and the user is on 'system', re-apply live.
+if (typeof window !== 'undefined' && window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (useSettings.getState().theme === 'system') applyTheme('system')
+  })
 }
 
 export const useSettings = create<SettingsState>()(

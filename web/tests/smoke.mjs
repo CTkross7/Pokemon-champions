@@ -184,6 +184,28 @@ try {
       await page.locator('link[rel="manifest"]').count().then((c) => c > 0),
     )
 
+    // Settings page: theme options (incl. System) render
+    await page.goto(`${BASE}/settings`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] settings appearance`, await eventually(page.getByText(/Appearance|화면/)))
+    check(
+      `[${viewport.tag}] settings theme system option`,
+      await eventually(page.getByRole('button', { name: /System|시스템 값/ })),
+    )
+
+    // Login page: social provider + username picker present
+    await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] login google button`, await eventually(page.getByText(/Continue with Google|Google로 계속하기/)))
+    const usernameBox = page.getByPlaceholder(/chars|자/)
+    await usernameBox.waitFor({ state: 'visible', timeout: 5000 })
+    await usernameBox.fill('trainer_demo')
+    check(`[${viewport.tag}] username availability`, await eventually(page.getByText(/available|사용 가능/)))
+    // Demo login (no backend) creates a local account and routes to the profile
+    await page.getByRole('button', { name: /Continue with username|아이디로 계속/ }).click()
+    check(`[${viewport.tag}] demo login → profile`, await eventually(page.getByText(/@trainer_demo/)))
+    // Logout returns to the login screen
+    await page.getByRole('button', { name: /Log out|로그아웃/ }).click()
+    check(`[${viewport.tag}] logout returns to login`, await eventually(page.getByText(/Continue with Google|Google로 계속하기/)))
+
     await page.goto(BASE, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings persist across reload`, await eventually(page.getByText('Every tool you need to win')))
     // Ignore benign SW registration noise; fail only on real errors

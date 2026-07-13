@@ -1,9 +1,13 @@
 import { useEffect } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@/store/settings'
+import { useAuth } from '@/lib/auth'
 import Icon, { type IconName } from '@/components/Icon'
 import Logo from '@/components/Logo'
+
+const prefersDark = () =>
+  typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
 
 const NAV_ITEMS: ReadonlyArray<{ to: string; key: string; icon: IconName; end?: boolean; tab?: boolean }> = [
   { to: '/', key: 'nav.home', icon: 'home', end: true, tab: true },
@@ -20,9 +24,15 @@ const TAB_ITEMS = NAV_ITEMS.filter((i) => i.tab)
 function HeaderControls() {
   const { t } = useTranslation()
   const { theme, language, setTheme, setLanguage } = useSettings()
+  const user = useAuth((s) => s.user)
+
+  // Quick toggle flips light↔dark from the effective theme (never sets 'system';
+  // the 3-way choice, including System, lives on the Settings page).
+  const effectiveDark = theme === 'dark' || (theme === 'system' && prefersDark())
 
   const buttonClass =
     'inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-zinc-200 bg-white/70 px-3 text-xs font-semibold text-zinc-600 transition-colors hover:border-zinc-300 hover:text-zinc-900 dark:border-white/10 dark:bg-white/5 dark:text-zinc-300 dark:hover:border-white/20 dark:hover:text-white'
+  const iconButton = `${buttonClass} w-9 px-0`
 
   return (
     <div className="flex items-center gap-2">
@@ -37,12 +47,22 @@ function HeaderControls() {
       </button>
       <button
         type="button"
-        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className={`${buttonClass} w-9 px-0`}
-        aria-label={theme === 'dark' ? t('settings.themeLight') : t('settings.themeDark')}
+        onClick={() => setTheme(effectiveDark ? 'light' : 'dark')}
+        className={iconButton}
+        aria-label={effectiveDark ? t('settings.themeLight') : t('settings.themeDark')}
       >
-        <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
+        <Icon name={effectiveDark ? 'sun' : 'moon'} size={16} />
       </button>
+      <Link to="/settings" className={iconButton} aria-label={t('settings.title')}>
+        <Icon name="settings" size={16} />
+      </Link>
+      <Link
+        to={user ? '/profile' : '/login'}
+        className={iconButton}
+        aria-label={user ? t('auth.profile') : t('auth.login')}
+      >
+        <Icon name="user" size={16} />
+      </Link>
     </div>
   )
 }
@@ -55,11 +75,20 @@ const TITLE_BY_PATH: Record<string, string> = {
   '/matchup': 'matchup',
   '/gallery': 'gallery',
   '/about': 'about',
+  '/settings': 'settings',
+  '/profile': 'profile',
+  '/login': 'login',
 }
 
 export default function Layout() {
   const { t } = useTranslation()
   const location = useLocation()
+  const initAuth = useAuth((s) => s.init)
+
+  // Resolve the current session (or fall back to a persisted local account).
+  useEffect(() => {
+    void initAuth()
+  }, [initAuth])
 
   // Per-route document title for SEO / shareable tabs.
   useEffect(() => {
