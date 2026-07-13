@@ -7,6 +7,7 @@ import { shareUrl, encodeTeam } from '@/lib/share'
 import { createSample } from '@/lib/api'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
+import MobileActionBar, { MobileActionBarSpacer } from '@/components/MobileActionBar'
 import SpSliders from '@/components/SpSliders'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
@@ -263,17 +264,21 @@ export default function Teams() {
         </button>
       </div>
 
-      {/* Team header */}
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Team header: name stays inline; primary actions drop to a thumb-reach
+          bottom bar on mobile, stay inline on desktop (MobileActionBar). */}
+      <div className="flex items-center gap-2">
         <input
           value={active.name}
           onChange={(e) => renameTeam(active.id, e.target.value)}
           className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-1 text-lg font-extrabold outline-none focus:border-zinc-200 dark:focus:border-white/10"
         />
-        <button type="button" onClick={() => { setIoText(''); setIoMode('import') }} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300">
+      </div>
+
+      <MobileActionBar>
+        <button type="button" onClick={() => { setIoText(''); setIoMode('import') }} className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300">
           {t('teams.import')}
         </button>
-        <button type="button" onClick={doExport} className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300">
+        <button type="button" onClick={doExport} className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300">
           {t('teams.export')}
         </button>
         <button
@@ -288,7 +293,7 @@ export default function Teams() {
             }
             setTimeout(() => setShareMsg(''), 4000)
           }}
-          className="rounded-lg border border-volt-500 px-3 py-1.5 text-xs font-bold text-volt-700 hover:bg-volt-400/10 dark:border-volt-400/60 dark:text-volt-300"
+          className="shrink-0 rounded-lg border border-volt-500 px-3 py-1.5 text-xs font-bold text-volt-700 hover:bg-volt-400/10 dark:border-volt-400/60 dark:text-volt-300"
         >
           {t('teams.share')}
         </button>
@@ -302,7 +307,7 @@ export default function Teams() {
             setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
             setTimeout(() => setShareMsg(''), 4000)
           }}
-          className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300"
+          className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300"
         >
           {t('teams.publish')}
         </button>
@@ -311,11 +316,11 @@ export default function Teams() {
           onClick={() => {
             if (confirm(t('teams.confirmDelete'))) deleteTeam(active.id)
           }}
-          className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-red-500 hover:border-red-400 dark:border-white/10"
+          className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-red-500 hover:border-red-400 dark:border-white/10"
         >
           {t('teams.delete')}
         </button>
-      </div>
+      </MobileActionBar>
 
       {shareMsg && (
         <div className="rounded-lg bg-volt-400/15 px-4 py-2 text-xs font-bold break-all text-volt-700 dark:text-volt-300">
@@ -444,6 +449,7 @@ export default function Teams() {
       )}
 
       <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('teams.disclaimer')}</p>
+      <MobileActionBarSpacer />
     </div>
   )
 }
