@@ -131,6 +131,43 @@ for (const s of Dex.species.all()) {
     tier: championsTiers[s.id] ?? null,
   })
 }
+// Merge Champions-exclusive Mega formes (Meganium-Mega, Floette-Mega, …). These
+// are invented by Pokémon Champions and are NOT in the base @pkmn/dex data, so
+// their base stats/types come from a curated file sourced from the official
+// Champions data. Only fully-specified entries (types + 6 base stats) are
+// merged; placeholders are skipped so we never ship fabricated stats.
+let championsMegas = []
+try {
+  const raw = await readFile(new URL('../curated/champions-megas.json', import.meta.url), 'utf8')
+  championsMegas = JSON.parse(raw)
+} catch {
+  /* optional */
+}
+let mergedMega = 0
+for (const m of championsMegas) {
+  const bs = m.baseStats
+  const statsOk = bs && ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].every((k) => Number.isFinite(bs[k]))
+  if (!statsOk || !Array.isArray(m.types) || m.types.length === 0) continue
+  const base = Dex.species.get(m.baseSpecies)
+  if (!base) continue
+  const baseKo = koNames.species[String(base.num)]
+  species.push({
+    id: m.id,
+    num: base.num,
+    name: `${base.name}-Mega`,
+    ko: koFormeName(baseKo ?? base.name, 'Mega'),
+    types: m.types,
+    baseStats: bs,
+    abilities: (m.abilities ?? []).map((a) => ({ name: a, ko: abilityKo(a) })),
+    forme: 'Mega',
+    baseSpecies: base.id,
+    champions: true,
+    tier: m.tier ?? championsTiers[m.id] ?? null,
+  })
+  mergedMega++
+}
+if (mergedMega) console.log(`Merged ${mergedMega} Champions-exclusive Mega formes.`)
+
 species.sort((a, b) => a.num - b.num || a.id.localeCompare(b.id))
 
 const moves = {}
