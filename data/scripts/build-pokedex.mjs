@@ -37,6 +37,22 @@ try {
 
 const normalize = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 
+/**
+ * Korean ability name. Handles form-suffixed abilities like "As One (Glastrier)"
+ * whose base ("As One" = 혼연일체) is translated but the suffixed variant isn't:
+ * translate the base and re-append the suffix.
+ */
+function abilityKo(name) {
+  const direct = koNames.abilities[normalize(name)]
+  if (direct) return direct
+  const m = name.match(/^(.*?)\s*\(([^)]+)\)\s*$/)
+  if (m) {
+    const base = koNames.abilities[normalize(m[1])]
+    if (base) return `${base} (${m[2]})`
+  }
+  return name
+}
+
 /** Korean labels for common forme fragments. */
 const FORME_KO = {
   mega: '메가',
@@ -81,7 +97,7 @@ for (const s of Dex.species.all()) {
     ko: koFormeName(baseKo, s.forme),
     types: s.types,
     baseStats: s.baseStats,
-    abilities: Object.values(s.abilities).map((a) => ({ name: a, ko: koNames.abilities[normalize(a)] ?? a })),
+    abilities: Object.values(s.abilities).map((a) => ({ name: a, ko: abilityKo(a) })),
     forme: s.forme || null,
     baseSpecies: s.baseSpecies && s.baseSpecies !== s.name ? Dex.species.get(s.baseSpecies).id : null,
     champions: rosterIds.has(s.id),
@@ -92,7 +108,10 @@ species.sort((a, b) => a.num - b.num || a.id.localeCompare(b.id))
 
 const moves = {}
 for (const m of Dex.moves.all()) {
-  if (m.isNonstandard && EXCLUDED_NONSTANDARD.has(m.isNonstandard)) continue
+  // Exclude every non-standard move (Gigantamax, Past/Hidden Power, LGPE, CAP,
+  // ...). None exist in Champions, and they lack Korean names — the source of
+  // English move names leaking into the Korean learnset table.
+  if (m.isNonstandard) continue
   moves[m.id] = {
     name: m.name,
     ko: koNames.moves[normalize(m.name)] ?? m.name,

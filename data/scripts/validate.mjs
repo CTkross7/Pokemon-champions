@@ -130,3 +130,35 @@ if (errors.length > 0) {
   process.exit(1)
 }
 console.log('✓ Name verification passed (items, species, moves)')
+
+// --- No untranslated names on Champions content (regression guard) ---
+// Prevents English move/ability names leaking into the Korean UI (e.g. a
+// non-standard move without a Korean name showing up in a learnset).
+try {
+  const { species: dex } = JSON.parse(await readFile(path.join(webData, 'data', 'pokedex.json'), 'utf8'))
+  const moves = JSON.parse(await readFile(path.join(webData, 'data', 'moves.json'), 'utf8'))
+  const learnsets = JSON.parse(await readFile(path.join(webData, 'data', 'learnsets.json'), 'utf8'))
+  const champ = dex.filter((s) => s.champions)
+
+  const untranslatedAbilities = new Set()
+  for (const s of champ) for (const a of s.abilities) if (a.ko === a.name && /[A-Za-z]/.test(a.name)) untranslatedAbilities.add(a.name)
+  check(untranslatedAbilities.size === 0, `untranslated Champions abilities: ${[...untranslatedAbilities].slice(0, 8).join(', ')}`)
+
+  const untranslatedMoves = new Set()
+  for (const s of champ) {
+    for (const id of learnsets[s.id] ?? []) {
+      const mv = moves[id]
+      if (mv && mv.ko === mv.name && /[A-Za-z]/.test(mv.name)) untranslatedMoves.add(mv.name)
+    }
+  }
+  check(untranslatedMoves.size === 0, `untranslated Champions learnset moves: ${[...untranslatedMoves].slice(0, 8).join(', ')}`)
+} catch (err) {
+  errors.push(`translation guard failed: ${err.message}`)
+}
+
+if (errors.length > 0) {
+  console.error(`✗ Translation guard failed with ${errors.length} error(s):`)
+  for (const err of errors) console.error(`  - ${err}`)
+  process.exit(1)
+}
+console.log('✓ Translation guard passed (no English on Champions moves/abilities)')
