@@ -4,24 +4,23 @@
 
 ## ⚡ 흰 화면 문제 해결 (Workers로 배포한 경우)
 
-제목("챔스노트 — ...")은 뜨는데 화면이 흰 것은 **최신 빌드 없이 이전 dist를 올렸거나
-브라우저 캐시** 때문인 경우가 대부분입니다. (설정·코드는 wrangler 엔진에서 정상 렌더링
-검증 완료.) 아래 **한 줄 명령**으로 항상 빌드→배포를 함께 실행하세요:
+### Cloudflare 대시보드(Git 연결) 배포 — 권장 설정
+Cloudflare가 배포 명령을 **저장소 루트에서** 실행하므로, 설정 파일(`wrangler.toml`)을
+**루트에** 두었습니다. 대시보드(Workers & Pages → 프로젝트 → Settings → Builds)에서:
+- **Build command**: `cd web && npm install && npm run build`
+- **Deploy command**: `npx wrangler deploy`
 
+루트 `wrangler.toml`이 `web/dist`를 에셋으로 지정하므로 node_modules 업로드로 인한
+"Asset too large" 오류와 흰 화면이 모두 해결됩니다. 저장소에 커밋만 하면 자동 재배포됩니다.
+
+### 로컬에서 직접 배포
 ```bash
-cd web        # ★ 반드시 web 폴더에서 실행
-npm install   # 최초 1회
-npm run deploy
+cd web
+npm install        # 최초 1회
+npm run deploy     # build 후 루트에서 wrangler deploy 실행
 ```
 
-`npm run deploy`는 `npm run build && wrangler deploy`를 한 번에 실행하므로
-**빌드 누락으로 인한 흰 화면이 원천 차단**됩니다.
-
-배포 후에도 흰 화면이면 **브라우저 강력 새로고침**(주소창 옆 새로고침 길게 → 캐시 삭제)
-또는 **시크릿창**으로 접속해 이전 캐시를 우회하세요.
-
-> 참고: 반드시 `web` 폴더 안에서 실행해야 `web/wrangler.toml`(SPA 라우팅 설정)이 적용됩니다.
-> 저장소 루트에서 실행하면 설정을 못 찾아 화면이 깨집니다.
+배포 후에도 흰 화면이면 **강력 새로고침** 또는 **시크릿창**으로 이전 캐시를 우회하세요.
 
 ## 🔤 URL의 계정명(`junghyeonr2d2`) 제거/변경
 
@@ -98,14 +97,13 @@ npm run preview   # http://localhost:4173
 `/api/*`는 503을 반환하고 갤러리는 "준비 중"으로 표시됩니다. 활성화하려면(1회):
 
 ```bash
-cd web
+# 저장소 루트에서 실행
 # 1) D1 데이터베이스 생성 → 출력된 database_id 복사
 npx wrangler d1 create champsnote
-# 2) web/wrangler.toml 하단의 [[d1_databases]] 블록 주석 해제 후 database_id 붙여넣기
+# 2) 루트 wrangler.toml 하단의 [[d1_databases]] 블록 주석 해제 후 database_id 붙여넣기
 # 3) 테이블 생성(원격)
-npx wrangler d1 execute champsnote --file=./schema.sql --remote
-# 4) 재배포
-npm run deploy
+npx wrangler d1 execute champsnote --file=web/schema.sql --remote
+# 4) 커밋/푸시(자동 재배포) 또는  cd web && npm run deploy
 ```
 
 이후 팀빌더의 '커뮤니티에 공개' 버튼으로 팀을 올리면 `/gallery`에 표시되고,

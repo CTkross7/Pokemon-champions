@@ -9,7 +9,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test:e2e": "node tests/smoke.mjs",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && cd .. && npx wrangler deploy"
   },
   "dependencies": {
     "@pkmn/dex": "^0.10.11",
