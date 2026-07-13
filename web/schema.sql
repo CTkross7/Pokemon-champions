@@ -35,3 +35,17 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions (user_id);
+
+-- Notices / announcements board (Phase 12). Public to read; only admins
+-- (ADMIN_USERNAMES env var) can post or delete. category: notice | update | event.
+CREATE TABLE IF NOT EXISTS notices (
+  id         TEXT PRIMARY KEY,
+  title      TEXT NOT NULL,
+  body       TEXT NOT NULL,
+  category   TEXT NOT NULL DEFAULT 'notice',
+  pinned     INTEGER NOT NULL DEFAULT 0,
+  author     TEXT,                 -- display name of the posting admin
+  created_at INTEGER NOT NULL      -- epoch millis
+);
+
+CREATE INDEX IF NOT EXISTS idx_notices_created ON notices (pinned DESC, created_at DESC);

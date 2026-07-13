@@ -87,6 +87,12 @@ const PATHS = {
       <path d="M17 8.5 20.5 12 17 15.5M20.5 12h-9" />
     </>
   ),
+  bell: (
+    <>
+      <path d="M6.4 9.2a5.6 5.6 0 0 1 11.2 0c0 5 2.1 6.3 2.1 6.3H4.3s2.1-1.3 2.1-6.3Z" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </>
+  ),
 } as const
 
 export type IconName = keyof typeof PATHS

@@ -12,6 +12,7 @@
  */
 import type { D1Database } from './d1'
 import { handleAuth, type AuthEnv } from './auth'
+import { handleNotices } from './notices'
 
 export interface Env extends AuthEnv {
   ASSETS: { fetch: (request: Request) => Promise<Response> }
@@ -85,6 +86,13 @@ export default {
     if (url.pathname.startsWith('/api/auth')) {
       try {
         return await handleAuth(request, env, url)
+      } catch (err) {
+        return json({ error: 'server_error', detail: String(err) }, 500)
+      }
+    }
+    if (url.pathname.startsWith('/api/notices')) {
+      try {
+        return await handleNotices(request, env, url)
       } catch (err) {
         return json({ error: 'server_error', detail: String(err) }, 500)
       }

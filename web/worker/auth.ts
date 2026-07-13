@@ -21,6 +21,8 @@ export interface AuthEnv {
   APP_URL?: string
   GOOGLE_CLIENT_ID?: string
   GOOGLE_CLIENT_SECRET?: string
+  /** Comma-separated usernames granted admin (notices, moderation). */
+  ADMIN_USERNAMES?: string
 }
 
 interface UserRow {
@@ -96,7 +98,17 @@ function slugFromEmailOrName(email: string | null, name: string | null): string 
   return `${safe}_${randomToken().slice(0, 4)}`
 }
 
-const publicUser = (u: UserRow) => ({
+/** True when the username is listed in the ADMIN_USERNAMES env (comma-separated). */
+export function isAdmin(env: AuthEnv, username: string | null | undefined): boolean {
+  if (!username) return false
+  const list = (env.ADMIN_USERNAMES ?? '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean)
+  return list.includes(username.toLowerCase())
+}
+
+const publicUser = (u: UserRow, admin = false) => ({
   id: u.id,
   username: u.username,
   displayName: u.display_name,
@@ -104,11 +116,12 @@ const publicUser = (u: UserRow) => ({
   provider: u.provider,
   avatarUrl: u.avatar_url,
   createdAt: u.created_at,
+  isAdmin: admin,
 })
 
 // ---- session helpers -------------------------------------------------------
 
-async function currentUser(db: D1Database, request: Request): Promise<UserRow | null> {
+export async function currentUser(db: D1Database, request: Request): Promise<UserRow | null> {
   const token = parseCookies(request.headers.get('cookie'))[SESSION_COOKIE]
   if (!token) return null
   const row = await db
@@ -191,7 +204,7 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
 
   if (path === 'me') {
     const user = await currentUser(db, request)
-    return json({ user: user ? publicUser(user) : null })
+    return json({ user: user ? publicUser(user, isAdmin(env, user.username)) : null })
   }
 
   if (path === 'logout' && request.method === 'POST') {

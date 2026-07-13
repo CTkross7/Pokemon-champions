@@ -16,7 +16,8 @@
     "privacy": "개인정보",
     "settings": "설정",
     "profile": "프로필",
-    "login": "로그인"
+    "login": "로그인",
+    "notices": "공지"
   },
   "settings": {
     "language": "언어",
@@ -378,5 +379,25 @@
     "backendPending": "계정 서버(로그인·동기화)는 백엔드 배포 시 활성화됩니다. 지금은 아이디 미리보기·형식 검증만 동작합니다.",
     "demoNote": "※ 데모: 백엔드 미연결 시 계정은 이 기기에만 저장됩니다.",
     "continueDemo": "아이디로 계속(데모)"
+  },
+  "notices": {
+    "title": "공지사항",
+    "subtitle": "챔스노트 업데이트·점검·이벤트 소식을 확인하세요.",
+    "empty": "아직 등록된 공지가 없습니다.",
+    "pinned": "고정",
+    "cat_notice": "공지",
+    "cat_update": "업데이트",
+    "cat_event": "이벤트",
+    "compose": "공지 작성",
+    "formTitle": "제목",
+    "formBody": "내용",
+    "formCategory": "분류",
+    "formPin": "상단 고정",
+    "post": "등록",
+    "posting": "등록 중…",
+    "delete": "삭제",
+    "confirmDelete": "이 공지를 삭제할까요?",
+    "needBackend": "공지 게시판은 백엔드(D1) 배포 시 활성화됩니다.",
+    "postFail": "등록에 실패했습니다. 관리자 권한·로그인 상태를 확인하세요."
   }
 }

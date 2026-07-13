@@ -16,6 +16,7 @@ const NAV_ITEMS: ReadonlyArray<{ to: string; key: string; icon: IconName; end?: 
   { to: '/teams', key: 'nav.teams', icon: 'users', tab: true },
   { to: '/matchup', key: 'nav.matchup', icon: 'zap', tab: true },
   { to: '/gallery', key: 'nav.gallery', icon: 'sparkles', tab: false },
+  { to: '/notices', key: 'nav.notices', icon: 'bell', tab: false },
   { to: '/about', key: 'nav.about', icon: 'info', tab: false },
 ]
 
@@ -74,6 +75,7 @@ const TITLE_BY_PATH: Record<string, string> = {
   '/teams': 'teams',
   '/matchup': 'matchup',
   '/gallery': 'gallery',
+  '/notices': 'notices',
   '/about': 'about',
   '/settings': 'settings',
   '/profile': 'profile',
@@ -150,7 +152,10 @@ export default function Layout() {
             <span>{t('app.developedBy', { name: 'CTkross' })}</span>
           </div>
           <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>
-          <div className="flex gap-3 text-[11px] font-semibold text-zinc-400 dark:text-zinc-500">
+          <div className="flex flex-wrap gap-3 text-[11px] font-semibold text-zinc-400 dark:text-zinc-500">
+            <NavLink to="/notices" className="hover:text-zinc-700 dark:hover:text-zinc-300">
+              {t('nav.notices')}
+            </NavLink>
             <NavLink to="/about" className="hover:text-zinc-700 dark:hover:text-zinc-300">
               {t('nav.about')}
             </NavLink>

@@ -19,6 +19,7 @@ export interface AuthUser {
   provider: Provider
   avatarUrl: string | null
   createdAt: number
+  isAdmin?: boolean
 }
 
 export interface ProviderConfig {

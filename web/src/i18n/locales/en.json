@@ -16,7 +16,8 @@
     "privacy": "Privacy",
     "settings": "Settings",
     "profile": "Profile",
-    "login": "Log in"
+    "login": "Log in",
+    "notices": "Notices"
   },
   "settings": {
     "language": "Language",
@@ -378,5 +379,25 @@
     "backendPending": "The account server (login/sync) activates when the backend is deployed. For now, username preview and format checks work.",
     "demoNote": "Note: without a backend, the account is stored only on this device.",
     "continueDemo": "Continue with username (demo)"
+  },
+  "notices": {
+    "title": "Notices",
+    "subtitle": "Updates, maintenance, and events for ChampsNote.",
+    "empty": "No notices yet.",
+    "pinned": "Pinned",
+    "cat_notice": "Notice",
+    "cat_update": "Update",
+    "cat_event": "Event",
+    "compose": "New notice",
+    "formTitle": "Title",
+    "formBody": "Body",
+    "formCategory": "Category",
+    "formPin": "Pin to top",
+    "post": "Post",
+    "posting": "Posting…",
+    "delete": "Delete",
+    "confirmDelete": "Delete this notice?",
+    "needBackend": "The notices board activates once the backend (D1) is deployed.",
+    "postFail": "Failed to post. Check your admin permission and login."
   }
 }

@@ -156,6 +156,10 @@ Pages에서도 `/api/*`(갤러리·계정)와 SPA 라우팅이 그대로 동작�
 | `APP_URL` | Text | 배포 주소(예: `https://champsnote.pages.dev`, 끝 슬래시 없이) |
 | `GOOGLE_CLIENT_ID` | Secret | Google OAuth 클라이언트 ID |
 | `GOOGLE_CLIENT_SECRET` | Secret | Google OAuth 클라이언트 보안 비밀 |
+| `ADMIN_USERNAMES` | Text | (선택) 공지 작성 권한 아이디, 쉼표로 여러 명(예: `ctkross`) |
+
+> `ADMIN_USERNAMES`에 등록된 아이디로 로그인하면 `/notices`(공지사항)에서 글 작성·삭제가 가능합니다.
+> 일반 사용자는 읽기만 됩니다.
 
 ### 3) Google OAuth 클라이언트 만들기
 1. https://console.cloud.google.com → 프로젝트 생성/선택
