@@ -49,23 +49,31 @@ export default function Stats() {
       {/* Usage stats (from the Smogon pipeline) — shown when available */}
       {usage && usage.pokemon.length > 0 && (
         <section className="card p-5">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <h2 className="text-[15px] font-bold">{t('stats.usageTitle')}</h2>
-            <span className="text-[11px] font-bold text-zinc-400 dark:text-zinc-600">
-              {t('stats.source', { month: usage.month })}
+            <span className="shrink-0 text-right text-[11px] font-bold text-zinc-400 dark:text-zinc-600">
+              {usage.fallback ? t('stats.sourceFallback') : t('stats.source', { month: usage.month })}
             </span>
           </div>
+          {usage.fallback && (
+            <p className="mt-1 text-[11px] leading-relaxed text-amber-600 dark:text-amber-400">
+              {t('stats.fallbackNote')}
+            </p>
+          )}
           <div className="mt-3 space-y-1.5">
             {usage.pokemon.slice(0, 30).map((u, i) => {
               const s = speciesById.get(u.id)
               const maxUsage = usage.pokemon[0].usage || 1
-              const isOpen = open === u.id
+              const hasDetail =
+                u.moves.length > 0 || u.items.length > 0 || u.abilities.length > 0 || u.spreads.length > 0
+              const isOpen = open === u.id && hasDetail
               return (
                 <div key={u.id} className="rounded-xl border border-zinc-200/70 dark:border-white/8">
                   <button
                     type="button"
-                    onClick={() => setOpen(isOpen ? null : u.id)}
-                    className="flex w-full items-center gap-3 p-2.5 text-left"
+                    onClick={() => hasDetail && setOpen(isOpen ? null : u.id)}
+                    aria-expanded={isOpen}
+                    className={`flex w-full items-center gap-3 p-2.5 text-left ${hasDetail ? '' : 'cursor-default'}`}
                   >
                     <span className="w-5 shrink-0 text-center text-xs font-extrabold text-zinc-400 dark:text-zinc-600">
                       {i + 1}

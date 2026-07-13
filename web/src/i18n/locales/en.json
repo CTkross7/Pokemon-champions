@@ -325,6 +325,8 @@
     "tierNote": "Note: tiers (Uber/OU, ...) are Smogon's community classification and differ from the in-game Champions season ranking. Real in-game usage/season data appears under 'Usage ranking' below.",
     "usageTitle": "Usage ranking",
     "source": "Source: Smogon {{month}}",
+    "sourceFallback": "Estimated (reference)",
+    "fallbackNote": "* This ranking is estimated from competitive tiers and base-stat totals until measured usage stats are collected. It is replaced automatically once real data arrives.",
     "usagePending": "Real usage/adoption stats are auto-collected weekly from the Pokémon Champions ladder (official API / Smogon Champions stats). Collection is pending; a reference meta classification is shown meanwhile.",
     "count": "{{count}}",
     "moves": "Moves",

@@ -15,6 +15,8 @@ export interface UsageData {
   month: string
   format: string
   cutoff: number
+  /** True when the ranking is synthesized from curated tiers (Smogon unreachable). */
+  fallback?: boolean
   pokemon: UsageEntry[]
 }
 
