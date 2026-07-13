@@ -8,7 +8,8 @@
     "fetch:ko-names": "node scripts/fetch-ko-names.mjs",
     "validate": "node scripts/validate.mjs",
     "build:pokedex": "node scripts/build-pokedex.mjs",
-    "fetch:sprites": "node scripts/fetch-sprites.mjs"
+    "fetch:sprites": "node scripts/fetch-sprites.mjs",
+    "fetch:champions-roster": "node scripts/fetch-champions-roster.mjs"
   },
   "dependencies": {
     "@pkmn/dex": "^0.10.11"

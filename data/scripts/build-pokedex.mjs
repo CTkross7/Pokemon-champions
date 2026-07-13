@@ -22,7 +22,18 @@ const root = path.join(here, '..')
 const outDir = path.join(root, '..', 'web', 'public', 'data')
 
 const koNames = JSON.parse(await readFile(path.join(root, 'generated', 'ko-names.json'), 'utf8'))
-const roster = JSON.parse(await readFile(path.join(root, 'curated', 'roster.seed.json'), 'utf8'))
+
+// Authoritative Champions roster from the Showdown `champions` mod
+// (data/scripts/fetch-champions-roster.mjs). Falls back to the curated seed if
+// the generated file is missing (e.g. first run before fetch).
+let championsRoster
+try {
+  championsRoster = JSON.parse(await readFile(path.join(root, 'generated', 'champions-roster.json'), 'utf8'))
+} catch {
+  const seed = JSON.parse(await readFile(path.join(root, 'curated', 'roster.seed.json'), 'utf8'))
+  championsRoster = { species: seed.species.map((n) => Dex.species.get(n).id), tiers: {} }
+  console.warn('champions-roster.json missing; falling back to roster.seed.json')
+}
 
 const normalize = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 
@@ -53,7 +64,8 @@ function koFormeName(baseKo, forme) {
 }
 
 const EXCLUDED_NONSTANDARD = new Set(['CAP', 'Custom', 'Future'])
-const rosterIds = new Set(roster.species.map((n) => Dex.species.get(n).id))
+const rosterIds = new Set(championsRoster.species)
+const championsTiers = championsRoster.tiers ?? {}
 
 const species = []
 for (const s of Dex.species.all()) {
@@ -72,7 +84,8 @@ for (const s of Dex.species.all()) {
     abilities: Object.values(s.abilities).map((a) => ({ name: a, ko: koNames.abilities[normalize(a)] ?? a })),
     forme: s.forme || null,
     baseSpecies: s.baseSpecies && s.baseSpecies !== s.name ? Dex.species.get(s.baseSpecies).id : null,
-    champions: rosterIds.has(s.id) || (s.baseSpecies && rosterIds.has(Dex.species.get(s.baseSpecies).id)) || false,
+    champions: rosterIds.has(s.id),
+    tier: championsTiers[s.id] ?? null,
   })
 }
 species.sort((a, b) => a.num - b.num || a.id.localeCompare(b.id))

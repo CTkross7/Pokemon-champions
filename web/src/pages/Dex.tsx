@@ -19,7 +19,8 @@ export default function Dex() {
   const [error, setError] = useState(false)
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState<TypeName | null>(null)
-  const [championsOnly, setChampionsOnly] = useState(false)
+  // Default to Champions-only so the dex shows exactly what exists in the game.
+  const [championsOnly, setChampionsOnly] = useState(true)
   const [includeFormes, setIncludeFormes] = useState(false)
   const [sort, setSort] = useState<SortKey>('num')
   const [limit, setLimit] = useState(PAGE_SIZE)

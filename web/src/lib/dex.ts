@@ -16,6 +16,7 @@ export interface Species {
   forme: string | null
   baseSpecies: string | null
   champions: boolean
+  tier: string | null
 }
 
 export interface MoveData {

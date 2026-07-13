@@ -23,7 +23,7 @@
 | 6 | ★ 빌드 추천 + 샘플 URL 공유 (백엔드 불필요) | ✅ 완료 |
 | 7 | 커뮤니티 샘플 갤러리 (Workers+D1, 선택적 백엔드) | ✅ 완료 |
 | 8 | PWA·SEO·개인정보처리방침·AdSense 준비 | ✅ 완료 |
-| 9 | ★ 데이터 정확성·자동 갱신 파이프라인 강화(검증 소스 크롤링, GitHub Actions) | ⬜ 예정 |
+| 9 | ★ 데이터 정확성: 공식 반영 오픈소스(Showdown champions 모드) 로스터 자동 반영 | ✅ 완료 |
 | 10 | 품질 안정화(검색 실시간·반응형 텍스처 깨짐·한/영 표기·특성 누락 버그) | 🔶 진행중 |
 | 11 | 배틀 데이터(사용률·채용률·상위 덱 분석) + 유저 가공 도구 | ⬜ 예정 |
 | 12 | 커뮤니티 운영(신고·관리자 대시보드·유저 경고/차단·공지 게시판) | ⬜ 예정 |
@@ -190,3 +190,15 @@
 - (A) 크롤링(요청안): GitHub Actions에서 검증 사이트 크롤 → 재가공. 법적 리스크·유지보수 부담 큼, 구조 변경 시 취약
 - (B) 라이선스/오픈 데이터 + 자체 커뮤니티 집계(권장): 공식·오픈 소스(PokéAPI/Showdown) 자동 갱신 + 배틀데이터는 우리 커뮤니티(팀 공개·전적 기록)에서 자체 집계 → 합법·차별화·자생적
 - (C) 혼합: 메커니즘 데이터는 오픈소스 자동 갱신, 로스터/메타는 확보 가능한 검증 소스만 반영
+
+## Phase 9 완료 내역 (2026-07-13) — 데이터 정확성(사용자 요청: 검증 출처 기반)
+- 포케챔스(yodams) 데이터 출처 캡처 분석 → 실제 상위 출처 확인: 공식 Champions API(api.app.pokemonchampions.jp, 이 환경 차단), Smogon usage-stats, **Pokémon Showdown `champions` 모드**(GitHub, 접근 가능·MIT)
+- `fetch-champions-roster.mjs`: Showdown champions 모드 formats-data.ts 파싱 → **권위 있는 로스터 310종**(tier 포함) 자동 추출. 경쟁사 스크래핑 대신 동일 공식·오픈 출처 사용(합법)
+- build-pokedex: champions 플래그를 수동 시드(32종) → **공식 로스터 정확 매칭(275종/도감)**, tier(UU/Uber 등) 추가. bulbasaur 등 미포함 종 정확히 제외
+- 도감 기본 필터를 **Champions 전용**으로 변경(사용자 요청: 포챔스에 존재하는 것만) + '전체' 토글 유지
+- 자동 갱신 워크플로우에 fetch:champions-roster 포함 → 게임/모드 업데이트 시 로스터 자동 반영(수동 갱신 불필요)
+- 검증: 빌드·린트·E2E 58건 ✅ / 데이터 검증(taurospaldeaaqua·garchomp OU champions=true, bulbasaur=false) ✅
+
+## Phase 10 진행중 (품질 안정화)
+- ✅ 성격 한글화(NATURE_KO+natureLabel), ✅ 특성 한글화(계산기·팀빌더)
+- ⬜ 잔여: 검색 실시간·반응형 레이아웃 깨짐 등
