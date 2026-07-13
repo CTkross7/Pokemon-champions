@@ -125,23 +125,22 @@ export type Weather = (typeof WEATHERS)[number]
 export const TERRAINS = ['', 'Electric', 'Grassy', 'Psychic', 'Misty'] as const
 export type Terrain = (typeof TERRAINS)[number]
 
-/** Common competitive held items (@smogon/calc name → Korean label). */
+/**
+ * Common held items that are actually LEGAL in Pokémon Champions (Reg M-B).
+ * Verified against Pokémon Showdown's `champions` mod items.ts — items marked
+ * isNonstandard "Past" there are NOT in the game and are excluded (e.g. Choice
+ * Band/Specs, Assault Vest, Rocky Helmet, Weakness Policy, Booster Energy,
+ * Clear Amulet, Safety Goggles). Mega Evolution is handled via species
+ * selection, so Mega Stones are not listed here.
+ */
 export const COMMON_ITEMS: ReadonlyArray<{ id: string; ko: string }> = [
   { id: '', ko: '없음' },
-  { id: 'Choice Band', ko: '구애머리띠' },
-  { id: 'Choice Specs', ko: '구애안경' },
   { id: 'Choice Scarf', ko: '구애스카프' },
   { id: 'Life Orb', ko: '생명의구슬' },
   { id: 'Leftovers', ko: '먹다남은음식' },
-  { id: 'Assault Vest', ko: '돌격조끼' },
   { id: 'Focus Sash', ko: '기합의띠' },
-  { id: 'Rocky Helmet', ko: '울퉁불퉁멧' },
   { id: 'Sitrus Berry', ko: '자뭉열매' },
   { id: 'Expert Belt', ko: '달인의띠' },
-  { id: 'Weakness Policy', ko: '약점보험' },
-  { id: 'Booster Energy', ko: '부스트에너지' },
-  { id: 'Clear Amulet', ko: '클리어참' },
-  { id: 'Safety Goggles', ko: '방진고글' },
   { id: 'Mystic Water', ko: '신비의물방울' },
   { id: 'Charcoal', ko: '목탄' },
   { id: 'Magnet', ko: '자석' },

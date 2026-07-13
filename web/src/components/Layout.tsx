@@ -79,7 +79,7 @@ export default function Layout() {
 
           {/* Desktop nav */}
           <nav
-            className="hidden items-center gap-1 rounded-full border border-zinc-200/70 bg-white/60 p-1 sm:flex dark:border-white/8 dark:bg-white/4"
+            className="hidden items-center gap-1 rounded-full border border-zinc-200/70 bg-white/60 p-1 lg:flex dark:border-white/8 dark:bg-white/4"
             aria-label="main"
           >
             {NAV_ITEMS.map((item) => (
@@ -112,7 +112,7 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="mb-20 border-t border-zinc-200/70 py-6 sm:mb-0 dark:border-white/6">
+      <footer className="mb-20 border-t border-zinc-200/70 py-6 lg:mb-0 dark:border-white/6">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 sm:px-6">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-zinc-400 dark:text-zinc-500">
             <Logo size={16} />
@@ -134,7 +134,7 @@ export default function Layout() {
 
       {/* Mobile bottom tab bar (native-app style) */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl sm:hidden dark:border-white/8 dark:bg-surface-dark/85"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden dark:border-white/8 dark:bg-surface-dark/85"
         aria-label="mobile"
       >
         <div className="grid grid-cols-5">

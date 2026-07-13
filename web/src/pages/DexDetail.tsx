@@ -110,11 +110,12 @@ export default function DexDetail() {
       </Link>
 
       {/* Header card */}
-      <section className="card relative overflow-hidden p-6 sm:p-8">
-        <div
-          className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full opacity-15 blur-[70px]"
-          style={{ backgroundColor: TYPE_COLORS[species.types[0] as TypeName] }}
-        />
+      <section
+        className="card relative overflow-hidden p-6 sm:p-8"
+        style={{
+          backgroundImage: `radial-gradient(70% 90% at 100% 0%, ${TYPE_COLORS[species.types[0] as TypeName]}22, transparent 60%)`,
+        }}
+      >
         <div className="relative flex flex-wrap items-center gap-6">
           <div className="grid size-28 place-items-center rounded-3xl bg-zinc-100 dark:bg-white/5">
             <Sprite species={species} size={96} />

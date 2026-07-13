@@ -20,21 +20,18 @@ export default function Home() {
 
   return (
     <div className="space-y-12">
-      {/* Hero — black with volt glow */}
-      <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-black px-6 py-14 text-white sm:px-12 sm:py-20">
-        <div className="pointer-events-none absolute -top-28 -left-20 size-80 rounded-full bg-volt-400/25 blur-[110px]" />
-        <div className="pointer-events-none absolute -right-24 -bottom-32 size-96 rounded-full bg-volt-500/12 blur-[120px]" />
-        {/* fine grid texture */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)',
-            backgroundSize: '44px 44px',
-            maskImage: 'radial-gradient(ellipse 80% 70% at 50% 0%, black, transparent)',
-          }}
-        />
-
+      {/* Hero — black with volt glow.
+          Glows use radial-gradient layers (no CSS blur filter) so they render
+          identically across GPUs; heavy blur-[110px] filters caused noise
+          artifacts on some tablets/aspect ratios. */}
+      <section
+        className="relative overflow-hidden rounded-[28px] border border-white/10 bg-black px-6 py-14 text-white sm:px-12 sm:py-20"
+        style={{
+          backgroundImage:
+            'radial-gradient(60% 80% at 12% 0%, rgba(208,242,36,0.18), transparent 60%),' +
+            'radial-gradient(55% 75% at 100% 100%, rgba(184,219,16,0.10), transparent 60%)',
+        }}
+      >
         <div className="relative">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11px] font-semibold tracking-wide text-zinc-300">
             <span className="size-1.5 animate-pulse rounded-full bg-volt-400" />
