@@ -465,5 +465,12 @@
     "confirmDelete": "Delete this notice?",
     "needBackend": "The notices board activates once the backend (D1) is deployed.",
     "postFail": "Failed to post. Check your admin permission and login."
+  },
+  "shareImage": {
+    "asImage": "View as image",
+    "building": "Building…",
+    "share": "Share",
+    "save": "Save",
+    "close": "Close"
   }
 }

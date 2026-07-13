@@ -114,7 +114,7 @@ async function main() {
     else if (has(body, 'onPlate')) cat = 'plate'
     else if (has(body, 'isGem')) cat = 'gem'
 
-    const name = (field(body, 'name') && body.match(/name:\s*"([^"]+)"/)?.[1]) || id
+    const name = body.match(/name:\s*"([^"]+)"/)?.[1] || id
     items.push({ id, name, ko, cat })
   }
 

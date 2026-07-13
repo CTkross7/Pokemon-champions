@@ -7,6 +7,7 @@ import { decodeTeam, type DecodedTeam } from '@/lib/share'
 import { useTeams } from '@/store/teams'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
+import ShareImageButton from '@/components/ShareImageButton'
 import Icon from '@/components/Icon'
 
 export default function Shared() {
@@ -59,14 +60,17 @@ export default function Shared() {
           <p className="text-xs font-bold text-zinc-400 dark:text-zinc-600">{t('shared.sharedTeam')}</p>
           <h1 className="text-2xl font-extrabold tracking-tight">{decoded.name}</h1>
         </div>
-        <button
-          type="button"
-          onClick={copyToMyTeams}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full bg-volt-400 px-5 text-sm font-bold text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
-        >
-          <Icon name="users" size={16} />
-          {t('shared.copyToMine')}
-        </button>
+        <div className="flex items-center gap-2">
+          <ShareImageButton title={decoded.name} mons={decoded.mons} speciesById={speciesById} moves={moves} />
+          <button
+            type="button"
+            onClick={copyToMyTeams}
+            className="inline-flex h-10 items-center gap-1.5 rounded-full bg-volt-400 px-5 text-sm font-bold text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
+          >
+            <Icon name="users" size={16} />
+            {t('shared.copyToMine')}
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

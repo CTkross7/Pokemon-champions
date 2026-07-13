@@ -8,6 +8,7 @@ import { createSample } from '@/lib/api'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import ItemSelect from '@/components/ItemSelect'
+import ShareImageButton from '@/components/ShareImageButton'
 import MobileActionBar, { MobileActionBarSpacer } from '@/components/MobileActionBar'
 import SpSliders from '@/components/SpSliders'
 import Sprite from '@/components/Sprite'
@@ -270,6 +271,9 @@ export default function Teams() {
       </div>
 
       <MobileActionBar>
+        <span className="shrink-0">
+          <ShareImageButton title={active.name} mons={active.mons} speciesById={speciesById} moves={moves} />
+        </span>
         <button type="button" onClick={() => { setIoText(''); setIoMode('import') }} className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300">
           {t('teams.import')}
         </button>

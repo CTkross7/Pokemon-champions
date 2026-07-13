@@ -465,5 +465,12 @@
     "confirmDelete": "이 공지를 삭제할까요?",
     "needBackend": "공지 게시판은 백엔드(D1) 배포 시 활성화됩니다.",
     "postFail": "등록에 실패했습니다. 관리자 권한·로그인 상태를 확인하세요."
+  },
+  "shareImage": {
+    "asImage": "이미지로 보기",
+    "building": "생성 중…",
+    "share": "공유",
+    "save": "저장",
+    "close": "닫기"
   }
 }
