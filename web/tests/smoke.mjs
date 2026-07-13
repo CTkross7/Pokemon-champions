@@ -124,7 +124,7 @@ try {
 
     // Battle-data stats page: tier rankings render from real tier data
     await page.goto(`${BASE}/stats`, { waitUntil: 'networkidle' })
-    check(`[${viewport.tag}] stats tier ranking`, await eventually(page.getByText(/Competitive tiers|경쟁 티어 랭킹/)))
+    check(`[${viewport.tag}] stats tier ranking`, await eventually(page.getByText(/Meta Pokémon|메타 포켓몬/)))
 
     // Team builder: add a Pokémon to slot 1, expect speed tier + export text
     await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
