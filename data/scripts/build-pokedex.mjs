@@ -56,7 +56,7 @@ function abilityKo(name) {
   return name
 }
 
-/** Korean labels for common forme fragments. */
+/** Korean labels for forme fragments (exact forme value, lowercased). */
 const FORME_KO = {
   mega: '메가',
   'mega-x': '메가 X',
@@ -65,18 +65,42 @@ const FORME_KO = {
   galar: '가라르',
   hisui: '히스이',
   paldea: '팔데아',
+  'paldea-aqua': '팔데아 아쿠아종',
+  'paldea-blaze': '팔데아 블레이즈종',
+  'paldea-combat': '팔데아 콤배트종',
   therian: '영물폼',
   incarnate: '화신폼',
   origin: '오리진폼',
   primal: '원시회귀',
   gmax: '거다이맥스',
+  eternal: '영원의꽃',
+  // Rotom appliance formes
+  heat: '히트',
+  wash: '워시',
+  frost: '프로스트',
+  fan: '스핀',
+  mow: '커팅',
+  // Lycanroc
+  midnight: '한밤중의모습',
+  dusk: '황혼의모습',
+  midday: '한낮의모습',
+  // Pumpkaboo / Gourgeist sizes
+  small: '작은 사이즈',
+  large: '큰 사이즈',
+  super: '특대 사이즈',
+  // Female-form species (Meowstic, Indeedee, Basculegion, …)
+  f: '암컷',
+  female: '암컷',
+  male: '수컷',
 }
 
 function koFormeName(baseKo, forme) {
   if (!forme) return baseKo
   const key = forme.toLowerCase()
+  // Exact match first (covers compound formes like "Paldea-Aqua").
+  if (FORME_KO[key]) return `${baseKo} (${FORME_KO[key]})`
+  // Otherwise translate the prefix and keep any remainder.
   for (const [frag, ko] of Object.entries(FORME_KO)) {
-    if (key === frag) return `${baseKo} (${ko})`
     if (key.startsWith(`${frag}-`)) return `${baseKo} (${ko} ${forme.slice(frag.length + 1)})`
   }
   return `${baseKo} (${forme})`
