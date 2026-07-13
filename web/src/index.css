@@ -20,9 +20,9 @@
   --color-volt-900: #485812;
   --color-volt-950: #253105;
 
-  --color-surface-light: #f7f7f8;
-  --color-surface-dark: #050505;
-  --color-card-dark: #0e0e10;
+  --color-surface-light: #f6f7f9;
+  --color-surface-dark: #0a0b0e;
+  --color-card-dark: #14161b;
 
   --shadow-soft: 0 1px 2px rgb(16 24 40 / 0.04), 0 4px 16px -4px rgb(16 24 40 / 0.08);
   --shadow-lift: 0 4px 8px -2px rgb(16 24 40 / 0.08), 0 16px 32px -8px rgb(16 24 40 / 0.14);
