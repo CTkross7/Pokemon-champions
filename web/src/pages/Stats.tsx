@@ -6,6 +6,7 @@ import {
   loadUsage,
   loadTranslations,
   groupByTier,
+  resolveUsageMon,
   abilityKo,
   itemKo,
   spreadKo,
@@ -86,7 +87,7 @@ export default function Stats() {
         {usage && usage.pokemon.length > 0 && (
           <div className="mt-3 space-y-1.5">
             {usage.pokemon.slice(0, 30).map((u, i) => {
-              const s = speciesById.get(u.id)
+              const mon = resolveUsageMon(u.id, u.name, speciesById, ko)
               const maxUsage = usage.pokemon[0].usage || 1
               const hasDetail =
                 u.moves.length > 0 || u.items.length > 0 || u.abilities.length > 0 || u.spreads.length > 0
@@ -102,8 +103,15 @@ export default function Stats() {
                     <span className="w-5 shrink-0 text-center text-xs font-extrabold text-zinc-400 dark:text-zinc-600">
                       {i + 1}
                     </span>
-                    {s ? <Sprite species={s} size={28} /> : <span className="size-7" />}
-                    <span className="w-24 shrink-0 truncate text-sm font-bold">{s ? name(s) : u.name}</span>
+                    {mon.species ? <Sprite species={mon.species} size={28} /> : <span className="size-7" />}
+                    <span className="flex w-28 shrink-0 items-center gap-1 truncate text-sm font-bold">
+                      <span className="truncate">{mon.label}</span>
+                      {mon.isMega && (
+                        <span className="shrink-0 rounded bg-fuchsia-500/15 px-1 text-[9px] font-extrabold text-fuchsia-600 dark:text-fuchsia-400">
+                          M
+                        </span>
+                      )}
+                    </span>
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-white/6">
                       <div className="h-full rounded-full bg-volt-500" style={{ width: `${(u.usage / maxUsage) * 100}%` }} />
                     </div>

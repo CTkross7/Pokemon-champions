@@ -91,6 +91,32 @@ export function spreadKo(t: Translations, spread: string): string {
   return rest.length ? `${ko}:${rest.join(':')}` : ko
 }
 
+/**
+ * Resolves a usage entry to a renderable species. Champions-exclusive Megas
+ * (e.g. `meganiummega`, `floettemega`) aren't in the base Pokédex, so we fall
+ * back to the base species' sprite/name and tag it "Mega" — keeping the ranking
+ * complete and localized instead of showing a raw English id with no sprite.
+ */
+export interface ResolvedMon {
+  species: Species | null
+  label: string
+  isMega: boolean
+}
+export function resolveUsageMon(
+  id: string,
+  fallbackName: string,
+  byId: Map<string, Species>,
+  ko: boolean,
+): ResolvedMon {
+  const exact = byId.get(id)
+  if (exact) return { species: exact, label: ko ? exact.ko : exact.name, isMega: Boolean(exact.forme) }
+  if (id.endsWith('mega')) {
+    const base = byId.get(id.slice(0, -4))
+    if (base) return { species: base, label: `${ko ? base.ko : base.name} ${ko ? '메가' : 'Mega'}`, isMega: true }
+  }
+  return { species: null, label: fallbackName, isMega: false }
+}
+
 /** Competitive tier order, strongest first (Smogon usage-derived tiers). */
 export const TIER_ORDER = [
   'AG',
