@@ -19,9 +19,8 @@ export default function Dex() {
   const [error, setError] = useState(false)
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState<TypeName | null>(null)
-  // Default to Champions-only so the dex shows exactly what exists in the game.
-  const [championsOnly, setChampionsOnly] = useState(true)
-  const [includeFormes, setIncludeFormes] = useState(false)
+  // The dex is Champions-only (loadPokedex already filters), so no toggle needed.
+  const [includeFormes, setIncludeFormes] = useState(true)
   const [sort, setSort] = useState<SortKey>('num')
   const [limit, setLimit] = useState(PAGE_SIZE)
 
@@ -33,17 +32,16 @@ export default function Dex() {
     if (!all) return []
     const q = query.trim()
     let list = all.filter((s) => matchesQuery(s, q))
-    // Hide alternate formes unless explicitly included or searched for
+    // Hide alternate formes (megas/regional) unless explicitly shown or searched
     if (!includeFormes && !q) list = list.filter((s) => !s.forme)
     if (typeFilter) list = list.filter((s) => s.types.includes(typeFilter))
-    if (championsOnly) list = list.filter((s) => s.champions)
     if (sort !== 'num') {
       list = [...list].sort((a, b) =>
         sort === 'total' ? statTotal(b) - statTotal(a) : b.baseStats[sort] - a.baseStats[sort],
       )
     }
     return list
-  }, [all, query, typeFilter, championsOnly, includeFormes, sort])
+  }, [all, query, typeFilter, includeFormes, sort])
 
   const visible = filtered.slice(0, limit)
 
@@ -111,18 +109,6 @@ export default function Dex() {
           <label className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 select-none has-checked:border-volt-500 has-checked:text-volt-700 dark:border-white/10 dark:text-zinc-400 dark:has-checked:border-volt-400/60 dark:has-checked:text-volt-300">
             <input
               type="checkbox"
-              checked={championsOnly}
-              onChange={(e) => {
-                setChampionsOnly(e.target.checked)
-                setLimit(PAGE_SIZE)
-              }}
-              className="size-3.5 accent-[--color-volt-500]"
-            />
-            {t('dex.championsOnly')}
-          </label>
-          <label className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 select-none has-checked:border-volt-500 has-checked:text-volt-700 dark:border-white/10 dark:text-zinc-400 dark:has-checked:border-volt-400/60 dark:has-checked:text-volt-300">
-            <input
-              type="checkbox"
               checked={includeFormes}
               onChange={(e) => {
                 setIncludeFormes(e.target.checked)
@@ -169,12 +155,12 @@ export default function Dex() {
                   <span className="text-[11px] font-bold text-zinc-400 dark:text-zinc-600">
                     #{String(species.num).padStart(4, '0')}
                   </span>
-                  {species.champions && (
+                  {species.tier && (
                     <span
-                      className="rounded-full bg-volt-100 px-1.5 py-0.5 text-[9px] font-extrabold text-volt-800 dark:bg-volt-400/15 dark:text-volt-300"
-                      title={t('dex.championsBadge')}
+                      className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[9px] font-extrabold text-zinc-500 dark:bg-white/8 dark:text-zinc-400"
+                      title={t('dex.tierBadge')}
                     >
-                      PC
+                      {species.tier}
                     </span>
                   )}
                 </div>

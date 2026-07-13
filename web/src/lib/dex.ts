@@ -42,7 +42,11 @@ async function fetchJson<T>(path: string): Promise<T> {
 
 let pokedexPromise: Promise<Species[]> | null = null
 export function loadPokedex(): Promise<Species[]> {
-  pokedexPromise ??= fetchJson<{ species: Species[] }>('/data/pokedex.json').then((d) => d.species)
+  // ChampsNote is a Champions-only service, so the whole app sees only species
+  // verified to exist in Pokémon Champions (Showdown champions roster).
+  pokedexPromise ??= fetchJson<{ species: Species[] }>('/data/pokedex.json').then((d) =>
+    d.species.filter((s) => s.champions),
+  )
   return pokedexPromise
 }
 
@@ -64,11 +68,13 @@ const normalizeQuery = (q: string) => q.trim().toLowerCase().replace(/\s+/g, '')
 export function matchesQuery(species: Species, rawQuery: string): boolean {
   const q = normalizeQuery(rawQuery)
   if (!q) return true
-  return (
-    species.ko.replace(/\s+/g, '').includes(q) ||
-    species.name.toLowerCase().replace(/[^a-z0-9]/g, '').includes(q.replace(/[^a-z0-9]/g, '')) ||
-    String(species.num) === q
-  )
+  if (species.ko.replace(/\s+/g, '').includes(q)) return true
+  if (String(species.num) === q) return true
+  // Only apply the English-name check when the query has latin/number chars;
+  // otherwise a Korean query strips to "" and matches every species (the cause
+  // of the search list not narrowing as you type Korean).
+  const enq = q.replace(/[^a-z0-9]/g, '')
+  return enq.length > 0 && species.name.toLowerCase().replace(/[^a-z0-9]/g, '').includes(enq)
 }
 
 /** Self-hosted sprite (see data/scripts/fetch-sprites.mjs). */

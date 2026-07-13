@@ -81,7 +81,7 @@
     "searchPlaceholder": "Search by name (Korean/English/number)",
     "filterAll": "All",
     "championsOnly": "In Champions",
-    "includeFormes": "Include forms",
+    "includeFormes": "Show Mega & regional forms",
     "sortLabel": "Sort",
     "sort": {
       "num": "Dex number",
@@ -98,7 +98,7 @@
     "noResults": "No results.",
     "loadError": "Failed to load data. Please refresh.",
     "championsBadge": "Confirmed in Champions",
-    "rosterNote": "The 'In Champions' badge marks Pokémon cross-verified in ranked usage stats as of July 2026. The roster is updated continuously.",
+    "rosterNote": "ChampsNote is Champions-only: it shows only Pokémon that actually exist in the game (from the official-mirroring Showdown data), auto-updated on game updates. The badge is the competitive tier (OU/UU, ...).",
     "notFound": "Pokémon not found.",
     "backToDex": "Back to Pokédex",
     "baseStats": "Base stats",
@@ -128,7 +128,8 @@
       "physical": "Physical",
       "special": "Special",
       "status": "Status"
-    }
+    },
+    "tierBadge": "Champions competitive tier"
   },
   "types": {
     "whenAttacking": "When attacking",

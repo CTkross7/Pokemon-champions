@@ -98,7 +98,7 @@ try {
       await page.getByRole('button', { name: new RegExp(name) }).first().click()
     }
     await pickSpecies(/Attacker|공격 포켓몬/, 'Garchomp')
-    await pickSpecies(/Defender|방어 포켓몬/, 'Heatran')
+    await pickSpecies(/Defender|방어 포켓몬/, 'Incineroar')
     // Select the first available move chip
     const moveChip = page.locator('button', { hasText: /\d{2,3}$/ }).first()
     await moveChip.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {})

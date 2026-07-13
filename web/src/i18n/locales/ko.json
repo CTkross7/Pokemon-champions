@@ -81,7 +81,7 @@
     "searchPlaceholder": "포켓몬 이름 검색 (한글/영어/도감번호)",
     "filterAll": "전체",
     "championsOnly": "챔피언스 확인",
-    "includeFormes": "폼 포함",
+    "includeFormes": "메가·리전폼 표시",
     "sortLabel": "정렬",
     "sort": {
       "num": "도감번호순",
@@ -98,7 +98,7 @@
     "noResults": "검색 결과가 없습니다.",
     "loadError": "데이터를 불러오지 못했습니다. 새로고침 해주세요.",
     "championsBadge": "챔피언스 등장 확인",
-    "rosterNote": "'챔피언스 확인' 배지는 2026-07 랭크배틀 사용률 통계에서 등장이 교차 검증된 포켓몬입니다. 전체 로스터는 지속 업데이트됩니다.",
+    "rosterNote": "챔스노트는 포켓몬 챔피언스 전용입니다. 게임에 실제 존재하는 포켓몬만 표시하며(Showdown 공식 반영 데이터), 게임 업데이트 시 자동 반영됩니다. 배지는 경쟁 티어(OU/UU 등)입니다.",
     "notFound": "해당 포켓몬을 찾을 수 없습니다.",
     "backToDex": "도감으로",
     "baseStats": "종족값",
@@ -128,7 +128,8 @@
       "physical": "물리",
       "special": "특수",
       "status": "변화"
-    }
+    },
+    "tierBadge": "챔피언스 경쟁 티어"
   },
   "types": {
     "whenAttacking": "공격할 때",

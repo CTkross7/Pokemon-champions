@@ -9,11 +9,6 @@ const FEATURES: ReadonlyArray<{ key: string; to: string; icon: IconName; ready: 
   { key: 'matchup', to: '/matchup', icon: 'zap', ready: true },
 ]
 
-const TRUST: ReadonlyArray<{ key: string; icon: IconName }> = [
-  { key: 'verified', icon: 'shield' },
-  { key: 'free', icon: 'sparkles' },
-  { key: 'crossPlatform', icon: 'globe' },
-]
 
 export default function Home() {
   const { t } = useTranslation()
@@ -91,23 +86,6 @@ export default function Home() {
             </Link>
           ))}
         </div>
-      </section>
-
-      {/* Trust strip */}
-      <section className="card grid gap-6 p-6 sm:grid-cols-3 sm:gap-4 sm:p-8">
-        {TRUST.map((item) => (
-          <div key={item.key} className="flex items-start gap-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-volt-100 text-volt-800 dark:bg-volt-400/12 dark:text-volt-300">
-              <Icon name={item.icon} size={19} />
-            </span>
-            <div>
-              <h3 className="text-sm font-bold">{t(`home.trust.${item.key}.title`)}</h3>
-              <p className="mt-1 text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400">
-                {t(`home.trust.${item.key}.desc`)}
-              </p>
-            </div>
-          </div>
-        ))}
       </section>
     </div>
   )

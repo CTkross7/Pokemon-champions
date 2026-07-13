@@ -70,7 +70,7 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/75 backdrop-blur-xl dark:border-white/6 dark:bg-surface-dark/75">
+      <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/95 dark:border-white/6 dark:bg-surface-dark/95">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <NavLink to="/" className="flex items-center gap-2.5">
             <Logo />
@@ -134,7 +134,7 @@ export default function Layout() {
 
       {/* Mobile bottom tab bar (native-app style) */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden dark:border-white/8 dark:bg-surface-dark/85"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden dark:border-white/8 dark:bg-surface-dark"
         aria-label="mobile"
       >
         <div className="grid grid-cols-5">
