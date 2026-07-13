@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
-import { spTotal } from '@/lib/champions'
+import { spTotal, natureLabel } from '@/lib/champions'
 import { decodeTeam, type DecodedTeam } from '@/lib/share'
 import { useTeams } from '@/store/teams'
 import Sprite from '@/components/Sprite'
@@ -101,7 +101,7 @@ export default function Shared() {
                 )}
                 <div className="flex justify-between">
                   <dt className="text-zinc-400 dark:text-zinc-600">{t('calc.nature')}</dt>
-                  <dd className="font-bold">{mon.nature}</dd>
+                  <dd className="font-bold">{natureLabel(mon.nature, i18n.language)}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-zinc-400 dark:text-zinc-600">SP</dt>

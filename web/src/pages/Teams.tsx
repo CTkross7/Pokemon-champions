@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { loadLearnsets, loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
-import { statAtLevel50, spTotal, NATURES, COMMON_ITEMS, type Nature } from '@/lib/champions'
+import { statAtLevel50, spTotal, NATURES, natureLabel, COMMON_ITEMS, type Nature } from '@/lib/champions'
 import { listAbilities } from '@/lib/calc'
 import { exportTeam, importTeam } from '@/lib/showdown'
 import { shareUrl, encodeTeam } from '@/lib/share'
@@ -94,7 +94,7 @@ function MonEditor({
         >
           {NATURES.map((n) => (
             <option key={n} value={n}>
-              {n}
+              {natureLabel(n, i18n.language)}
             </option>
           ))}
         </select>

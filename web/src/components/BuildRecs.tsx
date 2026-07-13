@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { recommendBuilds } from '@/lib/builds'
-import { COMMON_ITEMS, STAT_KEYS } from '@/lib/champions'
+import { COMMON_ITEMS, STAT_KEYS, natureLabel } from '@/lib/champions'
 import { useTeams, type TeamMon } from '@/store/teams'
 import type { MoveData, Species } from '@/lib/dex'
 import TypeBadge from '@/components/TypeBadge'
@@ -58,7 +58,7 @@ export default function BuildRecs({
               <span className="rounded-full bg-volt-100 px-2.5 py-1 text-[11px] font-extrabold text-volt-800 dark:bg-volt-400/15 dark:text-volt-300">
                 {t(ROLE_KEY[build.roleKey])}
               </span>
-              <span className="text-[11px] font-bold text-zinc-400 dark:text-zinc-600">{build.nature}</span>
+              <span className="text-[11px] font-bold text-zinc-400 dark:text-zinc-600">{natureLabel(build.nature, i18n.language)}</span>
             </div>
             <dl className="mt-3 space-y-1 text-xs">
               <div className="flex justify-between">

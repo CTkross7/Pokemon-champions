@@ -5,6 +5,7 @@ import {
   emptySp,
   COMMON_ITEMS,
   NATURES,
+  natureLabel,
   WEATHERS,
   TERRAINS,
   type Nature,
@@ -119,7 +120,7 @@ function MonPanel({
             >
               {NATURES.map((n) => (
                 <option key={n} value={n}>
-                  {n}
+                  {natureLabel(n, i18n.language)}
                 </option>
               ))}
             </select>

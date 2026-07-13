@@ -92,6 +92,33 @@ export const NATURES = [
 
 export type Nature = (typeof NATURES)[number]
 
+/** Official Korean nature names (game text). */
+export const NATURE_KO: Record<Nature, string> = {
+  Serious: '성실',
+  Adamant: '고집',
+  Modest: '조심',
+  Jolly: '명랑',
+  Timid: '겁쟁이',
+  Bold: '대담',
+  Calm: '차분',
+  Impish: '장난꾸러기',
+  Careful: '신중',
+  Brave: '용감',
+  Quiet: '냉정',
+}
+
+/** Localized nature label with the +/- stat hint, e.g. "고집 (공격↑특공↓)". */
+export function natureLabel(nature: Nature, lang: string): string {
+  const base = lang === 'ko' ? (NATURE_KO[nature] ?? nature) : nature
+  const eff = NATURE_EFFECTS[nature]
+  if (!eff?.plus || !eff?.minus) return base
+  if (lang === 'ko') {
+    const st = (k: StatKey) => ({ hp: 'HP', atk: '공격', def: '방어', spa: '특공', spd: '특방', spe: '스피드' })[k]
+    return `${base} (${st(eff.plus)}↑${st(eff.minus)}↓)`
+  }
+  return base
+}
+
 export const WEATHERS = ['', 'Sun', 'Rain', 'Sand', 'Snow'] as const
 export type Weather = (typeof WEATHERS)[number]
 
