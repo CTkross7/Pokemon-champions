@@ -80,7 +80,6 @@ export default function Settings() {
           </span>
           <span className="min-w-0 flex-1">
             <span className="block text-sm font-bold">{t('settings.bankAccount')}</span>
-            <span className="block truncate text-[12px] text-zinc-500 dark:text-zinc-400">{t('settings.bankHolder')}</span>
           </span>
           <span className="shrink-0 text-[11px] font-bold text-zinc-400 dark:text-zinc-500">
             {copied === 'account' ? t('settings.accountCopied') : <Icon name="copy" size={15} />}
@@ -111,8 +110,8 @@ export default function Settings() {
       <Section title={t('settings.policies')}>
         <div className="space-y-2">
           <Row to="/privacy" icon="shield" label={t('settings.privacy')} />
-          <Row to="/about" icon="doc" label={t('settings.terms')} />
-          <Row to="/about" icon="doc" label={t('settings.dataSources')} />
+          <Row to="/terms" icon="doc" label={t('settings.terms')} />
+          <Row to="/data-sources" icon="doc" label={t('settings.dataSources')} />
         </div>
       </Section>
 

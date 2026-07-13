@@ -4,6 +4,8 @@ import Layout from '@/components/Layout'
 import Home from '@/pages/Home'
 import About from '@/pages/About'
 import Privacy from '@/pages/Privacy'
+import Terms from '@/pages/Terms'
+import DataSources from '@/pages/DataSources'
 import UnderConstruction from '@/pages/UnderConstruction'
 
 // Route-level code splitting keeps the initial bundle small; @smogon/calc and
@@ -137,6 +139,8 @@ export default function App() {
         />
         <Route path="about" element={<About />} />
         <Route path="privacy" element={<Privacy />} />
+        <Route path="terms" element={<Terms />} />
+        <Route path="data-sources" element={<DataSources />} />
         <Route path="*" element={<UnderConstruction titleKey="nav.home" />} />
       </Route>
     </Routes>

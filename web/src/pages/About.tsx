@@ -68,17 +68,6 @@ export default function About() {
         </ul>
       </section>
 
-      {/* Terms summary */}
-      <section className="card p-6">
-        <div className="flex items-center gap-2.5">
-          <span className="grid size-9 place-items-center rounded-xl bg-zinc-100 text-zinc-600 dark:bg-white/6 dark:text-zinc-300">
-            <Icon name="doc" size={18} />
-          </span>
-          <h2 className="text-[15px] font-bold">{t('about.termsTitle')}</h2>
-        </div>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{t('about.termsBody')}</p>
-      </section>
-
       {/* Contact + developer */}
       <section className="card p-6">
         <div className="flex items-center gap-2.5">

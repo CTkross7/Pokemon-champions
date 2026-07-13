@@ -5,6 +5,9 @@ import { useSettings } from '@/store/settings'
 import { useAuth } from '@/lib/auth'
 import Icon, { type IconName } from '@/components/Icon'
 import Logo from '@/components/Logo'
+import AdSlot from '@/components/AdSlot'
+
+const AD_BANNER_SLOT = import.meta.env.VITE_ADSENSE_SLOT_BANNER as string | undefined
 
 const prefersDark = () =>
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
@@ -142,6 +145,13 @@ export default function Layout() {
       >
         <Outlet />
       </main>
+
+      {/* Bottom banner ad — renders only when AdSense is configured. */}
+      {AD_BANNER_SLOT && (
+        <div className="mx-auto w-full max-w-6xl px-4 pb-24 sm:px-6 sm:pb-4">
+          <AdSlot slot={AD_BANNER_SLOT} />
+        </div>
+      )}
 
       <footer className="mb-20 border-t border-zinc-200/70 py-6 lg:mb-0 dark:border-white/6">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 sm:px-6">
