@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { loadLearnsets, loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
-import { statAtLevel50, spTotal, NATURES, natureLabel, COMMON_ITEMS, type Nature } from '@/lib/champions'
+import { statAtLevel50, spTotal, NATURES, natureLabel, type Nature } from '@/lib/champions'
 import { exportTeam, importTeam } from '@/lib/showdown'
 import { shareUrl, encodeTeam } from '@/lib/share'
 import { createSample } from '@/lib/api'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
+import ItemSelect from '@/components/ItemSelect'
 import MobileActionBar, { MobileActionBarSpacer } from '@/components/MobileActionBar'
 import SpSliders from '@/components/SpSliders'
 import Sprite from '@/components/Sprite'
@@ -76,13 +77,7 @@ function MonEditor({
         </label>
         <label className="space-y-1">
           <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600">{t('calc.item')}</span>
-          <select value={mon.item} onChange={(e) => onChange({ ...mon, item: e.target.value })} className={selectClass}>
-            {COMMON_ITEMS.map((it) => (
-              <option key={it.id} value={it.id}>
-                {i18n.language === 'ko' ? it.ko : it.id || '—'}
-              </option>
-            ))}
-          </select>
+          <ItemSelect value={mon.item} onChange={(item) => onChange({ ...mon, item })} className={selectClass} />
         </label>
       </div>
       <label className="block space-y-1">

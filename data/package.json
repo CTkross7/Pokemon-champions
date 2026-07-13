@@ -10,6 +10,7 @@
     "build:pokedex": "node scripts/build-pokedex.mjs",
     "fetch:sprites": "node scripts/fetch-sprites.mjs",
     "fetch:champions-roster": "node scripts/fetch-champions-roster.mjs",
+    "fetch:champions-items": "node scripts/fetch-champions-items.mjs",
     "fetch:usage-stats": "node scripts/fetch-usage-stats.mjs"
   },
   "dependencies": {

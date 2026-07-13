@@ -255,7 +255,8 @@
     "unknownStats": "Unknown stats",
     "unknownStatsNote": "The opponent's SP investment is hidden in-game. Damage is estimated as a range from 0 investment (max damage) to full defensive investment (min damage).",
     "vsMaxBulk": "Max bulk",
-    "vsMinBulk": "No invest"
+    "vsMinBulk": "No invest",
+    "itemNone": "None"
   },
   "teams": {
     "moves": "Moves",

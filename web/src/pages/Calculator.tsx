@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { loadLearnsets, loadMoves, type MoveData, type Species } from '@/lib/dex'
 import {
   emptySp,
-  COMMON_ITEMS,
   NATURES,
   natureLabel,
   WEATHERS,
@@ -13,6 +12,7 @@ import {
   type Weather,
   type Terrain,
 } from '@/lib/champions'
+import ItemSelect from '@/components/ItemSelect'
 import {
   calcDamage,
   calcDamageUnknownDefender,
@@ -99,17 +99,7 @@ function MonPanel({
             </label>
             <label className="space-y-1">
               <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600">{t('calc.item')}</span>
-              <select
-                value={mon.item}
-                onChange={(e) => onChange({ ...mon, item: e.target.value })}
-                className={selectClass}
-              >
-                {COMMON_ITEMS.map((it) => (
-                  <option key={it.id} value={it.id}>
-                    {i18n.language === 'ko' ? it.ko : it.id || '—'}
-                  </option>
-                ))}
-              </select>
+              <ItemSelect value={mon.item} onChange={(item) => onChange({ ...mon, item })} className={selectClass} />
             </label>
           </div>
           <label className="block space-y-1">
