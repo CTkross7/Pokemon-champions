@@ -122,6 +122,10 @@ try {
     await page.goto(`${BASE}/dex/types`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] type chart renders`, await eventually(page.getByText(/Full type chart|전체 상성표/)))
 
+    // Battle-data stats page: tier rankings render from real tier data
+    await page.goto(`${BASE}/stats`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] stats tier ranking`, await eventually(page.getByText(/Competitive tiers|경쟁 티어 랭킹/)))
+
     // Team builder: add a Pokémon to slot 1, expect speed tier + export text
     await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
     const addBtn = page.getByRole('button', { name: /Add Pokémon|포켓몬 추가/ }).first()

@@ -35,6 +35,7 @@ jobs:
           npm run fetch:ko-names
           npm run fetch:champions-roster
           npm run build:pokedex
+          npm run fetch:usage-stats
           npm run fetch:sprites
           npm run validate
 

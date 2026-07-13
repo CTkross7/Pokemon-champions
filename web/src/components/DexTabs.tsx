@@ -19,6 +19,9 @@ export default function DexTabs() {
       <NavLink to="/dex/types" className={tabClass}>
         {t('dex.tabTypes')}
       </NavLink>
+      <NavLink to="/stats" className={tabClass}>
+        {t('dex.tabStats')}
+      </NavLink>
     </div>
   )
 }

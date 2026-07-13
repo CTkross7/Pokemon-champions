@@ -129,7 +129,8 @@
       "special": "Special",
       "status": "Status"
     },
-    "tierBadge": "Champions competitive tier"
+    "tierBadge": "Champions competitive tier",
+    "tabStats": "Stats"
   },
   "types": {
     "whenAttacking": "When attacking",
@@ -316,5 +317,19 @@
         "p": "Developer: CTkross. Please reach out via the GitHub repository."
       }
     ]
+  },
+  "stats": {
+    "title": "Battle Data",
+    "subtitle": "Champions competitive tier rankings and usage stats. See what top players actually run.",
+    "tierTitle": "Competitive tiers",
+    "tierNote": "Usage-derived Smogon tiers (Uber>OU>UU...). Higher tier = stronger meta presence.",
+    "usageTitle": "Usage ranking",
+    "source": "Source: Smogon {{month}}",
+    "usagePending": "Detailed usage/adoption stats are populated by the weekly auto-collection pipeline. Tier rankings are shown for now.",
+    "count": "{{count}}",
+    "moves": "Moves",
+    "items": "Items",
+    "abilities": "Abilities",
+    "spreads": "Spreads"
   }
 }
