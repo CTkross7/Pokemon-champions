@@ -185,7 +185,9 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
   }
 
   if (!db) return json({ error: 'auth_not_configured' }, 503)
-  const appUrl = env.APP_URL || url.origin
+  // Trailing slashes on APP_URL would produce "…//api/auth/…" and break the
+  // exact redirect_uri match Google requires, so normalize them away.
+  const appUrl = (env.APP_URL || url.origin).replace(/\/+$/, '')
 
   if (path === 'me') {
     const user = await currentUser(db, request)
