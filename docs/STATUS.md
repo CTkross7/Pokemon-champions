@@ -22,7 +22,7 @@
 | 5 | ★ 실전 매치업 어시스턴트 | ✅ 완료 |
 | 6 | ★ 빌드 추천 + 샘플 URL 공유 (백엔드 불필요) | ✅ 완료 |
 | 7 | 커뮤니티 샘플 갤러리 (Workers+D1, 선택적 백엔드) | ✅ 완료 |
-| 8 | 수익화(AdSense)·PWA·SEO·성능 | ⬜ 예정 |
+| 8 | PWA·SEO·개인정보처리방침·AdSense 준비 | ✅ 완료 |
 | 9 | 안드로이드 앱 (Capacitor+AdMob) + Play 스토어 출시 | ⬜ 예정 |
 
 ## Phase 0 완료 내역 (2026-07-12)
@@ -158,3 +158,10 @@
 - Champions 전용 신규 메가(Reg M-B 16종) 스탯·타입 데이터 확보 시 추가
 - SP=32 단일 스탯 시 EV 252 캡으로 최종 스탯 ±1 오차 가능 → 게임 내 실측 후 정밀 보정 예정
 - 성격(Nature) 챔피언스 적용 여부 게임 내 확인 필요 (현재 선택 가능, 기본 중립)
+
+## Phase 8 완료 내역 (2026-07-13) — PWA·SEO·수익화 준비·정책
+- PWA(vite-plugin-pwa): 매니페스트·서비스워커(앱셸 프리캐시 123개+데이터/스프라이트 런타임 CacheFirst), 볼트 로고 아이콘 192/512 PNG → 휴대폰 설치·오프라인 지원
+- SEO/OG: index.html Open Graph·Twitter 카드·apple-touch-icon, 페이지별 document.title(Layout), robots.txt(/api 차단)
+- AdSense 준비(`components/AdSlot.tsx`): VITE_ADSENSE_CLIENT 미설정 시 아무것도 렌더 안 함(광고 코드 미노출) → 승인 심사·기본 배포 깨끗
+- 개인정보처리방침(`pages/Privacy.tsx`, 한/영 6개 섹션) + 라우트 + 푸터 링크
+- 검증: 빌드·린트 ✅ (E2E는 인프라 일시 중단으로 미실행 → 다음 턴 재확인 예정)

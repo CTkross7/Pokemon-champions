@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@/store/settings'
@@ -46,9 +47,26 @@ function HeaderControls() {
   )
 }
 
+const TITLE_BY_PATH: Record<string, string> = {
+  '/': 'home',
+  '/dex': 'dex',
+  '/calculator': 'calculator',
+  '/teams': 'teams',
+  '/matchup': 'matchup',
+  '/gallery': 'gallery',
+  '/about': 'about',
+}
+
 export default function Layout() {
   const { t } = useTranslation()
   const location = useLocation()
+
+  // Per-route document title for SEO / shareable tabs.
+  useEffect(() => {
+    const base = location.pathname.startsWith('/dex/') ? 'dex' : TITLE_BY_PATH[location.pathname]
+    const appName = t('app.name')
+    document.title = base ? `${t(`nav.${base}`)} · ${appName}` : `${appName} — ${t('app.tagline')}`
+  }, [location.pathname, t])
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -103,6 +121,14 @@ export default function Layout() {
             <span>{t('app.developedBy', { name: 'CTkross' })}</span>
           </div>
           <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>
+          <div className="flex gap-3 text-[11px] font-semibold text-zinc-400 dark:text-zinc-500">
+            <NavLink to="/about" className="hover:text-zinc-700 dark:hover:text-zinc-300">
+              {t('nav.about')}
+            </NavLink>
+            <NavLink to="/privacy" className="hover:text-zinc-700 dark:hover:text-zinc-300">
+              {t('nav.privacy')}
+            </NavLink>
+          </div>
         </div>
       </footer>
 

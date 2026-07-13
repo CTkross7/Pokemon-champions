@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import Layout from '@/components/Layout'
 import Home from '@/pages/Home'
 import About from '@/pages/About'
+import Privacy from '@/pages/Privacy'
 import UnderConstruction from '@/pages/UnderConstruction'
 
 // Route-level code splitting keeps the initial bundle small; @smogon/calc and
@@ -90,6 +91,7 @@ export default function App() {
           }
         />
         <Route path="about" element={<About />} />
+        <Route path="privacy" element={<Privacy />} />
         <Route path="*" element={<UnderConstruction titleKey="nav.home" />} />
       </Route>
     </Routes>

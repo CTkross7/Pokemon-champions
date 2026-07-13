@@ -12,7 +12,8 @@
     "teams": "Team Builder",
     "about": "About",
     "matchup": "Matchup",
-    "gallery": "Community"
+    "gallery": "Community",
+    "privacy": "Privacy"
   },
   "settings": {
     "language": "Language",
@@ -284,5 +285,35 @@
     "views": "{{count}} views",
     "import": "Import",
     "note": "Public samples are stored on the server (Cloudflare D1). Reported content is removed."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "Last updated: 2026-07-13",
+    "sections": [
+      {
+        "h": "1. Information we collect",
+        "p": "ChampsNote works without an account by default; teams and settings are stored only on your device (browser local storage). No personal data is collected on our servers."
+      },
+      {
+        "h": "2. Community samples",
+        "p": "Teams you upload via 'Publish', and the author name you enter, are stored on the server (Cloudflare D1) and shown publicly. Do not upload if you prefer to keep them private."
+      },
+      {
+        "h": "3. Advertising",
+        "p": "Third-party ads (e.g. Google AdSense) may appear in the future; ad vendors may use cookies for interest-based ads. This policy will be updated when ads are enabled."
+      },
+      {
+        "h": "4. Analytics / cookies",
+        "p": "Anonymous usage statistics may be collected to improve the service. Essential storage (settings, teams) uses local storage."
+      },
+      {
+        "h": "5. Data deletion",
+        "p": "Clearing your browser storage removes local data. To remove a published community sample, please contact us."
+      },
+      {
+        "h": "6. Contact",
+        "p": "Developer: CTkross. Please reach out via the GitHub repository."
+      }
+    ]
   }
 }
