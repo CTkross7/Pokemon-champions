@@ -49,3 +49,29 @@ CREATE TABLE IF NOT EXISTS notices (
 );
 
 CREATE INDEX IF NOT EXISTS idx_notices_created ON notices (pinned DESC, created_at DESC);
+
+-- Reports (Phase 12). Signed-in users report content; admins review them in
+-- the dashboard. status: open | resolved | dismissed.
+CREATE TABLE IF NOT EXISTS reports (
+  id          TEXT PRIMARY KEY,
+  target_type TEXT NOT NULL,       -- 'sample' | 'notice' | 'user'
+  target_id   TEXT NOT NULL,
+  reason      TEXT NOT NULL,       -- spam | abuse | inappropriate | other
+  detail      TEXT,
+  reporter_id TEXT NOT NULL REFERENCES users (id),
+  status      TEXT NOT NULL DEFAULT 'open',
+  resolved_by TEXT,
+  resolved_at INTEGER,
+  created_at  INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_reports_status ON reports (status, created_at DESC);
+
+-- Per-user moderation state: warning count + temporary ban.
+CREATE TABLE IF NOT EXISTS moderation (
+  user_id      TEXT PRIMARY KEY REFERENCES users (id),
+  warnings     INTEGER NOT NULL DEFAULT 0,
+  banned_until INTEGER,            -- epoch millis; NULL/past = not banned
+  note         TEXT,
+  updated_at   INTEGER NOT NULL
+);

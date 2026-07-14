@@ -209,6 +209,22 @@ try {
       await page.locator('link[rel="manifest"]').count().then((c) => c > 0),
     )
 
+    // Admin dashboard: forbidden for the normal seeded user, renders for admins
+    await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] admin forbidden for non-admin`, await eventually(page.getByText(/not an administrator|관리자 권한이 없습니다/)))
+    await page.evaluate(() => {
+      const raw = JSON.parse(localStorage.getItem('champsnote-auth') || '{}')
+      raw.state.user.isAdmin = true
+      localStorage.setItem('champsnote-auth', JSON.stringify(raw))
+    })
+    await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' })
+    check(`[${viewport.tag}] admin dashboard renders`, await eventually(page.getByText(/Admin dashboard|관리자 대시보드/)))
+    await page.evaluate(() => {
+      const raw = JSON.parse(localStorage.getItem('champsnote-auth') || '{}')
+      raw.state.user.isAdmin = false
+      localStorage.setItem('champsnote-auth', JSON.stringify(raw))
+    })
+
     // Settings page: theme options (incl. System) render
     await page.goto(`${BASE}/settings`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] settings appearance`, await eventually(page.getByText(/Appearance|화면/)))

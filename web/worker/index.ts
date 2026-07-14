@@ -13,6 +13,7 @@
 import type { D1Database } from './d1'
 import { handleAuth, currentUser, type AuthEnv } from './auth'
 import { handleNotices } from './notices'
+import { handleReports, handleAdmin, isBanned } from './reports'
 
 export interface Env extends AuthEnv {
   ASSETS: { fetch: (request: Request) => Promise<Response> }
@@ -40,9 +41,10 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       return json({ samples: results ?? [] })
     }
     if (request.method === 'POST') {
-      // Publishing a sample requires a signed-in account.
+      // Publishing a sample requires a signed-in, non-banned account.
       const user = await currentUser(db, request)
       if (!user) return json({ error: 'auth_required' }, 401)
+      if (await isBanned(db, user.id)) return json({ error: 'banned' }, 403)
       let body: Record<string, unknown>
       try {
         body = (await request.json()) as Record<string, unknown>
@@ -69,6 +71,7 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
     if (parts[2] === 'like' && request.method === 'POST') {
       const user = await currentUser(db, request)
       if (!user) return json({ error: 'auth_required' }, 401)
+      if (await isBanned(db, user.id)) return json({ error: 'banned' }, 403)
       await db.prepare('UPDATE samples SET likes = likes + 1 WHERE id = ?').bind(id).run()
       const row = await db.prepare('SELECT likes FROM samples WHERE id = ?').bind(id).first<{ likes: number }>()
       return row ? json({ likes: row.likes }) : json({ error: 'not_found' }, 404)
@@ -98,6 +101,20 @@ export default {
     if (url.pathname.startsWith('/api/notices')) {
       try {
         return await handleNotices(request, env, url)
+      } catch (err) {
+        return json({ error: 'server_error', detail: String(err) }, 500)
+      }
+    }
+    if (url.pathname.startsWith('/api/reports')) {
+      try {
+        return await handleReports(request, env, url)
+      } catch (err) {
+        return json({ error: 'server_error', detail: String(err) }, 500)
+      }
+    }
+    if (url.pathname.startsWith('/api/admin')) {
+      try {
+        return await handleAdmin(request, env, url)
       } catch (err) {
         return json({ error: 'server_error', detail: String(err) }, 500)
       }

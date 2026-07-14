@@ -17,7 +17,8 @@
     "settings": "Settings",
     "profile": "Profile",
     "login": "Log in",
-    "notices": "Notices"
+    "notices": "Notices",
+    "admin": "Admin"
   },
   "settings": {
     "language": "Language",
@@ -476,5 +477,49 @@
     "share": "Share",
     "save": "Save",
     "close": "Close"
+  },
+  "report": {
+    "button": "Report",
+    "title": "Report content",
+    "desc": "Choose a reason. A moderator will review and act on it.",
+    "reason_spam": "Spam / ads",
+    "reason_abuse": "Abuse / hate",
+    "reason_inappropriate": "Inappropriate content",
+    "reason_other": "Other",
+    "detail": "Details (optional)",
+    "submit": "Submit report",
+    "submitting": "Submitting…",
+    "done": "Report received. We will review it shortly.",
+    "needLogin": "Sign in to report.",
+    "banned": "This account is restricted.",
+    "fail": "Failed to submit. Please try again.",
+    "close": "Close"
+  },
+  "admin": {
+    "title": "Admin dashboard",
+    "subtitle": "Review reports and manage users",
+    "reports": "Reports",
+    "empty": "No reports.",
+    "status_open": "Open",
+    "status_resolved": "Resolved",
+    "status_dismissed": "Dismissed",
+    "target_sample": "Sample",
+    "target_notice": "Notice",
+    "target_user": "User",
+    "reporter": "Reporter",
+    "viewTarget": "View target",
+    "deleteContent": "Delete content",
+    "warn": "Warn",
+    "ban3": "Ban 3d",
+    "ban7": "Ban 7d",
+    "ban30": "Ban 30d",
+    "unban": "Unban",
+    "resolve": "Resolve",
+    "dismiss": "Dismiss",
+    "confirmDelete": "Delete the reported content?",
+    "actionDone": "Done.",
+    "forbidden": "You are not an administrator.",
+    "needBackend": "Admin features activate once the backend (D1) is connected.",
+    "noticeCompose": "Compose notices on the Notices page."
   }
 }

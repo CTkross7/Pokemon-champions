@@ -5,6 +5,7 @@ import { listSamples, likeSample, getSample, type SampleMeta } from '@/lib/api'
 import { decodeTeam } from '@/lib/share'
 import { useTeams } from '@/store/teams'
 import { useAuth } from '@/lib/auth'
+import ReportButton from '@/components/ReportButton'
 import Icon from '@/components/Icon'
 
 export default function Gallery() {
@@ -84,6 +85,7 @@ export default function Gallery() {
                 <p className="text-[11px] font-medium text-zinc-400 dark:text-zinc-600">
                   {s.author} · {t('gallery.views', { count: s.views })}
                 </p>
+                <ReportButton targetType="sample" targetId={s.id} className="mt-1" />
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <button

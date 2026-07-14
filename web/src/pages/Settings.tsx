@@ -60,11 +60,14 @@ export default function Settings() {
 
       {/* Account */}
       <Section title={t('settings.account')}>
-        {user ? (
-          <Row to="/profile" icon="user" label={user.displayName} sub={`@${user.username}`} />
-        ) : (
-          <Row to="/login" icon="user" label={t('auth.loginCta')} sub={t('auth.loginPrompt')} />
-        )}
+        <div className="space-y-2">
+          {user ? (
+            <Row to="/profile" icon="user" label={user.displayName} sub={`@${user.username}`} />
+          ) : (
+            <Row to="/login" icon="user" label={t('auth.loginCta')} sub={t('auth.loginPrompt')} />
+          )}
+          {user?.isAdmin && <Row to="/admin" icon="shield" label={t('admin.title')} sub={t('admin.subtitle')} />}
+        </div>
       </Section>
 
       {/* Support / donation — copy bank account number */}

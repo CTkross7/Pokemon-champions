@@ -17,7 +17,8 @@
     "settings": "설정",
     "profile": "프로필",
     "login": "로그인",
-    "notices": "공지"
+    "notices": "공지",
+    "admin": "관리자"
   },
   "settings": {
     "language": "언어",
@@ -476,5 +477,49 @@
     "share": "공유",
     "save": "저장",
     "close": "닫기"
+  },
+  "report": {
+    "button": "신고",
+    "title": "콘텐츠 신고",
+    "desc": "신고 사유를 선택해 주세요. 운영자가 검토 후 조치합니다.",
+    "reason_spam": "스팸·광고",
+    "reason_abuse": "욕설·혐오",
+    "reason_inappropriate": "부적절한 콘텐츠",
+    "reason_other": "기타",
+    "detail": "상세 내용 (선택)",
+    "submit": "신고하기",
+    "submitting": "접수 중…",
+    "done": "신고가 접수되었습니다. 검토 후 조치하겠습니다.",
+    "needLogin": "신고하려면 로그인이 필요합니다.",
+    "banned": "이용이 제한된 계정입니다.",
+    "fail": "접수에 실패했습니다. 잠시 후 다시 시도해 주세요.",
+    "close": "닫기"
+  },
+  "admin": {
+    "title": "관리자 대시보드",
+    "subtitle": "신고 검토 및 유저 관리",
+    "reports": "신고 목록",
+    "empty": "접수된 신고가 없습니다.",
+    "status_open": "대기",
+    "status_resolved": "처리됨",
+    "status_dismissed": "기각",
+    "target_sample": "샘플",
+    "target_notice": "공지",
+    "target_user": "유저",
+    "reporter": "신고자",
+    "viewTarget": "대상 보기",
+    "deleteContent": "콘텐츠 삭제",
+    "warn": "경고",
+    "ban3": "3일 차단",
+    "ban7": "7일 차단",
+    "ban30": "30일 차단",
+    "unban": "차단 해제",
+    "resolve": "처리 완료",
+    "dismiss": "기각",
+    "confirmDelete": "신고된 콘텐츠를 삭제할까요?",
+    "actionDone": "처리되었습니다.",
+    "forbidden": "관리자 권한이 없습니다.",
+    "needBackend": "관리자 기능은 백엔드(D1) 연결 시 활성화됩니다.",
+    "noticeCompose": "공지 작성은 공지사항 페이지에서 가능합니다."
   }
 }

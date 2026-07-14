@@ -24,6 +24,7 @@ const Settings = lazy(() => import('@/pages/Settings'))
 const Login = lazy(() => import('@/pages/Login'))
 const Profile = lazy(() => import('@/pages/Profile'))
 const Notices = lazy(() => import('@/pages/Notices'))
+const Admin = lazy(() => import('@/pages/Admin'))
 
 function PageFallback() {
   return <div className="card h-64 animate-pulse" />
@@ -139,6 +140,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageFallback />}>
               <Notices />
+            </Suspense>
+          }
+        />
+        <Route
+          path="admin"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <Admin />
             </Suspense>
           }
         />
