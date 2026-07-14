@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { spriteUrl, type MoveData, type Species } from '@/lib/dex'
-import { spTotal, natureLabel } from '@/lib/champions'
+import { spriteUrl, STAT_KEYS, type MoveData, type Species } from '@/lib/dex'
+import { spTotal, natureLabel, statAtLevel50 } from '@/lib/champions'
 import { loadItems } from '@/lib/items'
 import { buildTeamSvg, svgToPngBlob, type ImageMon } from '@/lib/teamImage'
 import type { TeamMon } from '@/store/teams'
@@ -38,12 +38,17 @@ export default function ShareImageButton({
       const species = speciesById.get(mon.speciesId)
       if (!species) continue
       const ability = species.abilities.find((a) => a.name === mon.ability)
+      const stats = Object.fromEntries(
+        STAT_KEYS.map((k) => [k, statAtLevel50(species.baseStats[k], k, mon.sp[k], mon.nature)]),
+      ) as ImageMon['stats']
       imageMons.push({
         species,
         item: mon.item ? (ko ? (itemKo.get(mon.item) ?? mon.item) : mon.item) : '',
         ability: ability ? (ko ? ability.ko : ability.name) : mon.ability,
         nature: natureLabel(mon.nature, i18n.language),
         spTotal: spTotal(mon.sp),
+        sp: mon.sp,
+        stats,
         moves: mon.moves.map((id) => (ko ? (moves?.[id]?.ko ?? id) : (moves?.[id]?.name ?? id))),
         sprite: spriteUrl(species),
       })

@@ -169,12 +169,17 @@ for (const m of Dex.moves.all()) {
 
 const learnsets = {}
 for (const s of species) {
-  // Fall back through base species chain (formes often share base learnsets)
-  let target = s.id
-  let data = (await Dex.learnsets.get(target))?.learnset
-  if (!data && s.baseSpecies) data = (await Dex.learnsets.get(s.baseSpecies))?.learnset
-  if (!data) continue
-  learnsets[s.id] = Object.keys(data).filter((moveId) => moves[moveId])
+  // A forme's movepool is the UNION of its own learnset and its base species'
+  // learnset. @pkmn/dex stores event/mega formes (e.g. Floette-Eternal) with only
+  // their form-exclusive moves (Light of Ruin) and NOT the base movepool, so
+  // without this merge those Pokémon lose most of their real moves (Draining
+  // Kiss, Charm, …). In Champions, a Pokémon in any forme reaches its base
+  // movepool via HOME transfers / form changes, so the union is the correct set.
+  const own = (await Dex.learnsets.get(s.id))?.learnset ?? {}
+  const base = s.baseSpecies ? ((await Dex.learnsets.get(s.baseSpecies))?.learnset ?? {}) : {}
+  const merged = { ...base, ...own }
+  const ids = Object.keys(merged).filter((moveId) => moves[moveId])
+  if (ids.length) learnsets[s.id] = ids
 }
 
 await mkdir(outDir, { recursive: true })

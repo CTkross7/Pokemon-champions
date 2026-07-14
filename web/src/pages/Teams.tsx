@@ -7,6 +7,7 @@ import { shareUrl, encodeTeam } from '@/lib/share'
 import { createSample } from '@/lib/api'
 import { useAuth } from '@/lib/auth'
 import { loadRegulation } from '@/lib/regulation'
+import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import ItemSelect from '@/components/ItemSelect'
@@ -158,15 +159,33 @@ export default function Teams() {
   const [ioText, setIoText] = useState('')
   const [ioMode, setIoMode] = useState<'none' | 'import' | 'export'>('none')
   const [shareMsg, setShareMsg] = useState('')
+  const [usage, setUsage] = useState<UsageData | null>(null)
 
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
     loadMoves().then(setMoves)
     loadLearnsets().then(setLearnsets)
+    loadUsage().then(setUsage, () => setUsage(null))
   }, [])
 
   const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
-  const metaRoster = useMemo(() => (pokedex ?? []).filter((s) => s.champions && !s.forme), [pokedex])
+  // Meta threats = the TOP usage Pokémon (not the whole roster), so the coach's
+  // "threat coverage" and score stay meaningful. Falls back to the highest-BST
+  // Champions Pokémon when usage data isn't available.
+  const metaRoster = useMemo(() => {
+    const dex = pokedex ?? []
+    if (usage && usage.pokemon.length > 0) {
+      const top: Species[] = []
+      for (const u of usage.pokemon.slice(0, 24)) {
+        const r = resolveUsageMon(u.id, u.name, speciesById, true)
+        if (r.species) top.push(r.species)
+      }
+      if (top.length > 0) return top
+    }
+    return [...dex.filter((s) => s.champions && !s.forme)]
+      .sort((a, b) => Object.values(b.baseStats).reduce((x, y) => x + y, 0) - Object.values(a.baseStats).reduce((x, y) => x + y, 0))
+      .slice(0, 24)
+  }, [pokedex, usage, speciesById])
   const active = teams.find((tm) => tm.id === activeId) ?? null
 
   const resolvedTeam = useMemo<ResolvedMon[]>(() => {

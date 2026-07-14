@@ -12,9 +12,21 @@ export interface ImageMon {
   ability: string // localized
   nature: string // localized
   spTotal: number
+  sp: { hp: number; atk: number; def: number; spa: number; spd: number; spe: number } // per-stat SP
+  stats: { hp: number; atk: number; def: number; spa: number; spd: number; spe: number } // final Lv50 stats
   moves: string[] // localized
   sprite: string // /sprites/{id}.png
 }
+
+// Stat rows: key, Korean label, bar color (matches the in-app detail page).
+const STAT_ROWS: ReadonlyArray<[keyof ImageMon['stats'], string, string]> = [
+  ['hp', 'HP', '#34d399'],
+  ['atk', '공격', '#fb7185'],
+  ['def', '방어', '#fbbf24'],
+  ['spa', '특공', '#38bdf8'],
+  ['spd', '특방', '#a78bfa'],
+  ['spe', '스피드', '#e879f9'],
+]
 
 const TYPE_HEX: Record<string, string> = {
   Normal: '#9099a1', Fire: '#ff9c54', Water: '#4d90d5', Electric: '#f3d23b', Grass: '#63bd5a',
@@ -49,8 +61,8 @@ async function spriteDataUri(m: ImageMon): Promise<string> {
   return ''
 }
 
-const CARD_W = 348
-const CARD_H = 150
+const CARD_W = 360
+const CARD_H = 248
 const GAP = 12
 const PAD = 20
 const HEADER = 64
@@ -74,32 +86,47 @@ export async function buildTeamSvg(title: string, mons: ImageMon[], brand = 'Cha
             <text x="${tx + 23}" y="${y + 52}" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${esc(tp)}</text>`
         })
         .join('')
+      // Stat block: label · SP badge · bar (final stat) · final value.
+      const BAR_X = x + 78
+      const BAR_W = 176
+      const stats = STAT_ROWS.map(([key, label, color], j) => {
+        const sy = y + 76 + j * 15
+        const val = m.stats[key]
+        const spv = m.sp[key]
+        const w = Math.max(3, Math.round((Math.min(val, 230) / 230) * BAR_W))
+        return `<text x="${x + 14}" y="${sy + 8.5}" font-size="9.5" font-weight="700" fill="#9aa1ab">${label}</text>
+          <text x="${x + 64}" y="${sy + 8.5}" font-size="9" font-weight="700" fill="${spv > 0 ? '#c7f236' : '#565b64'}" text-anchor="end">${spv}</text>
+          <rect x="${BAR_X}" y="${sy + 2}" width="${BAR_W}" height="7" rx="3.5" fill="#20242c"/>
+          <rect x="${BAR_X}" y="${sy + 2}" width="${w}" height="7" rx="3.5" fill="${color}"/>
+          <text x="${x + CARD_W - 14}" y="${sy + 8.5}" font-size="9.5" font-weight="800" fill="#e6e9ee" text-anchor="end">${val}</text>`
+      }).join('')
       const moves = m.moves
         .slice(0, 4)
         .map((mv, j) => {
-          const mx = x + 14 + (j % 2) * 162
-          const my = y + 74 + Math.floor(j / 2) * 24
-          return `<rect x="${mx}" y="${my}" width="152" height="19" rx="9.5" fill="#20242c"/>
+          const mx = x + 14 + (j % 2) * 172
+          const my = y + 172 + Math.floor(j / 2) * 24
+          return `<rect x="${mx}" y="${my}" width="160" height="19" rx="9.5" fill="#20242c"/>
             <text x="${mx + 10}" y="${my + 13.5}" font-size="10.5" font-weight="600" fill="#d9dde3">${esc(mv)}</text>`
         })
         .join('')
       const sprite = sprites[i]
-        ? `<image href="${sprites[i]}" x="${x + 10}" y="${y + 10}" width="64" height="64" style="image-rendering:pixelated"/>`
+        ? `<image href="${sprites[i]}" x="${x + 10}" y="${y + 10}" width="60" height="60" style="image-rendering:pixelated"/>`
         : ''
       return `<g>
         <rect x="${x}" y="${y}" width="${CARD_W}" height="${CARD_H}" rx="16" fill="#14161b" stroke="#262a31"/>
         ${sprite}
-        <text x="${x + 88}" y="${y + 30}" font-size="16" font-weight="800" fill="#fff">${esc(m.species.ko)}</text>
+        <text x="${x + 78}" y="${y + 28}" font-size="16" font-weight="800" fill="#fff">${esc(m.species.ko)}</text>
         ${types}
+        <text x="${x + CARD_W - 14}" y="${y + 26}" font-size="10.5" font-weight="700" fill="#c7f236" text-anchor="end">${esc(m.nature)}</text>
+        ${stats}
         ${moves}
-        <text x="${x + 14}" y="${y + 128}" font-size="10.5" fill="#8b929c">지닌물건 <tspan font-weight="700" fill="#cdd2d8">${esc(m.item || '-')}</tspan></text>
-        <text x="${x + 14}" y="${y + 142}" font-size="10.5" fill="#8b929c">특성 <tspan font-weight="700" fill="#cdd2d8">${esc(m.ability || '-')}</tspan>  ·  <tspan fill="#8b929c">SP</tspan> <tspan font-weight="700" fill="#cdd2d8">${m.spTotal}/66</tspan></text>
-        <text x="${x + CARD_W - 14}" y="${y + 128}" font-size="10.5" font-weight="700" fill="#c7f236" text-anchor="end">${esc(m.nature)}</text>
+        <text x="${x + 14}" y="${y + 230}" font-size="10.5" fill="#8b929c">지닌물건 <tspan font-weight="700" fill="#cdd2d8">${esc(m.item || '-')}</tspan></text>
+        <text x="${x + CARD_W - 14}" y="${y + 230}" font-size="10.5" fill="#8b929c" text-anchor="end">특성 <tspan font-weight="700" fill="#cdd2d8">${esc(m.ability || '-')}</tspan></text>
       </g>`
     })
     .join('')
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="Pretendard, sans-serif">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="Esamanru, Pretendard, sans-serif">
     <rect width="${W}" height="${H}" fill="#0a0b0e"/>
     <text x="${PAD}" y="${PAD + 30}" font-size="22" font-weight="900" fill="#fff">${esc(title)}</text>
     <text x="${W - PAD}" y="${PAD + 28}" font-size="13" font-weight="800" fill="#c7f236" text-anchor="end">${esc(brand)}</text>

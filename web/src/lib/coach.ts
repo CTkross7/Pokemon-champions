@@ -146,12 +146,16 @@ export function analyzeTeam(
   const roleSet = new Set(roles.map((r) => r.role))
   if (team.length >= 4 && !roleSet.has('wall') && !roleSet.has('support')) suggestions.push('role:nodefense')
 
-  // Overall balance score (heuristic, 0-100)
+  // Overall balance score (heuristic, 0-100). Penalties are PROPORTIONAL so the
+  // meta-threat term can't dominate: unhandled threats cost up to -30 total
+  // (as a ratio of the threat list), never a flat amount per threat — otherwise
+  // a large threat list would floor every team at 0.
   let score = 100
-  score -= weaknesses.length * 8
-  score -= missingCoverage.length * 3
-  score -= unhandled.length * 4
-  if (team.length < 6) score -= (6 - team.length) * 5
+  score -= Math.min(30, weaknesses.length * 8)
+  score -= Math.min(16, missingCoverage.length * 3)
+  const threatRatio = metaThreats.length > 0 ? unhandled.length / metaThreats.length : 0
+  score -= Math.round(threatRatio * 30)
+  if (team.length < 6) score -= (6 - team.length) * 6
   score = Math.max(0, Math.min(100, Math.round(score)))
 
   return {
