@@ -368,8 +368,8 @@
   "gallery": {
     "title": "Community samples",
     "subtitle": "Browse teams other trainers shared and import them.",
-    "notReady": "Gallery coming soon",
-    "notReadyNote": "The public gallery activates once the D1 backend is set up. For now, share teams with the 'Share link' button in the team builder.",
+    "notReady": "No shared samples yet",
+    "notReadyNote": "Build a team in the Team Builder and tap 'Share to community' to post the first sample.",
     "shareVia": "Share via link",
     "empty": "No public samples yet. Be the first to publish!",
     "views": "{{count}} views",
@@ -431,7 +431,7 @@
     "google": "Continue with Google",
     "apple": "Continue with Apple",
     "providerUnavailable": "Coming soon",
-    "providerHint": "Google sign-in activates once the service is deployed and configured.",
+    "providerHint": "This sign-in method is currently unavailable.",
     "username": "Username",
     "usernamePlaceholder": "3–20 chars, letters/numbers/underscore",
     "usernameRule": "3–20 chars, lowercase letters, numbers, underscore (_) only",
@@ -513,7 +513,7 @@
     "posting": "Posting…",
     "delete": "Delete",
     "confirmDelete": "Delete this notice?",
-    "needBackend": "The notices board activates once the backend (D1) is deployed.",
+    "needBackend": "No announcements yet.",
     "postFail": "Failed to post. Check your admin permission and login."
   },
   "shareImage": {
@@ -564,7 +564,7 @@
     "confirmDelete": "Delete the reported content?",
     "actionDone": "Done.",
     "forbidden": "You are not an administrator.",
-    "needBackend": "Admin features activate once the backend (D1) is connected.",
+    "needBackend": "",
     "noticeCompose": "Compose notices on the Notices page."
   }
 }

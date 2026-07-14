@@ -16,7 +16,7 @@ export default defineConfig({
         name: '챔스노트 — 포켓몬 챔피언스 배틀 파트너',
         short_name: '챔스노트',
         description:
-          '포켓몬 챔피언스 랭크배틀을 위한 도감·데미지 계산기·팀 진단 코칭·실전 매치업 어시스턴트를 한곳에서. 챔스노트.',
+          '포켓몬 챔피언스 랭크배틀을 위한 도감·데미지 계산기·팀 진단 코칭·실전 매치업 어시스턴트를 챔스노트 단 한곳에서.',
         lang: 'ko',
         theme_color: '#0a0a0a',
         background_color: '#050505',

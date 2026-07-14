@@ -88,9 +88,7 @@ export default function Admin() {
         {reports === null && <div className="mt-4 h-32 animate-pulse rounded-xl bg-zinc-100 dark:bg-white/5" />}
 
         {Array.isArray(reports) && reports.length === 0 && (
-          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">
-            {t('admin.empty')} <span className="text-[11px] text-zinc-400">({t('admin.needBackend')})</span>
-          </p>
+          <p className="mt-4 text-sm text-zinc-500 dark:text-zinc-400">{t('admin.empty')}</p>
         )}
 
         <div className="mt-3 space-y-3">

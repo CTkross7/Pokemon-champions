@@ -10,7 +10,7 @@
 | `og-banner-1200x630.png` | 1200×630 | **링크 공유 임베드**(카카오톡·디스코드·트위터 등). `web/public/og-banner.png`로도 배포되어 `og:image`/`twitter:image`(summary_large_image)에 연결됨 |
 | `feature-graphic-1024x500.png` | 1024×500 | **Play Store 그래픽 이미지**(스토어 상단 배너) |
 | `icon-512.png` | 512×512 | 앱 아이콘 / 스토어 아이콘 |
-| `store-01-home … 06-stats.png` | 1080×1920 | **Play Store 스크린샷**(홈·도감·계산기·팀빌더·매치업·통계) |
+| `promo-01 … 05.png` | 1080×1920 | **Play Store 스크린샷**(라이트 배경 + 헤드라인 캡션 + 폰 목업). 홈·도감·포켓몬 상세·통계·타입상성 |
 
 > 재생성: `web/`에서 `docs/store-assets` 생성 스크립트(세션 기록 참고)로 배너·스크린샷을 다시 뽑을 수 있습니다. 아이콘·화면이 바뀌면 함께 갱신하세요.
 

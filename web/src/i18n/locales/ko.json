@@ -368,8 +368,8 @@
   "gallery": {
     "title": "커뮤니티 샘플",
     "subtitle": "다른 트레이너가 공개한 팀을 둘러보고 내 팀으로 가져오세요.",
-    "notReady": "갤러리 준비 중",
-    "notReadyNote": "공개 갤러리는 백엔드(D1) 설정 후 활성화됩니다. 지금은 팀빌더의 '공유 링크'로 팀을 공유할 수 있어요.",
+    "notReady": "아직 공유된 샘플이 없어요",
+    "notReadyNote": "팀빌더에서 팀을 만들고 '커뮤니티에 공유'를 누르면 첫 샘플로 올라갑니다.",
     "shareVia": "공유 링크로 공유하기",
     "empty": "아직 공개된 샘플이 없습니다. 첫 번째로 공개해보세요!",
     "views": "조회 {{count}}",
@@ -431,7 +431,7 @@
     "google": "Google로 계속하기",
     "apple": "Apple로 계속하기",
     "providerUnavailable": "준비 중",
-    "providerHint": "Google 로그인은 서비스 배포·설정 후 활성화됩니다.",
+    "providerHint": "이 로그인 방식은 현재 사용할 수 없습니다.",
     "username": "아이디",
     "usernamePlaceholder": "영문·숫자·밑줄 3~20자",
     "usernameRule": "3~20자, 영문 소문자·숫자·밑줄(_)만 사용",
@@ -513,7 +513,7 @@
     "posting": "등록 중…",
     "delete": "삭제",
     "confirmDelete": "이 공지를 삭제할까요?",
-    "needBackend": "공지 게시판은 백엔드(D1) 배포 시 활성화됩니다.",
+    "needBackend": "아직 등록된 공지가 없습니다.",
     "postFail": "등록에 실패했습니다. 관리자 권한·로그인 상태를 확인하세요."
   },
   "shareImage": {
@@ -564,7 +564,7 @@
     "confirmDelete": "신고된 콘텐츠를 삭제할까요?",
     "actionDone": "처리되었습니다.",
     "forbidden": "관리자 권한이 없습니다.",
-    "needBackend": "관리자 기능은 백엔드(D1) 연결 시 활성화됩니다.",
+    "needBackend": "",
     "noticeCompose": "공지 작성은 공지사항 페이지에서 가능합니다."
   }
 }
