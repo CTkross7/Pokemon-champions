@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth'
 import Icon, { type IconName } from '@/components/Icon'
 
 const DEV_EMAIL = 'ctkross.dev@gmail.com'
-const BANK_ACCOUNT = '1002-5275-3724'
+const BANK_ACCOUNT = '1000-8672-0113'
 // Injected from package.json at build time (see vite.config define).
 declare const __APP_VERSION__: string
 const APP_VERSION = __APP_VERSION__
