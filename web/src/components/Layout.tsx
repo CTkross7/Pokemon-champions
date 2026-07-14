@@ -151,10 +151,11 @@ export default function Layout() {
         </div>
       </header>
 
-      <main
-        key={location.pathname}
-        className="mx-auto w-full max-w-6xl flex-1 animate-fade-up px-4 pt-6 pb-28 sm:px-6 sm:pb-10"
-      >
+      {/* No per-route transform animation here: promoting the whole (tall)
+          <main> to a compositing layer on every navigation caused tiles to fail
+          to raster on some Android WebViews — the About feature grid rendered
+          blank/noisy. Plain repaint is reliable across GPUs. */}
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-6 pb-28 sm:px-6 sm:pb-10">
         <Outlet />
       </main>
 
@@ -189,7 +190,9 @@ export default function Layout() {
       </footer>
 
       {/* Mobile "더보기" sheet — profile + settings + secondary destinations */}
-      {moreOpen && <MoreSheet onClose={() => setMoreOpen(false)} loggedIn={Boolean(user)} />}
+      {moreOpen && (
+        <MoreSheet onClose={() => setMoreOpen(false)} loggedIn={Boolean(user)} isAdmin={Boolean(user?.isAdmin)} />
+      )}
 
       {/* Mobile bottom tab bar (native-app style) */}
       <nav
@@ -240,7 +243,7 @@ export default function Layout() {
 
 /** Bottom sheet of secondary destinations (mobile). Profile + Settings first,
  *  since those are the shortcuts users reach for most from a tab bar. */
-function MoreSheet({ onClose, loggedIn }: { onClose: () => void; loggedIn: boolean }) {
+function MoreSheet({ onClose, loggedIn, isAdmin }: { onClose: () => void; loggedIn: boolean; isAdmin: boolean }) {
   const { t } = useTranslation()
   const items: ReadonlyArray<{ to: string; key: string; icon: IconName }> = [
     { to: loggedIn ? '/profile' : '/login', key: loggedIn ? 'nav.profile' : 'auth.login', icon: 'user' },
@@ -249,6 +252,8 @@ function MoreSheet({ onClose, loggedIn }: { onClose: () => void; loggedIn: boole
     { to: '/gallery', key: 'nav.gallery', icon: 'sparkles' },
     { to: '/notices', key: 'nav.notices', icon: 'bell' },
     { to: '/about', key: 'nav.about', icon: 'info' },
+    // Admin dashboard only surfaces for verified admins (ADMIN_USERNAMES).
+    ...(isAdmin ? [{ to: '/admin', key: 'nav.admin', icon: 'shield' as IconName }] : []),
   ]
   return (
     <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
