@@ -1,11 +1,29 @@
 @import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 @import 'tailwindcss';
 
+/* Brand font: 이사만루체(Esamanru) by 공게임즈 — 상업용 무료. Subset woff2, two
+   weights mapped across the Tailwind weight scale. font-display:swap paints
+   Pretendard first (no invisible text) then swaps, so it never blocks render. */
+@font-face {
+  font-family: 'Esamanru';
+  src: url('/fonts/esamanru-medium.woff2') format('woff2');
+  font-weight: 100 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Esamanru';
+  src: url('/fonts/esamanru-bold.woff2') format('woff2');
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans:
-    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+    'Esamanru', 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
     'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
 
   --color-volt-50: #fbffe5;
