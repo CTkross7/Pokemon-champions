@@ -44,3 +44,19 @@
 - 본 서비스는 비공식 팬메이드 유틸리티. The Pokémon Company/Nintendo/Game Freak과 무관함을 전 페이지 푸터에 고지
 - 공식 아트웍 사용 금지. 스프라이트는 커뮤니티 관행(PokéAPI 스프라이트) 범위에서 사용하되 권리자 요청 시 즉시 제거 방침
 - 서비스명·아이콘에 "Pokémon" 상표 직접 미사용 (확정: 챔스노트/ChampsNote)
+
+## 크롤링 가능성 및 자동 검증 (2026-07-14 확인)
+
+모든 게임 데이터는 **GitHub raw 미러**에서 크롤링합니다(안정적·인증 불필요):
+
+| 데이터 | 소스(크롤링 URL) | 상태 |
+|---|---|---|
+| 로스터·티어 | `raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/champions/formats-data.ts` | ✅ 크롤 가능 |
+| 학습기술(정식) | `…/champions/learnsets.ts` | ✅ 크롤 가능 |
+| 기술 합법성·밸런스 | `…/champions/moves.ts` (203 밴 · 9 재활성 · 39 수치변경) | ✅ 크롤 가능 |
+| 한/영 명칭·종족값 | `raw.githubusercontent.com/PokeAPI/pokeapi/master/data/v2/csv` (PokeAPI CSV) | ✅ 크롤 가능 |
+| 사용률 통계 | `smogon.com/stats` (gen9championsbssregma) | CI에서 크롤, 불가 시 폴백 |
+
+- **검증**: `npm run validate`가 5종 가드(데이터 무결성·이름·영어누출·**챔피언스 합법성**) 실행. 밴 기술 유출·빈 학습기술·미지 기술 참조 시 **빌드 실패**로 잘못된 데이터의 배포를 원천 차단.
+- **자동 갱신**: `.github/workflows/update-data.yml`이 매주(월 03:00 UTC) 전체 파이프라인을 재크롤·재빌드·검증 후 변경분을 커밋. 포챔스 밸런스 패치·신규 포켓몬이 사람 개입 없이 반영됨.
+- 참고: `pokeapi.co` REST API는 사용하지 않고 동일 데이터의 GitHub CSV 미러를 사용(더 안정적).

@@ -381,3 +381,9 @@
 - ✅ **전수 감사(310종)**: 빈 학습기술 0 · 밴 기술 유출 0 · 미지 기술 참조 0 / 특성: mod 밴 0(전부 유효) / 아이템: 기존 champions 합법성 기반 / 사용률 통계 기술도 전부 합법 집합 내
 - ✅ **영구 가드**: validate.mjs에 Champions 합법성 가드 추가(밴 기술·빈 학습기술·미지 참조 시 빌드 실패) + CI에 fetch:champions-moves 주간 갱신
 - 검증: validate 5종 가드 전부 ✓ · 빌드 · 린트 · E2E ✅
+
+## Phase 13.16 — 크롤링 가능성 확인 + 전체 파이프라인 라이브 검증 (2026-07-14)
+- ✅ **크롤링 가능성 확인**: 모든 소스가 GitHub raw 미러라 크롤 가능 — smogon/pokemon-showdown champions mod(로스터·학습기술·기술합법성) + PokeAPI CSV 미러(한/영 명칭). pokeapi.co REST API(샌드박스 차단)는 미사용, GitHub CSV 미러 사용으로 안정성 확보. smogon.com 사용률만 CI에서 크롤(샌드박스 폴백)
+- ✅ **전체 파이프라인 라이브 실행**: ko-names→roster→learnsets→moves→build→items→usage→validate 전 단계 실행 성공. 커밋 데이터가 라이브 소스와 이미 동일(드리프트 0)
+- ✅ **검증 5종 가드 통과** 포함 Champions 합법성 가드(310종·합법 500기·밴 203 제외)
+- ✅ 문서화: DataSources 페이지·DATA_SOURCES.md에 크롤 URL·검증·주간 자동갱신 명시(한/영)

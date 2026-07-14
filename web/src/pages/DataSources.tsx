@@ -28,8 +28,9 @@ const KO: Block[] = [
   {
     title: '로스터·학습기술·메커니즘',
     body: [
-      '도감의 챔피언스 로스터·티어·습득기술 및 메가진화 등 메커니즘은 Pokemon Showdown 저장소의 champions 데이터를 바탕으로 합니다.',
-      '합법 아이템 목록은 Showdown 기본 아이템에 champions 모드의 사용 가능 여부(비표준 항목 제외)를 적용해 산출합니다.',
+      '챔피언스 로스터·티어·포켓몬별 학습기술은 Pokemon Showdown 저장소의 champions 모드(formats-data·learnsets)에서 그대로 가져옵니다. 각 포켓몬은 포켓몬 챔피언스에서 실제 사용 가능한 기술만 표기됩니다.',
+      '기술의 존재 여부와 위력·PP·명중 등 수치도 champions 모드(moves)를 기준으로 하며, 포챔스에 없는 기술은 표시하지 않습니다.',
+      '이 규칙은 빌드 시 자동 검증(합법성 가드)으로 강제되며, 위반 시 배포가 중단됩니다.',
     ],
     link: 'https://github.com/smogon/pokemon-showdown',
   },
@@ -52,7 +53,7 @@ const EN: Block[] = [
   { title: 'Trademark & Copyright', body: ['Pokemon and all respective names are Trademark and © of Nintendo 1996–2026, Creatures Inc. and GAME FREAK inc.'] },
   { title: 'Unofficial & Unendorsed', body: ['This is a fan-made, unofficial service, not affiliated with or endorsed by Nintendo, The Pokemon Company, or GAME FREAK inc.'] },
   { title: 'Sprites & game data', body: ['Names (KO/EN), base stats, and sprites for Pokemon, moves, abilities, and items are provided by PokeAPI.'], link: 'https://pokeapi.co/' },
-  { title: 'Roster, learnsets & mechanics', body: ['The Champions roster, tiers, learnsets, and mechanics (incl. Mega Evolution) are based on the champions data in the Pokemon Showdown repository. The legal-item list is derived from Showdown base items filtered by the champions mod.'], link: 'https://github.com/smogon/pokemon-showdown' },
+  { title: 'Roster, learnsets & mechanics', body: ['The Champions roster, tiers, and per-Pokemon learnsets come directly from the champions mod (formats-data / learnsets) in the Pokemon Showdown repository — each Pokemon shows only the moves it can actually use in Champions. Move existence and stats (power/PP/accuracy) also follow the champions mod, and moves that do not exist in Champions are never shown. A build-time legality guard enforces this and blocks deploy on any violation.'], link: 'https://github.com/smogon/pokemon-showdown' },
   { title: 'Usage & adoption stats', body: ['Usage and move/item/ability/spread adoption are based on Smogon University stats aggregated from Pokemon Showdown ladder logs (gen9championsbssregma, cutoff 1500), collected automatically. The Showdown meta may differ from Nintendo Switch ranked.'], link: 'https://www.smogon.com/stats/' },
   { title: 'Damage calculation', body: ['Damage logic is ported from / references Smogon University’s Pokemon Showdown calc engine (@smogon/calc).'], link: 'https://github.com/smogon/damage-calc' },
 ]
