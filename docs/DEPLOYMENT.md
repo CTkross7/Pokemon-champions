@@ -196,6 +196,16 @@ Google 자격증명이 모두 있을 때만 버튼이 활성화됩니다(`/api/a
 > ⚠️ 실제 Google 로그인은 자격증명 등록 후 검증됩니다. 배포 후 리디렉션 URI가
 > 배포 주소와 정확히 일치하는지 확인하고 실제 로그인 1회로 확인하세요.
 
+### ❗ Google 로그인 오류 해결
+- **`401: disabled_client` / "The OAuth client was disabled"**: Google Cloud Console에서
+  해당 **OAuth 2.0 클라이언트가 비활성화**된 상태입니다. **APIs & Services → 사용자 인증 정보**
+  에서 클라이언트를 확인 → 비활성화됐으면 다시 사용 설정하거나 **새 클라이언트를 만들어**
+  `GOOGLE_CLIENT_ID/SECRET`를 갱신하세요. (프로젝트가 삭제/정지된 경우도 동일 오류)
+- **`403: access_denied`**: OAuth 동의 화면이 **테스트** 상태면 "테스트 사용자"에 로그인 계정을
+  추가하거나, 동의 화면을 **게시(프로덕션)** 로 전환하세요.
+- **`redirect_uri_mismatch`**: 승인된 리디렉션 URI가 `{APP_URL}/api/auth/google/callback` 와
+  정확히 일치해야 합니다(끝 슬래시·http/https·서브도메인까지).
+
 ---
 
 ## 구글 광고(AdSense) 배치 (선택)

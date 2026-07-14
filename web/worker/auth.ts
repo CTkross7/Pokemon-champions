@@ -36,6 +36,7 @@ interface UserRow {
   password_hash: string | null
   display_name_changed_at: number | null
   username_changed_at: number | null
+  avatar_custom: number | null
   onboarded: number
   created_at: number
 }
@@ -200,10 +201,12 @@ async function upsertUser(
     .bind(provider, providerId)
     .first<UserRow>()
   if (existing) {
-    // Refresh mutable profile fields.
+    // Refresh email, but NEVER clobber a user-chosen avatar with the Google
+    // picture on re-login (that was resetting custom avatars after logout).
+    const nextAvatar = existing.avatar_custom === 1 ? existing.avatar_url : avatar
     await db
       .prepare('UPDATE users SET email = ?, avatar_url = ? WHERE id = ?')
-      .bind(email, avatar, existing.id)
+      .bind(email, nextAvatar, existing.id)
       .run()
     return existing.id
   }
@@ -361,7 +364,12 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
       // Accept a small data: image or an https url; cap size (~200 KB).
       const ok = (avatar.startsWith('data:image/') && avatar.length < 280_000) || /^https:\/\//.test(avatar) || avatar === ''
       if (!ok) return json({ error: 'invalid_avatar' }, 400)
-      await db.prepare('UPDATE users SET avatar_url = ? WHERE id = ?').bind(avatar || null, user.id).run()
+      // Mark as custom when set, so Google re-login won't overwrite it; clearing
+      // it (empty) resets the flag so the Google picture can return next login.
+      await db
+        .prepare('UPDATE users SET avatar_url = ?, avatar_custom = ? WHERE id = ?')
+        .bind(avatar || null, avatar ? 1 : 0, user.id)
+        .run()
     }
 
     const fresh = await db.prepare('SELECT * FROM users WHERE id = ?').bind(user.id).first<UserRow>()

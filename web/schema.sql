@@ -24,6 +24,7 @@ CREATE INDEX IF NOT EXISTS idx_samples_created_at ON samples (created_at DESC);
 --   ALTER TABLE users ADD COLUMN display_name_changed_at INTEGER;
 --   ALTER TABLE users ADD COLUMN username_changed_at INTEGER;
 --   ALTER TABLE users ADD COLUMN onboarded INTEGER NOT NULL DEFAULT 1;
+--   ALTER TABLE users ADD COLUMN avatar_custom INTEGER NOT NULL DEFAULT 0;
 CREATE TABLE IF NOT EXISTS users (
   id           TEXT PRIMARY KEY,      -- uuid
   username     TEXT NOT NULL UNIQUE,  -- lowercase [a-z0-9_], 3-20

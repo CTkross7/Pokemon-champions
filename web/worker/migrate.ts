@@ -23,7 +23,7 @@ const TABLES = [
   `CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, display_name TEXT NOT NULL, email TEXT,
     provider TEXT NOT NULL, provider_id TEXT NOT NULL, avatar_url TEXT, password_hash TEXT,
-    display_name_changed_at INTEGER, username_changed_at INTEGER,
+    display_name_changed_at INTEGER, username_changed_at INTEGER, avatar_custom INTEGER NOT NULL DEFAULT 0,
     onboarded INTEGER NOT NULL DEFAULT 1, created_at INTEGER NOT NULL, UNIQUE (provider, provider_id))`,
   `CREATE TABLE IF NOT EXISTS sessions (
     token TEXT PRIMARY KEY, user_id TEXT NOT NULL, expires_at INTEGER NOT NULL, created_at INTEGER NOT NULL)`,
@@ -49,6 +49,8 @@ const ADD_COLUMNS = [
   `ALTER TABLE users ADD COLUMN display_name_changed_at INTEGER`,
   `ALTER TABLE users ADD COLUMN username_changed_at INTEGER`,
   `ALTER TABLE users ADD COLUMN onboarded INTEGER NOT NULL DEFAULT 1`,
+  // 1 = the user picked their own avatar; Google re-login must NOT overwrite it.
+  `ALTER TABLE users ADD COLUMN avatar_custom INTEGER NOT NULL DEFAULT 0`,
 ]
 
 async function run(db: D1Database): Promise<void> {
