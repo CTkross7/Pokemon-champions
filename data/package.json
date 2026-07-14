@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Data pipeline for ChampsNote: Korean name maps + curated Pokémon Champions data",
+  "description": "Data pipeline for ChampsNote: Korean name maps + curated Pok\u00e9mon Champions data",
   "scripts": {
     "fetch:ko-names": "node scripts/fetch-ko-names.mjs",
     "validate": "node scripts/validate.mjs",
@@ -11,7 +11,8 @@
     "fetch:sprites": "node scripts/fetch-sprites.mjs",
     "fetch:champions-roster": "node scripts/fetch-champions-roster.mjs",
     "fetch:champions-items": "node scripts/fetch-champions-items.mjs",
-    "fetch:usage-stats": "node scripts/fetch-usage-stats.mjs"
+    "fetch:usage-stats": "node scripts/fetch-usage-stats.mjs",
+    "fetch:champions-learnsets": "node scripts/fetch-champions-learnsets.mjs"
   },
   "dependencies": {
     "@pkmn/dex": "^0.10.11"

@@ -38,6 +38,18 @@ try {
   console.warn('champions-roster.json missing; falling back to roster.seed.json')
 }
 
+// Authoritative Champions movepools (Showdown champions mod learnsets.ts). When
+// present, these override the general Gen 9 learnset so every Pokémon shows
+// exactly the moves it can use in Champions — nothing more, nothing less.
+let championsLearnsets = {}
+try {
+  championsLearnsets = JSON.parse(
+    await readFile(path.join(root, 'generated', 'champions-learnsets.json'), 'utf8'),
+  ).learnsets
+} catch {
+  console.warn('champions-learnsets.json missing; run fetch:champions-learnsets. Falling back to Gen 9 movepools.')
+}
+
 const normalize = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 
 /**
@@ -169,16 +181,22 @@ for (const m of Dex.moves.all()) {
 
 const learnsets = {}
 for (const s of species) {
-  // A forme's movepool is the UNION of its own learnset and its base species'
-  // learnset. @pkmn/dex stores event/mega formes (e.g. Floette-Eternal) with only
-  // their form-exclusive moves (Light of Ruin) and NOT the base movepool, so
-  // without this merge those Pokémon lose most of their real moves (Draining
-  // Kiss, Charm, …). In Champions, a Pokémon in any forme reaches its base
-  // movepool via HOME transfers / form changes, so the union is the correct set.
-  const own = (await Dex.learnsets.get(s.id))?.learnset ?? {}
-  const base = s.baseSpecies ? ((await Dex.learnsets.get(s.baseSpecies))?.learnset ?? {}) : {}
-  const merged = { ...base, ...own }
-  const ids = Object.keys(merged).filter((moveId) => moves[moveId])
+  const baseId = s.baseSpecies ? Dex.species.get(s.baseSpecies).id : null
+  // Prefer the authoritative Champions movepool (own, else base species' — megas
+  // like Charizard-Mega-X inherit the base Charizard movepool). This is the
+  // verified set of moves usable in Champions.
+  const champ = championsLearnsets[s.id] ?? (baseId ? championsLearnsets[baseId] : null)
+  let ids
+  if (champ) {
+    ids = champ.filter((moveId) => moves[moveId])
+  } else {
+    // Species not in the Champions mod (kept only for display resolution) — fall
+    // back to the general Gen 9 movepool (own ∪ base) so its detail page isn't
+    // empty. These are never surfaced as Champions Pokémon.
+    const own = (await Dex.learnsets.get(s.id))?.learnset ?? {}
+    const base = baseId ? ((await Dex.learnsets.get(s.baseSpecies))?.learnset ?? {}) : {}
+    ids = Object.keys({ ...base, ...own }).filter((moveId) => moves[moveId])
+  }
   if (ids.length) learnsets[s.id] = ids
 }
 
