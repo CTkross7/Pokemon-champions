@@ -1,5 +1,5 @@
 /**
- * Rule-based build recommendations for a single Pokémon (Champions SP system).
+ * Rule-based build recommendations for a single Pokemon (Champions SP system).
  * Deterministic heuristics over base stats + learnset — a starting point players
  * can tweak, not a claim of "the" optimal set. Reason keys are resolved in the UI.
  */
@@ -113,7 +113,7 @@ export function recommendBuilds(
     })
   }
 
-  // Secondary bulky build for naturally bulky Pokémon.
+  // Secondary bulky build for naturally bulky Pokemon.
   if (bulk >= 280) {
     const defensiveCat = bs.atk >= bs.spa ? 'Physical' : 'Special'
     builds.push({

@@ -52,7 +52,7 @@ function MonPanel({
   onToggleUnknown?: (v: boolean) => void
 }) {
   const { t, i18n } = useTranslation()
-  // Abilities come from the Pokédex dataset (has Korean names), not the raw
+  // Abilities come from the Pokedex dataset (has Korean names), not the raw
   // engine list, so Korean mode shows Korean ability names.
   const abilities = mon.species?.abilities ?? []
 

@@ -1,7 +1,7 @@
 /**
- * Gen 9 type effectiveness chart (unchanged since Gen 6, used by Pokémon
+ * Gen 9 type effectiveness chart (unchanged since Gen 6, used by Pokemon
  * Champions which shares mainline battle mechanics).
- * Source: mainline games / Pokémon Showdown data — see docs/DATA_SOURCES.md.
+ * Source: mainline games / Pokemon Showdown data — see docs/DATA_SOURCES.md.
  */
 
 export const TYPES = [

@@ -1,13 +1,13 @@
 /**
- * Pokémon Champions battle-system constants and the SP → engine mapping.
+ * Pokemon Champions battle-system constants and the SP → engine mapping.
  *
- * Champions replaces EVs/IVs with Stat Points (SP): every Pokémon is Level 50,
+ * Champions replaces EVs/IVs with Stat Points (SP): every Pokemon is Level 50,
  * may assign up to SP_TOTAL_MAX points across six stats, at most SP_PER_STAT_MAX
  * per stat, and 1 SP = +1 to the final stat at Lv50. See docs/DATA_SOURCES.md.
  *
  * @smogon/calc computes stats from base + IV + EV + nature + level through the
  * constructor only (post-construction stat writes are ignored). We therefore
- * model a Champions Pokémon as: perfect-IV (31) baseline at Lv50, with SP mapped
+ * model a Champions Pokemon as: perfect-IV (31) baseline at Lv50, with SP mapped
  * to EVs at 8 EV per SP. Because floor(EV/4) * level/100 = SP at Lv50, this is
  * exact for 0–31 SP; at the 32-SP maximum the 252-EV cap yields ±1 in rare
  * base-stat parities — flagged for in-game verification in DATA_SOURCES.md.

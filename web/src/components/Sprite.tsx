@@ -8,7 +8,7 @@ interface SpriteProps {
 }
 
 /**
- * Pokémon sprite. Champions-exclusive Megas have no PokéAPI artwork, so a
+ * Pokemon sprite. Champions-exclusive Megas have no PokeAPI artwork, so a
  * missing sprite first falls back to the base species' sprite, then to a
  * monochrome pokeball.
  */

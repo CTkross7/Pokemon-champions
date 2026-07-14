@@ -1,4 +1,4 @@
-/** Runtime loader and query helpers for the static Pokédex datasets. */
+/** Runtime loader and query helpers for the static Pokedex datasets. */
 
 export interface Ability {
   name: string
@@ -42,7 +42,7 @@ async function fetchJson<T>(path: string): Promise<T> {
 
 let pokedexAllPromise: Promise<Species[]> | null = null
 /**
- * Full Pokédex including non-Champions species. Display-resolution only (e.g.
+ * Full Pokedex including non-Champions species. Display-resolution only (e.g.
  * mapping a Champions-exclusive Mega like `floettemega` back to its base
  * species for sprite/Korean name when the base isn't in the Champions roster).
  * Feature lists must keep using the Champions-filtered loadPokedex().
@@ -55,7 +55,7 @@ export function loadPokedexAll(): Promise<Species[]> {
 let pokedexPromise: Promise<Species[]> | null = null
 export function loadPokedex(): Promise<Species[]> {
   // ChampsNote is a Champions-only service, so the whole app sees only species
-  // verified to exist in Pokémon Champions (Showdown champions roster).
+  // verified to exist in Pokemon Champions (Showdown champions roster).
   pokedexPromise ??= loadPokedexAll().then((all) => all.filter((s) => s.champions))
   return pokedexPromise
 }

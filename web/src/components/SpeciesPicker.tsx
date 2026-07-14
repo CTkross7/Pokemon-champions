@@ -11,7 +11,7 @@ interface SpeciesPickerProps {
   championsFirst?: boolean
 }
 
-/** Searchable Pokémon selector backed by the static Pokédex. */
+/** Searchable Pokemon selector backed by the static Pokedex. */
 export default function SpeciesPicker({ value, onChange, placeholder, championsFirst }: SpeciesPickerProps) {
   const { t, i18n } = useTranslation()
   const [all, setAll] = useState<Species[] | null>(null)

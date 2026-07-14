@@ -1,13 +1,13 @@
 {
   "app": {
     "name": "ChampsNote",
-    "tagline": "Your Pokémon Champions battle partner",
-    "disclaimer": "ChampsNote is an unofficial fan-made service and is not affiliated with The Pokémon Company, Nintendo, or Game Freak. Pokémon and all related names are trademarks of their respective owners.",
+    "tagline": "Your Pokemon Champions battle partner",
+    "disclaimer": "ChampsNote is an unofficial fan-made service and is not affiliated with The Pokemon Company, Nintendo, or Game Freak. Pokemon and all related names are trademarks of their respective owners.",
     "developedBy": "by {{name}}"
   },
   "nav": {
     "home": "Home",
-    "dex": "Pokédex",
+    "dex": "Pokedex",
     "calculator": "Calculator",
     "teams": "Team Builder",
     "about": "About",
@@ -56,9 +56,9 @@
     "accountCopied": "Account number copied"
   },
   "home": {
-    "badge": "Pokémon Champions · Regulation M-B season",
+    "badge": "Pokemon Champions · Regulation M-B season",
     "heroTitle": "Every tool you need to win",
-    "heroSubtitle": "Pokédex, damage calculator, and automated team coaching for Pokémon Champions ranked battles all in one place.",
+    "heroSubtitle": "Pokedex, damage calculator, and automated team coaching for Pokemon Champions ranked battles all in one place.",
     "ctaTeams": "Build a team",
     "ctaCalc": "Damage calculator",
     "features": {
@@ -98,23 +98,23 @@
     "dday": "D-{{days}}",
     "metaTitle": "Meta preview",
     "metaSub": "Top ranked-battle usage · {{month}}",
-    "metaFallback": "Most-used competitive Pokémon",
+    "metaFallback": "Most-used competitive Pokemon",
     "noticesTitle": "Latest news",
     "viewAll": "View all"
   },
   "about": {
     "title": "About ChampsNote",
-    "body": "ChampsNote is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
+    "body": "ChampsNote is a companion toolkit for Pokemon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
     "roadmapTitle": "Roadmap",
     "dataTitle": "Data & stats sources",
     "dataBody": "All game data comes only from verifiable official/open sources, refreshed automatically via GitHub Actions to track game updates.",
     "developer": "Developer",
-    "intro": "ChampsNote is an all-in-one utility for Pokémon Champions ranked battles. From damage calculation to team building, automatic diagnosis & coaching, live matchup analysis, meta statistics and community. Everything you need for competitive play, in one place. All game data comes only from verifiable official/open sources and updates automatically as the game changes.",
+    "intro": "ChampsNote is an all-in-one utility for Pokemon Champions ranked battles. From damage calculation to team building, automatic diagnosis & coaching, live matchup analysis, meta statistics and community. Everything you need for competitive play, in one place. All game data comes only from verifiable official/open sources and updates automatically as the game changes.",
     "featuresTitle": "Key features",
     "features": [
       {
         "t": "Champions Dex",
-        "d": "Only the Pokémon and exclusive Mega Evolutions that actually appear in Pokémon Champions. Search base stats, types, abilities, learnsets and tiers instantly, with per-Pokémon recommended builds and community samples on one screen."
+        "d": "Only the Pokemon and exclusive Mega Evolutions that actually appear in Pokemon Champions. Search base stats, types, abilities, learnsets and tiers instantly, with per-Pokemon recommended builds and community samples on one screen."
       },
       {
         "t": "Damage Calculator",
@@ -122,7 +122,7 @@
       },
       {
         "t": "Team Builder & Auto Coaching",
-        "d": "Build 6 Pokémon, allocate SP, and get automatic diagnosis of type weaknesses, speed-tier distribution, coverage against top-meta threats and role balance, plus improvement suggestions. Showdown import/export and image-card sharing included."
+        "d": "Build 6 Pokemon, allocate SP, and get automatic diagnosis of type weaknesses, speed-tier distribution, coverage against top-meta threats and role balance, plus improvement suggestions. Showdown import/export and image-card sharing included."
       },
       {
         "t": "Live Matchup Assistant",
@@ -139,11 +139,11 @@
     ],
     "dataSources": [
       {
-        "t": "PokéAPI",
-        "d": "Korean/English names and base stats for Pokémon, moves, abilities, items"
+        "t": "PokeAPI",
+        "d": "Korean/English names and base stats for Pokemon, moves, abilities, items"
       },
       {
-        "t": "Pokémon Showdown (champions mod)",
+        "t": "Pokemon Showdown (champions mod)",
         "d": "Champions roster, tiers, and mechanics (officially-mirrored open source)"
       },
       {
@@ -159,7 +159,7 @@
     "why": [
       {
         "t": "Champions-only data",
-        "d": "Only Pokémon, Megas and moves that truly exist in Champions, with no mixing in other generations or games."
+        "d": "Only Pokemon, Megas and moves that truly exist in Champions, with no mixing in other generations or games."
       },
       {
         "t": "Diagnosis, not just math",
@@ -182,7 +182,7 @@
       },
       {
         "t": "2. Build",
-        "d": "Assemble 6 Pokémon in the Team Builder with SP, moves, items and nature."
+        "d": "Assemble 6 Pokemon in the Team Builder with SP, moves, items and nature."
       },
       {
         "t": "3. Diagnose",
@@ -198,7 +198,7 @@
       }
     ],
     "updateTitle": "Data update policy",
-    "updateBody": "Pokémon/move/ability/item data come from PokéAPI and Pokémon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokémon or balance changes automatically."
+    "updateBody": "Pokemon/move/ability/item data come from PokeAPI and Pokemon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokemon or balance changes automatically."
   },
   "common": {
     "underConstruction": "This feature is under construction.",
@@ -206,7 +206,7 @@
     "backHome": "Back to home"
   },
   "dex": {
-    "tabPokemon": "Pokémon",
+    "tabPokemon": "Pokemon",
     "tabTypes": "Type chart",
     "searchPlaceholder": "Search by name (Korean/English/number)",
     "filterAll": "All",
@@ -228,9 +228,9 @@
     "noResults": "No results.",
     "loadError": "Failed to load data. Please refresh.",
     "championsBadge": "Confirmed in Champions",
-    "rosterNote": "ChampsNote is Champions-only: it shows only Pokémon that actually exist in the game (from the official-mirroring Showdown data), auto-updated on game updates. The badge is the competitive tier (OU/UU, ...).",
-    "notFound": "Pokémon not found.",
-    "backToDex": "Back to Pokédex",
+    "rosterNote": "ChampsNote is Champions-only: it shows only Pokemon that actually exist in the game (from the official-mirroring Showdown data), auto-updated on game updates. The badge is the competitive tier (OU/UU, ...).",
+    "notFound": "Pokemon not found.",
+    "backToDex": "Back to Pokedex",
     "baseStats": "Base stats",
     "statsTotal": "Total",
     "stats": {
@@ -278,10 +278,10 @@
   },
   "calc": {
     "title": "Damage Calculator",
-    "subtitle": "Damage calculations on the Pokémon Champions SP system (Level 50)",
+    "subtitle": "Damage calculations on the Pokemon Champions SP system (Level 50)",
     "attacker": "Attacker",
     "defender": "Defender",
-    "selectPokemon": "Select Pokémon",
+    "selectPokemon": "Select Pokemon",
     "searchPokemon": "Search name (KR/EN)",
     "ability": "Ability",
     "item": "Item",
@@ -316,7 +316,7 @@
   "teams": {
     "moves": "Moves",
     "searchMove": "Search move",
-    "removeMon": "Remove this Pokémon",
+    "removeMon": "Remove this Pokemon",
     "newTeam": "New team",
     "import": "Import",
     "export": "Export",
@@ -327,9 +327,9 @@
     "doImport": "Run import",
     "importedName": "Imported team",
     "slot": "Slot",
-    "addMon": "Add Pokémon",
+    "addMon": "Add Pokemon",
     "speedTiers": "Speed line",
-    "speedNote": "Each Pokémon's Lv.50 Speed (SP & nature applied). Check who you outspeed.",
+    "speedNote": "Each Pokemon's Lv.50 Speed (SP & nature applied). Check who you outspeed.",
     "disclaimer": "Teams are auto-saved in your browser (local). Account-synced saving comes in a later phase.",
     "share": "Share",
     "shareCopied": "Link copied ✓",
@@ -362,21 +362,21 @@
       "support": "Support"
     },
     "sug": {
-      "weakness": "Multiple members are weak to {{types}}. Add a Pokémon that resists/nullifies it.",
+      "weakness": "Multiple members are weak to {{types}}. Add a Pokemon that resists/nullifies it.",
       "coverage": "No effective way to hit {{types}}. Add coverage moves for those types.",
       "threats": "No answer to {{names}}. Consider coverage or a defensive counter.",
-      "speed": "Nothing at Speed 100+, making it hard to move first. Consider a Scarf or a faster Pokémon.",
+      "speed": "Nothing at Speed 100+, making it hard to move first. Consider a Scarf or a faster Pokemon.",
       "role": "No wall/support role. Add a tank or supporter for balance."
     }
   },
   "matchup": {
     "title": "Live Matchup Assistant",
-    "subtitle": "Enter the opponent's Pokémon mid-battle for instant lead and threat analysis.",
+    "subtitle": "Enter the opponent's Pokemon mid-battle for instant lead and threat analysis.",
     "myTeam": "My team",
     "noTeam": "No saved team. Build one first.",
     "goBuild": "Go build a team",
     "opponent": "Opponent",
-    "addOpponent": "Add opponent Pokémon",
+    "addOpponent": "Add opponent Pokemon",
     "leads": "Recommended leads",
     "leadsNote": "Ordered by favorable offense/defense against the opponent.",
     "offDef": "Off {{off}} Def {{def}}",
@@ -385,7 +385,7 @@
     "answers": "Answers per opponent",
     "uncovered": "No answer",
     "both": "OFF/DEF",
-    "prompt": "Add opponent Pokémon to start the analysis.",
+    "prompt": "Add opponent Pokemon to start the analysis.",
     "disclaimer": "Instant type-matchup analysis (moves/abilities not applied). Use the calculator for precise damage."
   },
   "builds": {
@@ -460,14 +460,14 @@
   },
   "stats": {
     "title": "Battle Data",
-    "subtitle": "Pokémon Champions ladder usage stats and meta analysis. See what top players actually run.",
-    "tierTitle": "Meta Pokémon (competitive classification · reference)",
+    "subtitle": "Pokemon Champions ladder usage stats and meta analysis. See what top players actually run.",
+    "tierTitle": "Meta Pokemon (competitive classification · reference)",
     "tierNote": "Note: tiers (Uber/OU, ...) are Smogon's community classification and differ from the in-game Champions season ranking. Real in-game usage/season data appears under 'Usage ranking' below.",
     "usageTitle": "Usage ranking",
     "source": "Source: Smogon {{month}}",
     "sourceFallback": "Estimated (reference)",
     "fallbackNote": "* This ranking is estimated from competitive tiers and base-stat totals until measured usage stats are collected. It is replaced automatically once real data arrives.",
-    "usagePending": "Real usage/adoption stats are auto-collected weekly from the Pokémon Champions ladder (official API / Smogon Champions stats). Collection is pending; a reference meta classification is shown meanwhile.",
+    "usagePending": "Real usage/adoption stats are auto-collected weekly from the Pokemon Champions ladder (official API / Smogon Champions stats). Collection is pending; a reference meta classification is shown meanwhile.",
     "count": "{{count}}",
     "moves": "Moves",
     "items": "Items",

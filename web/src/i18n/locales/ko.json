@@ -2,7 +2,7 @@
   "app": {
     "name": "챔스노트",
     "tagline": "포켓몬 챔피언스 배틀 파트너",
-    "disclaimer": "챔스노트는 팬이 만든 비공식 서비스이며 The Pokémon Company, Nintendo, Game Freak과 무관합니다. Pokémon 및 관련 명칭은 각 소유자의 상표입니다.",
+    "disclaimer": "챔스노트는 팬이 만든 비공식 서비스이며 The Pokemon Company, Nintendo, Game Freak과 무관합니다. Pokemon 및 관련 명칭은 각 소유자의 상표입니다.",
     "developedBy": "개발 {{name}}"
   },
   "nav": {
@@ -56,7 +56,7 @@
     "accountCopied": "계좌번호가 복사되었습니다"
   },
   "home": {
-    "badge": "Pokémon Champions · Regulation M-B 시즌",
+    "badge": "Pokemon Champions · Regulation M-B 시즌",
     "heroTitle": "이기는 배틀을 위한 모든 도구",
     "heroSubtitle": "포켓몬 챔피언스 랭크배틀을 위한 도감, 데미지 계산기, 팀 진단 코칭까지 한 곳에서.",
     "ctaTeams": "팀 만들기",
@@ -139,11 +139,11 @@
     ],
     "dataSources": [
       {
-        "t": "PokéAPI",
+        "t": "PokeAPI",
         "d": "포켓몬·기술·특성·아이템의 한국어/영어 명칭과 종족값"
       },
       {
-        "t": "Pokémon Showdown (champions 모드)",
+        "t": "Pokemon Showdown (champions 모드)",
         "d": "포챔스 로스터·티어·메커니즘(공식 반영 오픈소스)"
       },
       {
@@ -198,7 +198,7 @@
       }
     ],
     "updateTitle": "데이터 갱신 정책",
-    "updateBody": "포켓몬·기술·특성·아이템 데이터는 PokéAPI와 Pokémon Showdown(champions 모드)에서, 사용률 통계는 경쟁 래더에서 가져옵니다. GitHub Actions 자동 파이프라인이 주기적으로 원본을 재수집해, 새 포켓몬이나 밸런스 변경 등 게임 업데이트를 자동으로 반영합니다."
+    "updateBody": "포켓몬·기술·특성·아이템 데이터는 PokeAPI와 Pokemon Showdown(champions 모드)에서, 사용률 통계는 경쟁 래더에서 가져옵니다. GitHub Actions 자동 파이프라인이 주기적으로 원본을 재수집해, 새 포켓몬이나 밸런스 변경 등 게임 업데이트를 자동으로 반영합니다."
   },
   "common": {
     "underConstruction": "이 기능은 현재 개발 중입니다.",

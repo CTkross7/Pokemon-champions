@@ -169,9 +169,9 @@ export default function Teams() {
   }, [])
 
   const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
-  // Meta threats = the TOP usage Pokémon (not the whole roster), so the coach's
+  // Meta threats = the TOP usage Pokemon (not the whole roster), so the coach's
   // "threat coverage" and score stay meaningful. Falls back to the highest-BST
-  // Champions Pokémon when usage data isn't available.
+  // Champions Pokemon when usage data isn't available.
   const metaRoster = useMemo(() => {
     const dex = pokedex ?? []
     if (usage && usage.pokemon.length > 0) {

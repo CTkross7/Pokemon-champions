@@ -125,7 +125,7 @@ export default function Settings() {
         <dl className="space-y-2.5 text-sm">
           <InfoRow label={t('settings.version')} value={`v${APP_VERSION}`} />
           <InfoRow label={t('settings.developer')} value="CTkross" />
-          <InfoRow label={t('settings.openSource')} value="PokéAPI · Showdown · Smogon" />
+          <InfoRow label={t('settings.openSource')} value="PokeAPI · Showdown · Smogon" />
         </dl>
         <p className="mt-3 text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('app.disclaimer')}</p>
       </Section>

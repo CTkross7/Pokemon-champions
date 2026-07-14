@@ -70,7 +70,7 @@ const TERMS_KO: Article[] = [
     title: '제8조 (지식재산권)',
     clauses: [
       '① 「포켓몬」 및 관련 명칭·캐릭터·이미지의 저작권 및 상표권은 Nintendo, Creatures Inc., GAME FREAK inc.에 있습니다.',
-      '② 본 서비스는 팬메이드 비공식 서비스로서 Nintendo, The Pokémon Company, GAME FREAK inc.와 제휴·후원·승인 관계에 있지 않습니다.',
+      '② 본 서비스는 팬메이드 비공식 서비스로서 Nintendo, The Pokemon Company, GAME FREAK inc.와 제휴·후원·승인 관계에 있지 않습니다.',
       '③ 서비스가 자체 제작한 UI·코드·문구 등의 저작권은 서비스 개발자에게 있으며, 이용자가 작성한 콘텐츠의 저작권은 해당 이용자에게 있습니다.',
     ],
   },
@@ -85,7 +85,7 @@ const TERMS_KO: Article[] = [
   {
     title: '제10조 (데이터 및 통계 출처)',
     clauses: [
-      '① 명칭·종족값·스프라이트 등 기본 데이터는 PokéAPI를, 로스터·학습기술·메커니즘은 Pokémon Showdown의 champions 데이터를, 사용률·카운터 통계는 Smogon University의 공개 통계를 바탕으로 합니다.',
+      '① 명칭·종족값·스프라이트 등 기본 데이터는 PokeAPI를, 로스터·학습기술·메커니즘은 Pokemon Showdown의 champions 데이터를, 사용률·카운터 통계는 Smogon University의 공개 통계를 바탕으로 합니다.',
       '② 자세한 출처는 서비스 내 "데이터 및 통계 출처" 페이지에 명시합니다.',
     ],
   },
@@ -112,16 +112,16 @@ const TERMS_KO: Article[] = [
 ]
 
 const TERMS_EN: Article[] = [
-  { title: 'Article 1 (Purpose)', clauses: ['These Terms govern the rights, obligations, and responsibilities between ChampsNote ("the Service") and its users regarding the use of the Pokémon Champions utilities and community features.'] },
+  { title: 'Article 1 (Purpose)', clauses: ['These Terms govern the rights, obligations, and responsibilities between ChampsNote ("the Service") and its users regarding the use of the Pokemon Champions utilities and community features.'] },
   { title: 'Article 2 (Definitions)', clauses: ['"User" means members and non-members who use the Service.', '"Member" means anyone who signs up via social login (Google) or username registration.', '"Content" means any teams, samples, comments, or text a user creates, uploads, or shares.'] },
   { title: 'Article 3 (Effect & Amendment)', clauses: ['These Terms take effect when posted within the Service.', 'The Service may amend these Terms within the limits of applicable law, giving prior notice via the notices board with the effective date and reason.', 'Continuing to use the Service after notice constitutes acceptance of the amended Terms.'] },
-  { title: 'Article 4 (Provision of Service)', clauses: ['The Service provides a Pokédex, damage calculator, team builder with auto-diagnosis, matchup analysis, battle-data stats, sample/team sharing, and notices.', 'The Service is free and may display ads or accept voluntary donations to sustain operations.'] },
+  { title: 'Article 4 (Provision of Service)', clauses: ['The Service provides a Pokedex, damage calculator, team builder with auto-diagnosis, matchup analysis, battle-data stats, sample/team sharing, and notices.', 'The Service is free and may display ads or accept voluntary donations to sustain operations.'] },
   { title: 'Article 5 (Interruption)', clauses: ['The Service may suspend all or part of the Service for maintenance, outages, force majeure, or third-party (hosting/API) failures.', 'The Service is not liable for damages from changes or interruptions absent willful misconduct or gross negligence.'] },
   { title: 'Article 6 (User Obligations)', clauses: ['Users must not: impersonate others or register false information; disrupt the Service; post unlawful/obscene/hateful content; infringe others’ IP, reputation, or privacy; or overload the Service via automation.', 'Users must comply with applicable law, these Terms, and posted notices.'] },
   { title: 'Article 7 (Content Management)', clauses: ['Users are responsible for content they create.', 'The Service may hide or delete violating content without prior notice and may warn or suspend the user.', 'Publicly posted content may be shown/used for operating and promoting the Service.'] },
-  { title: 'Article 8 (Intellectual Property)', clauses: ['Pokémon and related names, characters, and images are © and ™ of Nintendo, Creatures Inc., and GAME FREAK inc.', 'This is an unofficial fan-made service, not affiliated with or endorsed by Nintendo, The Pokémon Company, or GAME FREAK inc.', 'The Service’s own UI/code belongs to the developer; user content belongs to the user.'] },
+  { title: 'Article 8 (Intellectual Property)', clauses: ['Pokemon and related names, characters, and images are © and ™ of Nintendo, Creatures Inc., and GAME FREAK inc.', 'This is an unofficial fan-made service, not affiliated with or endorsed by Nintendo, The Pokemon Company, or GAME FREAK inc.', 'The Service’s own UI/code belongs to the developer; user content belongs to the user.'] },
   { title: 'Article 9 (Accuracy & Disclaimer)', clauses: ['Calculations, stats, and recommendations are reference material based on public data and may differ from in-game results.', 'The Service does not guarantee accuracy, completeness, or timeliness and is provided "as is".'] },
-  { title: 'Article 10 (Data & Stats Sources)', clauses: ['Names/stats/sprites from PokéAPI; roster/learnsets/mechanics from Pokémon Showdown’s champions data; usage/counter stats from Smogon University. See the "Data & stats sources" page for details.'] },
+  { title: 'Article 10 (Data & Stats Sources)', clauses: ['Names/stats/sprites from PokeAPI; roster/learnsets/mechanics from Pokemon Showdown’s champions data; usage/counter stats from Smogon University. See the "Data & stats sources" page for details.'] },
   { title: 'Article 11 (Ads & Donations)', clauses: ['The Service may display ads to cover operating costs.', 'Donations are voluntary, used to sustain the Service, non-reciprocal, and non-refundable.'] },
   { title: 'Article 12 (Privacy)', clauses: ['The Service protects personal data under applicable law and its separate Privacy Policy.'] },
   { title: 'Article 13 (Governing Law & Disputes)', clauses: ['These Terms are governed by the laws of the Republic of Korea.', 'Disputes are resolved in good faith; failing agreement, per procedures set by applicable law.'] },

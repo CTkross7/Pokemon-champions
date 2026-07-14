@@ -4,7 +4,7 @@ import type { Species } from '@/lib/dex'
 /** A usage option (move/item/ability/spread) with its adoption percentage. */
 export interface UsageOption {
   name: string
-  /** Adoption share within this Pokémon's sets, percent (0–100). */
+  /** Adoption share within this Pokemon's sets, percent (0–100). */
   pct: number
 }
 export interface UsageEntry {
@@ -76,7 +76,7 @@ export function loadTranslations(): Promise<Translations> {
 const normalizeId = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 
 /**
- * Champions-specific names missing from the base PokéAPI-derived tables. The
+ * Champions-specific names missing from the base PokeAPI-derived tables. The
  * Champions-exclusive Mega stones follow the official Korean mega-stone pattern
  * ("{species}나이트", e.g. 한카리아스나이트); the moves/items use their official
  * Korean names. Kept in code so a data auto-refresh can't drop them.
@@ -128,7 +128,7 @@ export function spreadKo(t: Translations, spread: string): string {
 
 /**
  * Resolves a usage entry to a renderable species. Champions-exclusive Megas
- * (e.g. `meganiummega`, `floettemega`) aren't in the base Pokédex, so we fall
+ * (e.g. `meganiummega`, `floettemega`) aren't in the base Pokedex, so we fall
  * back to the base species' sprite/name and tag it "Mega" — keeping the ranking
  * complete and localized instead of showing a raw English id with no sprite.
  */

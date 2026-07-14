@@ -1,6 +1,6 @@
 /**
- * Live matchup analysis for Pokémon Champions — the engine behind the in-battle
- * assistant. Given my team and the opponent's revealed Pokémon, it ranks threats,
+ * Live matchup analysis for Pokemon Champions — the engine behind the in-battle
+ * assistant. Given my team and the opponent's revealed Pokemon, it ranks threats,
  * recommends leads, and flags per-opponent answers using type matchups only, so
  * results are instant (no per-move calculation). Champions rules: Tera off.
  */

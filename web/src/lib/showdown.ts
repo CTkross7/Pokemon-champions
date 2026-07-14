@@ -1,9 +1,9 @@
 /**
- * Import/export teams in a Pokémon Showdown-style paste, adapted for Champions.
+ * Import/export teams in a Pokemon Showdown-style paste, adapted for Champions.
  *
  * The EVs line carries Champions SP values directly (0–32 per stat), which is
  * how Champions communities share spreads, rather than raw 0–252 EVs. Import
- * clamps SP to the Champions caps and resolves names via the loaded Pokédex.
+ * clamps SP to the Champions caps and resolves names via the loaded Pokedex.
  */
 import { emptySp, type Nature, type SpAllocation, STAT_KEYS } from '@/lib/champions'
 import type { TeamMon } from '@/store/teams'

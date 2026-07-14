@@ -124,7 +124,7 @@ try {
 
     // Battle-data stats page: tier rankings render from real tier data
     await page.goto(`${BASE}/stats`, { waitUntil: 'networkidle' })
-    check(`[${viewport.tag}] stats tier ranking`, await eventually(page.getByText(/Meta Pokémon|메타 포켓몬/)))
+    check(`[${viewport.tag}] stats tier ranking`, await eventually(page.getByText(/Meta Pokemon|메타 포켓몬/)))
 
     // Auth gate: the team builder requires sign-in when logged out
     await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
@@ -154,9 +154,9 @@ try {
       ),
     )
 
-    // Team builder: add a Pokémon to slot 1, expect speed tier + export text
+    // Team builder: add a Pokemon to slot 1, expect speed tier + export text
     await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
-    const addBtn = page.getByRole('button', { name: /Add Pokémon|포켓몬 추가/ }).first()
+    const addBtn = page.getByRole('button', { name: /Add Pokemon|포켓몬 추가/ }).first()
     await addBtn.waitFor({ state: 'visible', timeout: 5000 })
     await addBtn.click()
     await page.getByRole('searchbox').last().fill('Garchomp')
@@ -185,7 +185,7 @@ try {
     check(`[${viewport.tag}] matchup threat ranking`, await eventually(page.getByText(/Threat ranking|위협도 순위/)))
 
     // Shared team link round-trip: encode a team the same way the app does,
-    // open /share#s=..., and expect the decoded Pokémon to render.
+    // open /share#s=..., and expect the decoded Pokemon to render.
     const encoded = await page.evaluate(() => {
       const payload = { v: 1, n: 'Shared demo', m: [['garchomp', 'Rough Skin', '', 'Jolly', [0, 32, 0, 0, 0, 32], ['earthquake']], 0, 0, 0, 0, 0] }
       const json = JSON.stringify(payload)

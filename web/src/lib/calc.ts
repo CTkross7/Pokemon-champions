@@ -22,7 +22,7 @@ export interface MonInput {
   item?: string
   nature: Nature
   sp: SpAllocation
-  // Terastallization is intentionally omitted: it is disabled in Pokémon
+  // Terastallization is intentionally omitted: it is disabled in Pokemon
   // Champions (Reg M-A / M-B). Mega Evolution is the only gimmick and is
   // expressed through the species forme (e.g. "Charizard-Mega-Y").
 }

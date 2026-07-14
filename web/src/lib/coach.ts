@@ -1,10 +1,10 @@
 /**
- * Rule-based team diagnosis for Pokémon Champions — the coaching engine behind
- * the auto-analysis report. Pure functions over the loaded Pokédex/move data so
+ * Rule-based team diagnosis for Pokemon Champions — the coaching engine behind
+ * the auto-analysis report. Pure functions over the loaded Pokedex/move data so
  * results are deterministic and testable.
  *
  * All meta-threat reasoning uses only the verified Champions roster
- * (species.champions === true); non-Champions Pokémon are never treated as
+ * (species.champions === true); non-Champions Pokemon are never treated as
  * threats. Mechanics assume Champions rules (Mega on, Tera off).
  */
 import { effectivenessAgainst, TYPES, type TypeName } from '@/lib/typechart'

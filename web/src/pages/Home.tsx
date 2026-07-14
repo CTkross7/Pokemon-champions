@@ -101,7 +101,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Meta preview — top usage Pokémon, links to the full stats page */}
+      {/* Meta preview — top usage Pokemon, links to the full stats page */}
       {top.length > 0 && (
         <section>
           <div className="mb-3 flex items-end justify-between">
