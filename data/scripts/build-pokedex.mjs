@@ -50,6 +50,18 @@ try {
   console.warn('champions-learnsets.json missing; run fetch:champions-learnsets. Falling back to Gen 9 movepools.')
 }
 
+// Move legality + Champions balance values (champions mod moves.ts): moves the
+// mod marks "Past" DO NOT exist in Champions; `isNonstandard: null` re-enables
+// a Gen-9-Past move; basePower/pp/accuracy overrides are the in-game values.
+let championsMoves = { banned: [], reenabled: [], modified: {} }
+try {
+  championsMoves = JSON.parse(await readFile(path.join(root, 'generated', 'champions-moves.json'), 'utf8'))
+} catch {
+  console.warn('champions-moves.json missing; run fetch:champions-moves. Move legality falls back to Gen 9.')
+}
+const bannedMoves = new Set(championsMoves.banned)
+const reenabledMoves = new Set(championsMoves.reenabled)
+
 const normalize = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '')
 
 /**
@@ -155,47 +167,66 @@ for (const s of Dex.species.all()) {
 }
 species.sort((a, b) => a.num - b.num || a.id.localeCompare(b.id))
 
-// Move categories that genuinely do NOT exist in Champions and must always be
-// dropped (Gigantamax/Max moves, CAP fakemons, Let's-Go-only, custom).
-const EXCLUDED_MOVE_NONSTANDARD = new Set(['Gigantamax', 'CAP', 'Custom', 'LGPE'])
+// Champions move legality (verified, from the champions mod):
+//   exists ⟺ (standard Gen 9 move AND not banned by the mod) OR re-enabled by
+//   the mod (e.g. Light of Ruin). Everything else is absent from Champions and
+//   must never be shown. Balance overrides (basePower/pp/accuracy) are applied
+//   so displayed values match the game, not mainline Gen 9.
 const moves = {}
 for (const m of Dex.moves.all()) {
-  if (m.isNonstandard && EXCLUDED_MOVE_NONSTANDARD.has(m.isNonstandard)) continue
+  const legal = (!m.isNonstandard && !bannedMoves.has(m.id)) || reenabledMoves.has(m.id)
+  if (!legal) continue
   const ko = koNames.moves[normalize(m.name)] ?? null
-  // "Past"/"Future"/"Unobtainable" moves (e.g. Light of Ruin 파멸의 빛, the
-  // Eternal-Flower Floette signature) ARE legal in Champions because Pokémon
-  // transfer in from every generation via HOME. Keep them — but only when a
-  // verified Korean name exists, so untranslated fakemon/Hidden-Power moves
-  // never leak English into the Korean learnset table.
-  if (m.isNonstandard && !ko) continue
+  const mod = championsMoves.modified[m.id] ?? {}
+  const accuracy = mod.accuracy ?? m.accuracy
   moves[m.id] = {
     name: m.name,
     ko: ko ?? m.name,
     type: m.type,
     category: m.category,
-    basePower: m.basePower,
-    accuracy: m.accuracy === true ? null : m.accuracy,
-    pp: m.pp,
+    basePower: mod.basePower ?? m.basePower,
+    accuracy: accuracy === true ? null : accuracy,
+    pp: mod.pp ?? m.pp,
   }
+}
+
+// Sibling lookup for formes whose base has no champions entry but a sibling
+// forme does (Floette-Mega → Floette-Eternal: base "floette" is not in the mod,
+// the Eternal forme is).
+const champBySibling = (s, baseId) => {
+  if (!baseId) return null
+  for (const other of Dex.species.all()) {
+    if (other.id !== s.id && other.baseSpecies && Dex.species.get(other.baseSpecies).id === baseId) {
+      if (championsLearnsets[other.id]) return championsLearnsets[other.id]
+    }
+  }
+  return null
 }
 
 const learnsets = {}
 for (const s of species) {
   const baseId = s.baseSpecies ? Dex.species.get(s.baseSpecies).id : null
-  // Prefer the authoritative Champions movepool (own, else base species' — megas
-  // like Charizard-Mega-X inherit the base Charizard movepool). This is the
-  // verified set of moves usable in Champions.
-  const champ = championsLearnsets[s.id] ?? (baseId ? championsLearnsets[baseId] : null)
+  const isChampions = rosterIds.has(s.id)
+  // Authoritative Champions movepool: own, else base species' (megas inherit
+  // their base form's pool), else a sibling forme's (Floette-Mega).
+  const champ =
+    championsLearnsets[s.id] ??
+    (baseId ? championsLearnsets[baseId] : null) ??
+    (isChampions ? champBySibling(s, baseId) : null)
   let ids
   if (champ) {
     ids = champ.filter((moveId) => moves[moveId])
-  } else {
-    // Species not in the Champions mod (kept only for display resolution) — fall
-    // back to the general Gen 9 movepool (own ∪ base) so its detail page isn't
-    // empty. These are never surfaced as Champions Pokémon.
+  } else if (!isChampions) {
+    // Non-Champions species (kept only for display resolution, never listed) —
+    // general Gen 9 movepool so a direct-URL detail page isn't empty. Filtered
+    // through the Champions-legal move set like everything else.
     const own = (await Dex.learnsets.get(s.id))?.learnset ?? {}
     const base = baseId ? ((await Dex.learnsets.get(s.baseSpecies))?.learnset ?? {}) : {}
     ids = Object.keys({ ...base, ...own }).filter((moveId) => moves[moveId])
+  } else {
+    // A Champions species with no verified movepool must fail the build loudly
+    // rather than ship guessed data.
+    throw new Error(`Champions species ${s.id} has no champions learnset (own/base/sibling)`)
   }
   if (ids.length) learnsets[s.id] = ids
 }

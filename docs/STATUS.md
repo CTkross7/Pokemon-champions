@@ -373,3 +373,11 @@
 - 결과: 각 챔피언스 포켓몬이 **포챔스에 실제 존재하는 스킬만** 표기(예: 플라엣테 영원의꽃 41기=드레인키스·파멸의빛 포함, 과잉 병합 69기에서 정정). 리자몽메가X 72기(base 리자몽 챔피언스 무브풀)
 - 파이프라인/CI에 fetch:champions-learnsets 추가 → 주간 자동 갱신
 - 검증: validate(영어누출 0)·빌드·린트·E2E ✅
+
+## Phase 13.15 — 포챔스 존재 데이터 전면 최종 검증 (2026-07-14, 사용자 요청)
+- ✅ **기술 존재성 전면 재정의**: champions mod의 moves.ts가 203개 기술을 "Past"(포챔스 미존재)로 명시하고 9개(파멸의빛·킹실드·불사르기 등)를 재활성화함을 발견. `fetch-champions-moves.mjs` 신설 → moves.json을 **포챔스 합법 기술 500종**으로 축소(기존 888): (Gen9 표준 − 203 밴) ∪ 9 재활성. 밴 기술 유출 0
+- ✅ **포챔스 고유 밸런스 값 반영**: mod의 위력/PP/명중 override 39건을 moves.json에 적용(예: 부리캐논 120BP/5PP) — 본가 Gen9 값이 아닌 실제 인게임 값 표기
+- ✅ **학습기술 fallback 강화**: 챔피언스 종은 champions learnset(own→base→sibling)만 사용, 없으면 **빌드 실패**(추정 데이터 배포 원천 차단). floettemega는 sibling(floetteeternal) 풀 상속(41기)
+- ✅ **전수 감사(310종)**: 빈 학습기술 0 · 밴 기술 유출 0 · 미지 기술 참조 0 / 특성: mod 밴 0(전부 유효) / 아이템: 기존 champions 합법성 기반 / 사용률 통계 기술도 전부 합법 집합 내
+- ✅ **영구 가드**: validate.mjs에 Champions 합법성 가드 추가(밴 기술·빈 학습기술·미지 참조 시 빌드 실패) + CI에 fetch:champions-moves 주간 갱신
+- 검증: validate 5종 가드 전부 ✓ · 빌드 · 린트 · E2E ✅

@@ -12,7 +12,8 @@
     "fetch:champions-roster": "node scripts/fetch-champions-roster.mjs",
     "fetch:champions-items": "node scripts/fetch-champions-items.mjs",
     "fetch:usage-stats": "node scripts/fetch-usage-stats.mjs",
-    "fetch:champions-learnsets": "node scripts/fetch-champions-learnsets.mjs"
+    "fetch:champions-learnsets": "node scripts/fetch-champions-learnsets.mjs",
+    "fetch:champions-moves": "node scripts/fetch-champions-moves.mjs"
   },
   "dependencies": {
     "@pkmn/dex": "^0.10.11"

@@ -1,0 +1,341 @@
+{
+ "generatedAt": "2026-07-14T22:57:17.171Z",
+ "source": "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/champions/moves.ts",
+ "banned": [
+  "absorb",
+  "acid",
+  "aeroblast",
+  "armthrust",
+  "astonish",
+  "astralbarrage",
+  "attackorder",
+  "aurorabeam",
+  "behemothbash",
+  "behemothblade",
+  "blazingtorque",
+  "bleakwindstorm",
+  "bloodmoon",
+  "blueflare",
+  "boltstrike",
+  "branchpoke",
+  "brine",
+  "bubblebeam",
+  "burningbulwark",
+  "celebrate",
+  "chloroblast",
+  "collisioncourse",
+  "combattorque",
+  "confide",
+  "confusion",
+  "conversion",
+  "conversion2",
+  "courtchange",
+  "crushgrip",
+  "cut",
+  "darkvoid",
+  "defendorder",
+  "defensecurl",
+  "diamondstorm",
+  "disarmingvoice",
+  "doodle",
+  "doomdesire",
+  "doublekick",
+  "doubleshock",
+  "dragonascent",
+  "dragonbreath",
+  "dragonenergy",
+  "dragonhammer",
+  "dreameater",
+  "drumbeating",
+  "dynamaxcannon",
+  "echoedvoice",
+  "electrodrift",
+  "ember",
+  "esperwing",
+  "fairywind",
+  "falsesurrender",
+  "falseswipe",
+  "fierywrath",
+  "filletaway",
+  "firepledge",
+  "flamewheel",
+  "fleurcannon",
+  "floralhealing",
+  "forcepalm",
+  "freezeshock",
+  "freezingglare",
+  "furyattack",
+  "furycutter",
+  "furyswipes",
+  "fusionbolt",
+  "fusionflare",
+  "glaciallance",
+  "glaciate",
+  "glaiverush",
+  "grasspledge",
+  "growl",
+  "gust",
+  "happyhour",
+  "harden",
+  "headbutt",
+  "heartswap",
+  "holdback",
+  "holdhands",
+  "honeclaws",
+  "hornattack",
+  "hydrosteam",
+  "hyperdrill",
+  "hyperspacefury",
+  "hyperspacehole",
+  "iceburn",
+  "incinerate",
+  "ivycudgel",
+  "jawlock",
+  "judgment",
+  "junglehealing",
+  "leafage",
+  "leer",
+  "lick",
+  "lunarblessing",
+  "lunardance",
+  "lusterpurge",
+  "magicalleaf",
+  "magicaltorque",
+  "magmastorm",
+  "malignantchain",
+  "megadrain",
+  "megapunch",
+  "metalclaw",
+  "metronome",
+  "mightycleave",
+  "milkdrink",
+  "mimic",
+  "mist",
+  "mistball",
+  "moongeistbeam",
+  "mysticalpower",
+  "noxioustorque",
+  "orderup",
+  "originpulse",
+  "overdrive",
+  "payday",
+  "peck",
+  "photongeyser",
+  "playnice",
+  "poisongas",
+  "poisonsting",
+  "poisontail",
+  "powdersnow",
+  "precipiceblades",
+  "present",
+  "prismaticlaser",
+  "psybeam",
+  "psyblade",
+  "psychoboost",
+  "psystrike",
+  "pyroball",
+  "razorleaf",
+  "relicsong",
+  "retaliate",
+  "revelationdance",
+  "revivalblessing",
+  "roaroftime",
+  "rocksmash",
+  "rockthrow",
+  "rollout",
+  "ruination",
+  "sacredfire",
+  "sandattack",
+  "sandsearstorm",
+  "scratch",
+  "secretsword",
+  "seedflare",
+  "shadowforce",
+  "shiftgear",
+  "shockwave",
+  "shoreup",
+  "silktrap",
+  "sketch",
+  "slam",
+  "slash",
+  "sludge",
+  "smog",
+  "smokescreen",
+  "snipeshot",
+  "spacialrend",
+  "spark",
+  "spinout",
+  "splash",
+  "springtidestorm",
+  "steameruption",
+  "stomp",
+  "strangesteam",
+  "strength",
+  "sunsteelstrike",
+  "supersonic",
+  "surgingstrikes",
+  "swift",
+  "tachyoncutter",
+  "tackle",
+  "tailglow",
+  "tailwhip",
+  "takedown",
+  "takeheart",
+  "tarshot",
+  "teleport",
+  "terablast",
+  "terastarstorm",
+  "thundercage",
+  "thunderclap",
+  "thunderouskick",
+  "thundershock",
+  "tripledive",
+  "triplekick",
+  "twister",
+  "vcreate",
+  "victorydance",
+  "vinewhip",
+  "visegrip",
+  "watergun",
+  "waterpledge",
+  "wickedblow",
+  "wickedtorque",
+  "wildboltstorm",
+  "wingattack",
+  "withdraw",
+  "workup",
+  "zingzap"
+ ],
+ "reenabled": [
+  "burnup",
+  "corrosivegas",
+  "electrify",
+  "kingsshield",
+  "lightofruin",
+  "powershift",
+  "snaptrap",
+  "stormthrow",
+  "trickortreat"
+ ],
+ "modified": {
+  "anchorshot": {
+   "basePower": 90
+  },
+  "appleacid": {
+   "basePower": 90
+  },
+  "astralbarrage": {
+   "basePower": 110
+  },
+  "banefulbunker": {
+   "pp": 5
+  },
+  "beakblast": {
+   "basePower": 120,
+   "pp": 5
+  },
+  "bloodmoon": {
+   "basePower": 130
+  },
+  "boltbeak": {
+   "basePower": 80
+  },
+  "bonerush": {
+   "basePower": 30
+  },
+  "clangoroussoul": {
+   "accuracy": true
+  },
+  "crabhammer": {
+   "accuracy": 95
+  },
+  "dragonhammer": {
+   "basePower": 100
+  },
+  "firelash": {
+   "basePower": 90
+  },
+  "firstimpression": {
+   "basePower": 100
+  },
+  "fishiousrend": {
+   "basePower": 80
+  },
+  "geargrind": {
+   "basePower": 60,
+   "accuracy": 90
+  },
+  "gravapple": {
+   "basePower": 90
+  },
+  "hyperdrill": {
+   "basePower": 120
+  },
+  "infernalparade": {
+   "basePower": 65
+  },
+  "kingsshield": {
+   "pp": 5
+  },
+  "makeitrain": {
+   "accuracy": 95
+  },
+  "mountaingale": {
+   "basePower": 120
+  },
+  "nightdaze": {
+   "basePower": 90
+  },
+  "nightslash": {
+   "pp": 20
+  },
+  "nihillight": {
+   "pp": 5
+  },
+  "obstruct": {
+   "pp": 5
+  },
+  "protect": {
+   "pp": 5
+  },
+  "psyshieldbash": {
+   "basePower": 90
+  },
+  "purify": {
+   "pp": 5
+  },
+  "revelationdance": {
+   "basePower": 100
+  },
+  "sandstorm": {
+   "pp": 5
+  },
+  "shelltrap": {
+   "pp": 10
+  },
+  "snipeshot": {
+   "basePower": 85
+  },
+  "snowscape": {
+   "pp": 5
+  },
+  "spikyshield": {
+   "pp": 5
+  },
+  "spinout": {
+   "pp": 10
+  },
+  "spiritshackle": {
+   "basePower": 90
+  },
+  "syrupbomb": {
+   "accuracy": 90
+  },
+  "tripledive": {
+   "basePower": 35
+  },
+  "tropkick": {
+   "basePower": 85
+  }
+ }
+}

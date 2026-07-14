@@ -173,3 +173,41 @@ if (errors.length > 0) {
   process.exit(1)
 }
 console.log('✓ Translation guard passed (no English on Champions moves/abilities)')
+
+// ---- Champions legality guard -------------------------------------------
+// Every Champions species must have a non-empty movepool, and no move shown
+// anywhere may be one the champions mod marks as absent from the game.
+try {
+  const dex = JSON.parse(await readFile(path.join(webData, 'data', 'pokedex.json'), 'utf8')).species
+  const moves = JSON.parse(await readFile(path.join(webData, 'data', 'moves.json'), 'utf8'))
+  const learnsets = JSON.parse(await readFile(path.join(webData, 'data', 'learnsets.json'), 'utf8'))
+  const champMoves = JSON.parse(
+    await readFile(path.join(here, '..', 'generated', 'champions-moves.json'), 'utf8'),
+  )
+  const banned = new Set(champMoves.banned)
+  const legalityErrors = []
+
+  const bannedInDb = Object.keys(moves).filter((id) => banned.has(id))
+  if (bannedInDb.length)
+    legalityErrors.push(`moves.json contains mod-banned moves: ${bannedInDb.slice(0, 8).join(', ')}`)
+
+  for (const s of dex) {
+    if (!s.champions) continue
+    const ls = learnsets[s.id] ?? []
+    if (ls.length === 0) legalityErrors.push(`champions species ${s.id} has an empty learnset`)
+    for (const id of ls) {
+      if (banned.has(id)) legalityErrors.push(`${s.id} learnset contains banned move ${id}`)
+      if (!moves[id]) legalityErrors.push(`${s.id} learnset references unknown move ${id}`)
+    }
+  }
+  if (legalityErrors.length) {
+    console.error(`✗ Champions legality guard failed with ${legalityErrors.length} error(s):`)
+    for (const e of legalityErrors.slice(0, 12)) console.error(`  - ${e}`)
+    process.exit(1)
+  }
+  const champCount = dex.filter((s) => s.champions).length
+  console.log(`✓ Champions legality guard passed (${champCount} species, ${Object.keys(moves).length} legal moves, ${banned.size} banned excluded)`)
+} catch (err) {
+  console.error(`✗ Champions legality guard failed: ${err.message}`)
+  process.exit(1)
+}
