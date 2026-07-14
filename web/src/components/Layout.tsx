@@ -6,8 +6,7 @@ import { useAuth } from '@/lib/auth'
 import Icon, { type IconName } from '@/components/Icon'
 import Logo from '@/components/Logo'
 import AdSlot from '@/components/AdSlot'
-
-const AD_BANNER_SLOT = import.meta.env.VITE_ADSENSE_SLOT_BANNER as string | undefined
+import { AD_BANNER_SLOT } from '@/lib/ads'
 
 const prefersDark = () =>
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches

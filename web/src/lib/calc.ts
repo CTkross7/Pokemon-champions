@@ -90,13 +90,21 @@ export function calcDamage(
     const rolls = Array.isArray(damage) ? damage : [damage]
     const flat = rolls.flat() as number[]
     if (flat.length === 0 || flat.every((d) => d === 0)) {
+      // @smogon/calc's desc()/kochance() throw on all-zero damage, so build a
+      // minimal description ourselves instead of letting it bubble to null.
+      let desc = ''
+      try {
+        desc = result.desc()
+      } catch {
+        desc = `${attacker.species} ${moveName} vs. ${defender.species}: 0%`
+      }
       return {
         minPercent: 0,
         maxPercent: 0,
         minDamage: 0,
         maxDamage: 0,
         koChance: '',
-        desc: result.desc(),
+        desc,
         defenderHp: def.maxHP(),
       }
     }
