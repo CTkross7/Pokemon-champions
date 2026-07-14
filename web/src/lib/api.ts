@@ -10,11 +10,22 @@ export interface SampleMeta {
   author: string
   likes: number
   views: number
+  regulation?: string | null
+  comments?: number
+  owner_id?: string | null
   created_at: number
 }
 
 export interface SampleFull extends SampleMeta {
   team: string // base64url-encoded team (share format)
+}
+
+export interface Comment {
+  id: string
+  user_id: string
+  author: string
+  body: string
+  created_at: number
 }
 
 type Result<T> = { configured: true; data: T } | { configured: false }
@@ -32,16 +43,33 @@ async function call<T>(path: string, init?: RequestInit): Promise<Result<T>> {
   }
 }
 
-export const listSamples = () => call<{ samples: SampleMeta[] }>('/samples')
+export const listSamples = (regulation?: string) =>
+  call<{ samples: SampleMeta[]; regulations: string[] }>(
+    `/samples${regulation ? `?regulation=${encodeURIComponent(regulation)}` : ''}`,
+  )
 
 export const getSample = (id: string) => call<{ sample: SampleFull }>(`/samples/${id}`)
 
 export const likeSample = (id: string) =>
   call<{ likes: number }>(`/samples/${id}/like`, { method: 'POST' })
 
-export const createSample = (payload: { title: string; author: string; team: string }) =>
+export const createSample = (payload: { title: string; author: string; team: string; regulation?: string | null }) =>
   call<{ id: string }>('/samples', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
   })
+
+export const deleteSample = (id: string) => call<{ ok: true }>(`/samples/${id}`, { method: 'DELETE' })
+
+export const listComments = (id: string) => call<{ comments: Comment[] }>(`/samples/${id}/comments`)
+
+export const addComment = (id: string, body: string) =>
+  call<{ id: string }>(`/samples/${id}/comments`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ body }),
+  })
+
+export const deleteComment = (id: string, cid: string) =>
+  call<{ ok: true }>(`/samples/${id}/comments/${cid}`, { method: 'DELETE' })

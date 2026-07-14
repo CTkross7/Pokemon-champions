@@ -202,7 +202,10 @@ try {
       `[${viewport.tag}] gallery graceful fallback`,
       await eventually(page.getByText(/Community samples|커뮤니티 샘플/).first()),
     )
-    check(`[${viewport.tag}] gallery not-ready state`, await eventually(page.getByText(/coming soon|준비 중/)))
+    check(
+      `[${viewport.tag}] gallery not-ready state`,
+      await eventually(page.getByText(/No shared samples|아직 공유된 샘플/)),
+    )
 
     // Privacy policy (required for AdSense / store) + PWA manifest present
     await page.goto(`${BASE}/privacy`, { waitUntil: 'networkidle' })

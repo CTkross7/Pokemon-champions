@@ -6,6 +6,7 @@ import { exportTeam, importTeam } from '@/lib/showdown'
 import { shareUrl, encodeTeam } from '@/lib/share'
 import { createSample } from '@/lib/api'
 import { useAuth } from '@/lib/auth'
+import { loadRegulation } from '@/lib/regulation'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import ItemSelect from '@/components/ItemSelect'
@@ -305,10 +306,12 @@ export default function Teams() {
             // user's chosen display name — synced from their profile, never
             // anonymous or a free-typed name.
             setShareMsg(t('teams.publishing'))
+            const reg = await loadRegulation()
             const r = await createSample({
               title: active.name,
               author: user?.displayName ?? '',
               team: encodeTeam(active),
+              regulation: reg?.regulation ?? null,
             })
             setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
             setTimeout(() => setShareMsg(''), 4000)

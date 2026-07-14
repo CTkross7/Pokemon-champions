@@ -11,7 +11,7 @@
  *   POST /api/samples/:id/like   increment like count
  */
 import type { D1Database } from './d1'
-import { handleAuth, currentUser, type AuthEnv } from './auth'
+import { handleAuth, currentUser, isAdmin, type AuthEnv } from './auth'
 import { handleNotices } from './notices'
 import { handleReports, handleAdmin, isBanned } from './reports'
 import { ensureSchema } from './migrate'
@@ -36,10 +36,21 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
   // /api/samples
   if (parts[0] === 'samples' && parts.length === 1) {
     if (request.method === 'GET') {
-      const { results } = await db
-        .prepare('SELECT id, title, author, likes, views, created_at FROM samples ORDER BY created_at DESC LIMIT 50')
-        .all()
-      return json({ samples: results ?? [] })
+      // Optional ?regulation=M-B filter; comment count via correlated subquery.
+      const reg = url.searchParams.get('regulation')
+      const listSql =
+        'SELECT id, title, author, likes, views, regulation, owner_id, created_at, ' +
+        '(SELECT COUNT(*) FROM comments c WHERE c.sample_id = samples.id) AS comments ' +
+        'FROM samples' +
+        (reg ? ' WHERE regulation = ?' : '') +
+        ' ORDER BY created_at DESC LIMIT 50'
+      const stmt = reg ? db.prepare(listSql).bind(reg) : db.prepare(listSql)
+      const { results } = await stmt.all()
+      // Distinct regulations present, for the filter chips.
+      const { results: regs } = await db
+        .prepare("SELECT DISTINCT regulation FROM samples WHERE regulation IS NOT NULL AND regulation != '' ORDER BY regulation")
+        .all<{ regulation: string }>()
+      return json({ samples: results ?? [], regulations: (regs ?? []).map((r) => r.regulation) })
     }
     if (request.method === 'POST') {
       // Publishing a sample requires a signed-in, non-banned account.
@@ -58,19 +69,61 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       const author = user.display_name || user.username
       const team = clampStr(body.team, MAX_TEAM_BYTES)
       if (!team) return json({ error: 'missing_team' }, 400)
+      const regulation = clampStr(body.regulation, 20).trim() || null
       const id = crypto.randomUUID().slice(0, 8)
       await db
-        .prepare('INSERT INTO samples (id, title, author, team, likes, views, created_at) VALUES (?, ?, ?, ?, 0, 0, ?)')
-        .bind(id, title, author, team, Date.now())
+        .prepare(
+          'INSERT INTO samples (id, title, author, team, likes, views, owner_id, regulation, created_at) VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?)',
+        )
+        .bind(id, title, author, team, user.id, regulation, Date.now())
         .run()
       return json({ id }, 201)
     }
     return json({ error: 'method_not_allowed' }, 405)
   }
 
-  // /api/samples/:id  and  /api/samples/:id/like
+  // /api/samples/:id[/like|/comments[/:cid]]
   if (parts[0] === 'samples' && parts[1]) {
     const id = parts[1]
+
+    // ---- Comments ----
+    if (parts[2] === 'comments') {
+      if (request.method === 'GET') {
+        const { results } = await db
+          .prepare('SELECT id, user_id, author, body, created_at FROM comments WHERE sample_id = ? ORDER BY created_at ASC LIMIT 200')
+          .bind(id)
+          .all()
+        return json({ comments: results ?? [] })
+      }
+      if (request.method === 'POST' && !parts[3]) {
+        const user = await currentUser(db, request)
+        if (!user) return json({ error: 'auth_required' }, 401)
+        if (await isBanned(db, user.id)) return json({ error: 'banned' }, 403)
+        const exists = await db.prepare('SELECT 1 FROM samples WHERE id = ?').bind(id).first()
+        if (!exists) return json({ error: 'not_found' }, 404)
+        const body = (await request.json().catch(() => ({}))) as Record<string, unknown>
+        const text = clampStr(body.body, 500).trim()
+        if (!text) return json({ error: 'empty' }, 400)
+        const cid = crypto.randomUUID().slice(0, 10)
+        await db
+          .prepare('INSERT INTO comments (id, sample_id, user_id, author, body, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+          .bind(cid, id, user.id, user.display_name || user.username, text, Date.now())
+          .run()
+        return json({ id: cid }, 201)
+      }
+      // DELETE /api/samples/:id/comments/:cid — comment owner or admin
+      if (request.method === 'DELETE' && parts[3]) {
+        const user = await currentUser(db, request)
+        if (!user) return json({ error: 'auth_required' }, 401)
+        const row = await db.prepare('SELECT user_id FROM comments WHERE id = ?').bind(parts[3]).first<{ user_id: string }>()
+        if (!row) return json({ error: 'not_found' }, 404)
+        if (row.user_id !== user.id && !isAdmin(env, user.username)) return json({ error: 'forbidden' }, 403)
+        await db.prepare('DELETE FROM comments WHERE id = ?').bind(parts[3]).run()
+        return json({ ok: true })
+      }
+      return json({ error: 'method_not_allowed' }, 405)
+    }
+
     if (parts[2] === 'like' && request.method === 'POST') {
       const user = await currentUser(db, request)
       if (!user) return json({ error: 'auth_required' }, 401)
@@ -84,6 +137,17 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       if (!row) return json({ error: 'not_found' }, 404)
       await db.prepare('UPDATE samples SET views = views + 1 WHERE id = ?').bind(id).run()
       return json({ sample: row })
+    }
+    // DELETE /api/samples/:id — owner or admin
+    if (request.method === 'DELETE') {
+      const user = await currentUser(db, request)
+      if (!user) return json({ error: 'auth_required' }, 401)
+      const row = await db.prepare('SELECT owner_id FROM samples WHERE id = ?').bind(id).first<{ owner_id: string | null }>()
+      if (!row) return json({ error: 'not_found' }, 404)
+      if (row.owner_id !== user.id && !isAdmin(env, user.username)) return json({ error: 'forbidden' }, 403)
+      await db.prepare('DELETE FROM samples WHERE id = ?').bind(id).run()
+      await db.prepare('DELETE FROM comments WHERE sample_id = ?').bind(id).run()
+      return json({ ok: true })
     }
     return json({ error: 'method_not_allowed' }, 405)
   }

@@ -109,32 +109,32 @@
     "dataTitle": "Data & stats sources",
     "dataBody": "All game data comes only from verifiable official/open sources. No hand-entered guesses; datasets refresh automatically via GitHub Actions to track game updates.",
     "developer": "Developer",
-    "intro": "ChampsNote is an all-in-one toolkit for ranked battles in Pokémon Champions. Damage math, team building, auto-diagnosis & coaching, live matchup analysis, and meta stats — all in one place. It uses only verified official/open data and auto-updates as the game changes.",
+    "intro": "ChampsNote is an all-in-one utility for Pokémon Champions ranked battles. From damage calculation to team building, automatic diagnosis & coaching, live matchup analysis, meta statistics and community — every step you need for competitive play, in one place. All game data comes only from verifiable official/open sources and updates automatically as the game changes.",
     "featuresTitle": "Key features",
     "features": [
       {
-        "t": "Champions Pokédex",
-        "d": "Only Champions-legal Pokémon — stats, types, abilities, and learnsets"
+        "t": "Champions Dex",
+        "d": "Only the Pokémon and exclusive Mega Evolutions that actually appear in Pokémon Champions. Search base stats, types, abilities, learnsets and tiers instantly, with per-Pokémon recommended builds and community samples on one screen."
       },
       {
-        "t": "Damage calculator",
-        "d": "Precise math with the SP system, Mega Evolution, weather, terrain, items, abilities"
+        "t": "Damage Calculator",
+        "d": "A precise calculator faithful to the Champions SP system (fixed Lv.50, 0–32 per stat). Applies Mega Evolution, weather, terrain, items, abilities and natures, and shows a min–max damage range when the opponent's stats are unknown."
       },
       {
-        "t": "Team builder & coaching",
-        "d": "Build a team of six with auto-diagnosis of weaknesses, speed tiers, and meta coverage"
+        "t": "Team Builder & Auto Coaching",
+        "d": "Build 6 Pokémon, allocate SP, and get automatic diagnosis of type weaknesses, speed-tier distribution, coverage against top-meta threats and role balance — plus improvement suggestions. Showdown import/export and image-card sharing included."
       },
       {
-        "t": "Live matchup",
-        "d": "Enter the opponent team for instant lead picks, threat ranking, and answers"
+        "t": "Live Matchup Assistant",
+        "d": "Quickly enter the opponent's 6 at the start of a battle and instantly see threat ranking, favorable leads and moves/abilities to watch — relative to your saved team. Designed for a 3-second lookup on mobile."
       },
       {
-        "t": "Battle data",
-        "d": "Ladder usage & adoption (moves/items/abilities/spreads) and competitive tiers"
+        "t": "Battle Data",
+        "d": "Ranked usage and adoption rates (moves, items, abilities, nature spreads) and competitive tier rankings, in Korean. Collected monthly to reflect the current meta."
       },
       {
         "t": "Community",
-        "d": "Share team samples and read notices — sign in to sync across devices"
+        "d": "Share your own teams/samples, browse other trainers' samples and use them directly. Likes, comments and reporting are supported, synced across devices with your account."
       }
     ],
     "dataSources": [
@@ -154,7 +154,51 @@
     "termsTitle": "Terms of Service (summary)",
     "termsBody": "ChampsNote is a free, fan-made tool. The service is provided “as is” with no guarantee of calculation/stat accuracy. You are responsible for content you share, must not infringe others’ rights or post unlawful content, and the service may change or stop without notice.",
     "contactTitle": "Contact & reports",
-    "contactBody": "For bug reports, feature ideas, data corrections, or partnership/donation inquiries, email us below. We’ll get back to you as soon as we can."
+    "contactBody": "For bug reports, feature ideas, data corrections, or partnership/donation inquiries, email us below. We’ll get back to you as soon as we can.",
+    "whyTitle": "What sets ChampsNote apart",
+    "why": [
+      {
+        "t": "Champions-only data",
+        "d": "Only Pokémon, Megas and moves that truly exist in Champions — no mixing in other generations or games."
+      },
+      {
+        "t": "Diagnosis, not just math",
+        "d": "Beyond a calculator: rule-based automatic diagnosis of your team's holes with concrete fixes."
+      },
+      {
+        "t": "Built for live use",
+        "d": "Large touch targets and minimal input let you check a matchup within 3 seconds mid-battle."
+      },
+      {
+        "t": "Verified data, auto-updated",
+        "d": "No guessed values — official/open sources only, kept current by a weekly automated pipeline."
+      }
+    ],
+    "howTitle": "How to use it",
+    "how": [
+      {
+        "t": "1. Learn",
+        "d": "Check base stats, matchups and damage in the Dex and Calculator."
+      },
+      {
+        "t": "2. Build",
+        "d": "Assemble 6 Pokémon in the Team Builder with SP, moves, items and nature."
+      },
+      {
+        "t": "3. Diagnose",
+        "d": "Use auto coaching to inspect weaknesses and speed tiers, then improve."
+      },
+      {
+        "t": "4. Battle",
+        "d": "Enter the opponent's team in the Matchup Assistant to decide your leads."
+      },
+      {
+        "t": "5. Share",
+        "d": "Publish finished teams/samples to the community and get feedback."
+      }
+    ],
+    "updateTitle": "Data update policy",
+    "updateBody": "Pokémon/move/ability/item data come from PokéAPI and Pokémon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokémon or balance changes with no manual work. Unverified values are never shown."
   },
   "common": {
     "underConstruction": "This feature is under construction.",
@@ -374,7 +418,15 @@
     "empty": "No public samples yet. Be the first to publish!",
     "views": "{{count}} views",
     "import": "Import",
-    "note": "Public samples are stored on the server (Cloudflare D1). Reported content is removed."
+    "note": "Public samples are stored on the server (Cloudflare D1). Reported content is removed.",
+    "filterAll": "All",
+    "comments": "Comments {{count}}",
+    "delete": "Delete",
+    "deleteConfirm": "Delete this? This cannot be undone.",
+    "noComments": "Be the first to comment.",
+    "commentPlaceholder": "Write a comment…",
+    "loginToComment": "Sign in to comment",
+    "send": "Post"
   },
   "privacy": {
     "title": "Privacy Policy",

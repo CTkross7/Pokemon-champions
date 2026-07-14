@@ -18,8 +18,13 @@ let migrated: Promise<void> | null = null
 const TABLES = [
   `CREATE TABLE IF NOT EXISTS samples (
     id TEXT PRIMARY KEY, title TEXT NOT NULL, author TEXT NOT NULL, team TEXT NOT NULL,
-    likes INTEGER NOT NULL DEFAULT 0, views INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL)`,
+    likes INTEGER NOT NULL DEFAULT 0, views INTEGER NOT NULL DEFAULT 0,
+    owner_id TEXT, regulation TEXT, created_at INTEGER NOT NULL)`,
   `CREATE INDEX IF NOT EXISTS idx_samples_created_at ON samples (created_at DESC)`,
+  `CREATE TABLE IF NOT EXISTS comments (
+    id TEXT PRIMARY KEY, sample_id TEXT NOT NULL, user_id TEXT NOT NULL, author TEXT NOT NULL,
+    body TEXT NOT NULL, created_at INTEGER NOT NULL)`,
+  `CREATE INDEX IF NOT EXISTS idx_comments_sample ON comments (sample_id, created_at)`,
   `CREATE TABLE IF NOT EXISTS users (
     id TEXT PRIMARY KEY, username TEXT NOT NULL UNIQUE, display_name TEXT NOT NULL, email TEXT,
     provider TEXT NOT NULL, provider_id TEXT NOT NULL, avatar_url TEXT, password_hash TEXT,
@@ -51,6 +56,9 @@ const ADD_COLUMNS = [
   `ALTER TABLE users ADD COLUMN onboarded INTEGER NOT NULL DEFAULT 1`,
   // 1 = the user picked their own avatar; Google re-login must NOT overwrite it.
   `ALTER TABLE users ADD COLUMN avatar_custom INTEGER NOT NULL DEFAULT 0`,
+  // Sample ownership (owner-delete) + regulation tag (gallery filter).
+  `ALTER TABLE samples ADD COLUMN owner_id TEXT`,
+  `ALTER TABLE samples ADD COLUMN regulation TEXT`,
 ]
 
 async function run(db: D1Database): Promise<void> {

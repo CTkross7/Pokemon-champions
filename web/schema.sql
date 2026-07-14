@@ -1,6 +1,9 @@
 -- ChampsNote community gallery schema (Cloudflare D1).
 -- Apply once after creating the database:
 --   npx wrangler d1 execute champsnote --file=./schema.sql --remote
+-- EXISTING INSTALLS (auto-migrated by web/worker/migrate.ts):
+--   ALTER TABLE samples ADD COLUMN owner_id TEXT;
+--   ALTER TABLE samples ADD COLUMN regulation TEXT;
 CREATE TABLE IF NOT EXISTS samples (
   id         TEXT PRIMARY KEY,
   title      TEXT NOT NULL,
@@ -8,10 +11,24 @@ CREATE TABLE IF NOT EXISTS samples (
   team       TEXT NOT NULL,        -- base64url-encoded team (same format as share links)
   likes      INTEGER NOT NULL DEFAULT 0,
   views      INTEGER NOT NULL DEFAULT 0,
+  owner_id   TEXT,                 -- creating user's id (owner-delete)
+  regulation TEXT,                 -- regulation tag at creation (gallery filter)
   created_at INTEGER NOT NULL      -- epoch millis
 );
 
 CREATE INDEX IF NOT EXISTS idx_samples_created_at ON samples (created_at DESC);
+
+-- Community comments on samples. Signed-in users post; author or admin deletes.
+CREATE TABLE IF NOT EXISTS comments (
+  id         TEXT PRIMARY KEY,
+  sample_id  TEXT NOT NULL,
+  user_id    TEXT NOT NULL,
+  author     TEXT NOT NULL,
+  body       TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_comments_sample ON comments (sample_id, created_at);
 
 -- Accounts (Google sign-in OR email+password). Optional: only needed when the
 -- login backend is enabled. See docs/DEPLOYMENT.md for provider setup.

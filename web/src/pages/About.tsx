@@ -11,10 +11,14 @@ interface Item {
 
 const FEATURE_ICONS: IconName[] = ['book', 'calc', 'users', 'zap', 'sparkles', 'bell']
 
+const WHY_ICONS: IconName[] = ['shield', 'sparkles', 'zap', 'book']
+
 export default function About() {
   const { t } = useTranslation()
   const features = t('about.features', { returnObjects: true }) as unknown as Item[]
   const sources = t('about.dataSources', { returnObjects: true }) as unknown as Item[]
+  const why = t('about.why', { returnObjects: true }) as unknown as Item[]
+  const how = t('about.how', { returnObjects: true }) as unknown as Item[]
 
   return (
     <article className="mx-auto max-w-2xl space-y-6">
@@ -44,6 +48,48 @@ export default function About() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Why ChampsNote — differentiation */}
+      <section>
+        <h2 className="mb-3 text-[15px] font-bold">{t('about.whyTitle')}</h2>
+        <div className="grid gap-2.5 sm:grid-cols-2">
+          {(Array.isArray(why) ? why : []).map((w, i) => (
+            <div key={w.t} className="card flex items-start gap-3 p-4">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-400/12 dark:text-sky-300">
+                <Icon name={WHY_ICONS[i] ?? 'shield'} size={17} />
+              </span>
+              <div className="min-w-0">
+                <h3 className="text-sm font-bold">{w.t}</h3>
+                <p className="mt-0.5 text-[12px] leading-relaxed text-zinc-500 dark:text-zinc-400">{w.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How to use — numbered flow */}
+      <section className="card p-6">
+        <h2 className="text-[15px] font-bold">{t('about.howTitle')}</h2>
+        <ol className="mt-4 space-y-3">
+          {(Array.isArray(how) ? how : []).map((h) => (
+            <li key={h.t} className="flex gap-3">
+              <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-volt-400 text-[11px] font-black text-black">
+                {h.t.match(/^\d+/)?.[0] ?? '•'}
+              </span>
+              <div>
+                <p className="text-sm font-bold">{h.t.replace(/^\d+\.\s*/, '')}</p>
+                <p className="text-[12px] leading-relaxed text-zinc-500 dark:text-zinc-400">{h.d}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Data update policy */}
+      <section className="card p-6">
+        <h2 className="text-[15px] font-bold">{t('about.updateTitle')}</h2>
+        <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{t('about.updateBody')}</p>
       </section>
 
       {/* Data sources */}
