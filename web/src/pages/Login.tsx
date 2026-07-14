@@ -1,32 +1,58 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth, startGoogleLogin } from '@/lib/auth'
+import { useAuth, startGoogleLogin, signupEmail, loginEmail, isValidUsername } from '@/lib/auth'
 
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, providers, init } = useAuth()
+  const [mode, setMode] = useState<'login' | 'signup'>('login')
+  const [email, setEmail] = useState('')
+  const [id, setId] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [err, setErr] = useState('')
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     void init()
   }, [init])
-
-  // Already signed in → go to profile.
   useEffect(() => {
-    if (user) navigate('/profile', { replace: true })
+    if (user) navigate(user.onboarded === false ? '/welcome' : '/profile', { replace: true })
   }, [user, navigate])
 
   const googleOn = providers?.google ?? false
+  const emailOn = providers?.email ?? false
+
+  const submit = async () => {
+    setErr('')
+    setBusy(true)
+    const r =
+      mode === 'signup'
+        ? await signupEmail(email, username, password)
+        : await loginEmail(id, password)
+    setBusy(false)
+    if (!r.ok) setErr(t(`auth.err_${r.error}`))
+    // On success the auth store updates and the redirect effect fires.
+  }
+
+  const canSubmit =
+    mode === 'signup'
+      ? /\S+@\S+\.\S+/.test(email) && isValidUsername(username) && password.length >= 8
+      : id.trim().length > 0 && password.length > 0
+
+  const input =
+    'w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-volt-500 dark:border-white/10 dark:bg-white/5'
 
   return (
-    <div className="mx-auto max-w-md space-y-6">
+    <div className="mx-auto max-w-md space-y-5">
       <div className="text-center">
         <h1 className="text-2xl font-extrabold tracking-tight">{t('auth.title')}</h1>
         <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{t('auth.subtitle')}</p>
       </div>
 
-      <div className="card space-y-3 p-6">
+      <div className="card space-y-4 p-6">
         <button
           type="button"
           disabled={!googleOn}
@@ -36,12 +62,63 @@ export default function Login() {
           <GoogleMark />
           {t('auth.google')}
         </button>
-        {!googleOn && (
-          <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">
-            {t('auth.providerHint')}
-          </p>
-        )}
-        <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('auth.subtitle2')}</p>
+        {!googleOn && <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>}
+
+        <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-300 dark:text-zinc-700">
+          <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />
+          {t('auth.or')}
+          <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />
+        </div>
+
+        {/* Email + password */}
+        <div className="space-y-2.5">
+          {mode === 'signup' ? (
+            <>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('auth.emailLabel')} autoComplete="email" className={input} />
+              <div className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-2.5 focus-within:border-volt-500 dark:border-white/10">
+                <span className="text-sm font-bold text-zinc-400">@</span>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())}
+                  placeholder={t('auth.usernamePlaceholder')}
+                  autoCapitalize="none"
+                  autoComplete="off"
+                  className="w-full bg-transparent py-2.5 text-sm outline-none"
+                />
+              </div>
+            </>
+          ) : (
+            <input value={id} onChange={(e) => setId(e.target.value)} placeholder={t('auth.idOrEmail')} autoCapitalize="none" autoComplete="username" className={input} />
+          )}
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={mode === 'signup' ? t('auth.passwordRule') : t('auth.passwordLabel')}
+            autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+            className={input}
+          />
+          {err && <p className="text-[12px] font-bold text-red-500">{err}</p>}
+          <button
+            type="button"
+            disabled={!emailOn || !canSubmit || busy}
+            onClick={submit}
+            className="w-full rounded-xl bg-volt-400 px-4 py-2.5 text-sm font-bold text-black transition-colors enabled:hover:bg-volt-300 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {busy ? '…' : mode === 'signup' ? t('auth.signupBtn') : t('auth.loginBtn')}
+          </button>
+          {!emailOn && <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>}
+          <button
+            type="button"
+            onClick={() => {
+              setErr('')
+              setMode(mode === 'signup' ? 'login' : 'signup')
+            }}
+            className="w-full text-center text-[12px] font-bold text-volt-600 hover:underline dark:text-volt-400"
+          >
+            {mode === 'signup' ? t('auth.toLogin') : t('auth.toSignup')}
+          </button>
+        </div>
       </div>
 
       <p className="text-center text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('auth.privacyNote')}</p>

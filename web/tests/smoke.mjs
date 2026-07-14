@@ -130,9 +130,12 @@ try {
     await page.goto(`${BASE}/teams`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] teams gated when logged out`, await eventually(page.getByText(/Sign-in required|로그인이 필요/)))
 
-    // Login page: Google-only sign-in (no demo/username flow)
+    // Login page: Google + email/password with a signup toggle
     await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' })
     check(`[${viewport.tag}] login google button`, await eventually(page.getByText(/Continue with Google|Google로 계속하기/)))
+    check(`[${viewport.tag}] login password field`, await eventually(page.locator('input[type="password"]')))
+    await page.getByText(/No account\? Sign up|회원가입/).first().click()
+    check(`[${viewport.tag}] signup email field`, await eventually(page.locator('input[type="email"]')))
 
     // Seed a signed-in session (server cookie is unavailable under vite preview)
     // so the gated team/matchup/share/community flows can be exercised.
@@ -224,6 +227,11 @@ try {
       raw.state.user.isAdmin = false
       localStorage.setItem('champsnote-auth', JSON.stringify(raw))
     })
+
+    // Profile page: edit mode reveals the display-name field
+    await page.goto(`${BASE}/profile`, { waitUntil: 'networkidle' })
+    await page.getByRole('button', { name: /Edit profile|프로필 편집/ }).first().click()
+    check(`[${viewport.tag}] profile edit shows name field`, await eventually(page.getByText(/Display name|표시 닉네임/)))
 
     // Settings page: theme options (incl. System) render
     await page.goto(`${BASE}/settings`, { waitUntil: 'networkidle' })

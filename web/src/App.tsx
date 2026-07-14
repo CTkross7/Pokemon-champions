@@ -23,6 +23,7 @@ const Stats = lazy(() => import('@/pages/Stats'))
 const Settings = lazy(() => import('@/pages/Settings'))
 const Login = lazy(() => import('@/pages/Login'))
 const Profile = lazy(() => import('@/pages/Profile'))
+const Welcome = lazy(() => import('@/pages/Welcome'))
 const Notices = lazy(() => import('@/pages/Notices'))
 const Admin = lazy(() => import('@/pages/Admin'))
 
@@ -132,6 +133,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageFallback />}>
               <Profile />
+            </Suspense>
+          }
+        />
+        <Route
+          path="welcome"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <Welcome />
             </Suspense>
           }
         />

@@ -158,8 +158,12 @@ Pages에서도 `/api/*`(갤러리·계정)와 SPA 라우팅이 그대로 동작�
 | `GOOGLE_CLIENT_SECRET` | Secret | Google OAuth 클라이언트 보안 비밀 |
 | `ADMIN_USERNAMES` | Text | (선택) 공지 작성 권한 아이디, 쉼표로 여러 명(예: `ctkross`) |
 
-> `ADMIN_USERNAMES`에 등록된 아이디로 로그인하면 `/notices`(공지사항)에서 글 작성·삭제가 가능합니다.
-> 일반 사용자는 읽기만 됩니다.
+> `ADMIN_USERNAMES`에 등록된 아이디로 로그인하면 `/notices`(공지사항) 작성·삭제 및
+> `/admin`(관리자 대시보드: 신고 검토·경고·차단)이 가능합니다. 일반 사용자는 읽기만 됩니다.
+
+> **이메일+비밀번호 로그인**은 D1만 연결되면 별도 설정 없이 동작합니다(Google 자격증명 불필요).
+> 신규 Google 로그인 사용자는 첫 로그인 시 `/welcome`에서 아이디를 직접 정합니다(중복 검증).
+> 기존 users 테이블이 있다면 schema.sql 상단의 `ALTER TABLE users …` 3줄을 D1 콘솔에서 1회 실행하세요.
 
 ### 3) Google OAuth 클라이언트 만들기
 1. https://console.cloud.google.com → 프로젝트 생성/선택

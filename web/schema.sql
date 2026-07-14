@@ -13,16 +13,24 @@ CREATE TABLE IF NOT EXISTS samples (
 
 CREATE INDEX IF NOT EXISTS idx_samples_created_at ON samples (created_at DESC);
 
--- Accounts (Google / Apple sign-in + username). Optional: only needed when the
+-- Accounts (Google sign-in OR email+password). Optional: only needed when the
 -- login backend is enabled. See docs/DEPLOYMENT.md for provider setup.
+--
+-- EXISTING INSTALLS: if the users table was created before, run these once:
+--   ALTER TABLE users ADD COLUMN password_hash TEXT;
+--   ALTER TABLE users ADD COLUMN display_name_changed_at INTEGER;
+--   ALTER TABLE users ADD COLUMN onboarded INTEGER NOT NULL DEFAULT 1;
 CREATE TABLE IF NOT EXISTS users (
   id           TEXT PRIMARY KEY,      -- uuid
   username     TEXT NOT NULL UNIQUE,  -- lowercase [a-z0-9_], 3-20
   display_name TEXT NOT NULL,
   email        TEXT,
-  provider     TEXT NOT NULL,         -- 'google' | 'apple' | 'local'
-  provider_id  TEXT NOT NULL,         -- subject id from the provider
-  avatar_url   TEXT,
+  provider     TEXT NOT NULL,         -- 'google' | 'email'
+  provider_id  TEXT NOT NULL,         -- google sub, or the email for 'email'
+  avatar_url   TEXT,                  -- https url or small data: uri
+  password_hash TEXT,                 -- only for provider='email' (PBKDF2)
+  display_name_changed_at INTEGER,    -- for the 7-day rename cooldown
+  onboarded    INTEGER NOT NULL DEFAULT 1, -- 0 = new Google user must pick a username
   created_at   INTEGER NOT NULL,      -- epoch millis
   UNIQUE (provider, provider_id)
 );
