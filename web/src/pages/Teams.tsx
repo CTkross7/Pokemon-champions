@@ -5,6 +5,7 @@ import { statAtLevel50, spTotal, NATURES, natureLabel, type Nature } from '@/lib
 import { exportTeam, importTeam } from '@/lib/showdown'
 import { shareUrl, encodeTeam } from '@/lib/share'
 import { createSample } from '@/lib/api'
+import { useAuth } from '@/lib/auth'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import ItemSelect from '@/components/ItemSelect'
@@ -148,6 +149,7 @@ export default function Teams() {
   const { t, i18n } = useTranslation()
   const { teams, activeId, createTeam, deleteTeam, renameTeam, setActive, setMon, importTeam: importToStore } =
     useTeams()
+  const user = useAuth((s) => s.user)
   const [pokedex, setPokedex] = useState<Species[] | null>(null)
   const [moves, setMoves] = useState<Record<string, MoveData> | null>(null)
   const [learnsets, setLearnsets] = useState<Record<string, string[]> | null>(null)
@@ -299,10 +301,15 @@ export default function Teams() {
         <button
           type="button"
           onClick={async () => {
-            const author = prompt(t('teams.publishAuthor')) ?? ''
-            if (author === null) return
+            // Publishing is login-gated, so the author is always the signed-in
+            // user's chosen display name — synced from their profile, never
+            // anonymous or a free-typed name.
             setShareMsg(t('teams.publishing'))
-            const r = await createSample({ title: active.name, author: author.trim() || '익명', team: encodeTeam(active) })
+            const r = await createSample({
+              title: active.name,
+              author: user?.displayName ?? '',
+              team: encodeTeam(active),
+            })
             setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
             setTimeout(() => setShareMsg(''), 4000)
           }}

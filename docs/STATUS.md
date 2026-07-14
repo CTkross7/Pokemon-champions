@@ -340,3 +340,9 @@
 - ✅ **링크 임베드 문구 재작성**(사용자 요청: 무료·한국어 삭제): index.html og/twitter/description 3곳 + PWA manifest 설명에서 "무료 한국어" 제거 → "포켓몬 챔피언스 랭크배틀을 위한 도감·데미지 계산기·팀 진단 코칭·실전 매치업 어시스턴트를 한곳에서. 챔스노트."
 - ✅ **구글 로그인 오류 문서화**(사용자 지적 401 disabled_client): DEPLOYMENT.md에 disabled_client(OAuth 클라이언트 비활성화)·access_denied·redirect_uri_mismatch 해결법 추가. 코드 아닌 Google Cloud Console 설정 이슈
 - 검증: 빌드·린트·E2E·로컬 D1 아바타 플래그 ✅
+
+## Phase 13.10 — 닉네임 동기화·임베드 배너·스토어 이미지 (2026-07-14)
+- ✅ **팀/샘플 작성자 닉네임 동기화**(사용자 요청, 익명 제거): 팀빌더 발행이 작성자 프롬프트·'익명' 폴백을 쓰던 것을 로그인 유저의 표시닉네임으로 자동 동기화. 서버도 author를 user.display_name(없으면 username)로 강제 — 클라이언트가 '익명'을 보내도 무시. 로컬 D1로 검증(익명 전송→'김트레이너' 저장)
+- ✅ **링크 임베드 배너 디자인**: 1200×630 og-banner.png 제작(브랜드 다크+네온라임 글로우, CN 아이콘·"포켓몬 챔피언스 랭크배틀 파트너"·기능 4칩). web/public/og-banner.png 배포 + index.html og:image/twitter(summary_large_image)·크기 메타 연결
+- ✅ **앱스토어 이미지 제작**: docs/store-assets/에 feature-graphic(1024×500)·아이콘(512)·폰 스크린샷 6종(홈·도감·계산기·팀빌더·매치업·통계) + Play Store 등록 문구 초안(README, 무료/언어 강조 배제)
+- 검증: 빌드·린트·E2E·로컬 D1 작성자 동기화·배너/스크린샷 렌더 ✅

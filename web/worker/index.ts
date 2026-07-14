@@ -53,7 +53,9 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
         return json({ error: 'invalid_json' }, 400)
       }
       const title = clampStr(body.title, 60).trim() || '무제 팀'
-      const author = user.display_name || clampStr(body.author, 30).trim() || '익명'
+      // Author is always the signed-in user's display name (synced from profile),
+      // never a client-supplied or anonymous value.
+      const author = user.display_name || user.username
       const team = clampStr(body.team, MAX_TEAM_BYTES)
       if (!team) return json({ error: 'missing_team' }, 400)
       const id = crypto.randomUUID().slice(0, 8)
