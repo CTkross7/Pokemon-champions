@@ -13,6 +13,10 @@ export interface Regulation {
   season: string | null
   startDate: string | null
   endDate: string | null
+  /** Precise end instant (ISO with offset), preferred over endDate when present. */
+  endsAt?: string | null
+  megaAllowed?: boolean
+  subSeasons?: string[]
   source: string
 }
 
@@ -24,10 +28,17 @@ export function loadRegulation(): Promise<Regulation | null> {
   return promise
 }
 
-/** Whole days from now until an end date (YYYY-MM-DD, treated as end of day). */
-export function daysUntil(dateStr: string | null): number | null {
-  if (!dateStr) return null
-  const end = new Date(`${dateStr}T23:59:59+09:00`).getTime()
+/**
+ * Whole days from now until the regulation ends. Prefers the precise `endsAt`
+ * instant; falls back to end-of-day KST on `endDate`. Returns null when no
+ * verified end is set (so the UI shows no fabricated countdown), or a negative
+ * number once the season is over.
+ */
+export function daysUntil(reg: Regulation | null): number | null {
+  if (!reg) return null
+  const iso = reg.endsAt || (reg.endDate ? `${reg.endDate}T23:59:59+09:00` : null)
+  if (!iso) return null
+  const end = new Date(iso).getTime()
   if (Number.isNaN(end)) return null
   return Math.ceil((end - Date.now()) / 86_400_000)
 }

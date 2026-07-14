@@ -46,6 +46,21 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Respect reduced-motion, and relieve GPU compositing pressure on low-memory
+   mobile GPUs: the per-route fade-up promotes the whole <main> to a layer, which
+   on some Android WebViews under memory pressure can raster as noise. Disabling
+   the transform there removes the promoted layer entirely. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   @apply bg-surface-light text-zinc-900 antialiased dark:bg-surface-dark dark:text-zinc-100;
   font-feature-settings: 'ss05';

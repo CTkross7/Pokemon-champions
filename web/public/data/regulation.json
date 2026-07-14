@@ -2,8 +2,11 @@
   "regulation": "M-B",
   "label": { "ko": "레귤레이션 M-B", "en": "Regulation M-B" },
   "season": null,
-  "startDate": null,
-  "endDate": null,
-  "source": "https://www.pokemon.com/us/pokemon-champions",
-  "_note": "startDate/endDate must be filled from the OFFICIAL Champions ranked-season schedule. When endDate (YYYY-MM-DD, KST) is present the Home page shows a live D-day countdown; while null it shows the regulation label without a fabricated date. Never guess these values."
+  "startDate": "2026-06-17",
+  "endDate": "2026-09-02",
+  "endsAt": "2026-09-02T10:59:00+09:00",
+  "megaAllowed": true,
+  "subSeasons": ["M-3", "M-4", "M-5"],
+  "source": "https://pokemonkorea.co.kr/pokemon_champions",
+  "_note": "레귤레이션 M-B: 2026-06-17 ~ 2026-09-02 10:59(KST), 랭크배틀 시즌 M-3·M-4·M-5 순차 운영, 메가진화 허용. 값은 포켓몬코리아 공식 안내 기준. 다음 레귤레이션 확정 시 이 파일만 갱신하면 홈 D-day가 자동 반영됩니다. 검증되지 않은 값은 절대 추정하지 마세요."
 }

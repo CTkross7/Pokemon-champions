@@ -47,7 +47,7 @@ export default function Home() {
       .catch(() => {})
   }, [])
 
-  const dday = daysUntil(reg?.endDate ?? null)
+  const dday = daysUntil(reg)
   const regLabel = reg ? (ko ? reg.label.ko : reg.label.en) : t('home.badge')
 
   const top = useMemo(() => {
