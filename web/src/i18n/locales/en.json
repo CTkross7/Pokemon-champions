@@ -479,7 +479,8 @@
     "nicknameCooldown": "You can change your name again in {{days}} day(s).",
     "saveProfile": "Save",
     "saved": "Saved ✓",
-    "avatarTooBig": "Image too large (max 2MB)."
+    "avatarTooBig": "Image too large (max 2MB).",
+    "err_missing_fields": "Enter both your username/email and password."
   },
   "notices": {
     "title": "Notices",

@@ -306,3 +306,12 @@
   - **프로필 편집**: 프로필 사진(파일→128px JPEG 리사이즈, D1 저장) 변경·제거, 표시 닉네임 변경(**7일 쿨타임**, 서버 429 강제). PATCH /api/auth/profile
   - users 테이블에 password_hash·display_name_changed_at·onboarded 컬럼(+기존 설치용 ALTER 안내)
 - 검증: 빌드·린트·E2E(로그인 폼·회원가입 토글·프로필 편집 추가) ✅ / 로컬 D1로 signup 201·중복 409·login 200/401·rename 성공→429 쿨타임 전수 검증 ✅
+## Phase 13.6 — 개인정보 처리방침 정식화 + 출시 전 최종 검증 (2026-07-14)
+- ✅ **개인정보 처리방침 전면 재작성**(사용자 요청: 이용약관처럼 실제 회사 수준 몇조 몇항): `/privacy`를 15개 조문(제1조~제15조+부칙, 한/영 병행)으로 정식화. 수집항목(이메일·아이디·해시 비밀번호·아바타·Google sub)·수집목적·보유기간·쿠키(세션/AdSense)·제3자 제공(Cloudflare·Google)·국외이전·정보주체 권리·보안조치(PBKDF2·HTTPS·HttpOnly)·AdSense 맞춤광고 거부(adssettings.google.com)·만 14세 미만·문의처(개발자 이메일) 포함. 시행일 2026-07-14
+- ✅ **출시 전 최종 검증·디버깅 전수**:
+  - 빌드 ✅(_worker.js 24.1kb) / 린트 ✅ / validate ✅ / worker 타입체크 ✅
+  - i18n 키 감사: 정적 302키 누락 0, 동적 51키 계열 점검 중 `auth.err_missing_fields` 누락 발견 → ko/en 추가
+  - 라우트 20개 배선 확인, console.log/debugger/TODO 유출 0
+  - E2E(privacy 렌더·콘솔에러 0) ✅
+  - 백엔드 엔드포인트 전수(fresh D1): config `{google:false,email:true}`·signup 201·notices·samples GET/POST 201·reports 201·admin/notices 비권한 403·username 조회 ✅
+- ⚠️ 사용자 조치(출시 전): D1 콘솔에서 schema.sql의 users ALTER(password_hash·display_name_changed_at·onboarded)+reports·moderation 테이블 1회 실행, Pages 환경변수 ADMIN_USERNAMES·GOOGLE_CLIENT_ID/SECRET·(선택)VITE_ADSENSE_CLIENT 등록

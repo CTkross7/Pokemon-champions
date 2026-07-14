@@ -479,7 +479,8 @@
     "nicknameCooldown": "닉네임은 {{days}}일 후 변경할 수 있습니다.",
     "saveProfile": "저장",
     "saved": "저장되었습니다 ✓",
-    "avatarTooBig": "이미지가 너무 큽니다(최대 2MB)."
+    "avatarTooBig": "이미지가 너무 큽니다(최대 2MB).",
+    "err_missing_fields": "아이디와 비밀번호를 모두 입력하세요."
   },
   "notices": {
     "title": "공지사항",
