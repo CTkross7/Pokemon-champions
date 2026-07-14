@@ -75,6 +75,19 @@ const PATHS = {
       <path d="M4.5 20c.6-3.7 3.5-5.6 7.5-5.6s6.9 1.9 7.5 5.6" />
     </>
   ),
+  grid: (
+    <>
+      <rect x="4" y="4" width="6.5" height="6.5" rx="1.6" />
+      <rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6" />
+      <rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6" />
+      <rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6" />
+    </>
+  ),
+  chart: (
+    <>
+      <path d="M4 20V10M10 20V4M16 20v-7M4 20h16" />
+    </>
+  ),
   monitor: (
     <>
       <rect x="3" y="4" width="18" height="12.5" rx="2" />

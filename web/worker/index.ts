@@ -14,6 +14,7 @@ import type { D1Database } from './d1'
 import { handleAuth, currentUser, type AuthEnv } from './auth'
 import { handleNotices } from './notices'
 import { handleReports, handleAdmin, isBanned } from './reports'
+import { ensureSchema } from './migrate'
 
 export interface Env extends AuthEnv {
   ASSETS: { fetch: (request: Request) => Promise<Response> }
@@ -91,6 +92,9 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
+    // Bring the D1 schema forward before any DB-backed route touches it, so a
+    // live install never fails on a missing column (e.g. profile edits).
+    if (env.DB && url.pathname.startsWith('/api/')) await ensureSchema(env.DB)
     if (url.pathname.startsWith('/api/auth')) {
       try {
         return await handleAuth(request, env, url)

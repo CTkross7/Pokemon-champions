@@ -16,9 +16,13 @@ CREATE INDEX IF NOT EXISTS idx_samples_created_at ON samples (created_at DESC);
 -- Accounts (Google sign-in OR email+password). Optional: only needed when the
 -- login backend is enabled. See docs/DEPLOYMENT.md for provider setup.
 --
--- EXISTING INSTALLS: if the users table was created before, run these once:
+-- NOTE: the Worker also self-heals this schema at runtime (web/worker/migrate.ts):
+-- on the first API request it runs CREATE TABLE IF NOT EXISTS + ADD COLUMN for
+-- any missing newer columns, so an existing install does not need manual ALTERs.
+-- The statements below are kept for reference / manual bootstrap:
 --   ALTER TABLE users ADD COLUMN password_hash TEXT;
 --   ALTER TABLE users ADD COLUMN display_name_changed_at INTEGER;
+--   ALTER TABLE users ADD COLUMN username_changed_at INTEGER;
 --   ALTER TABLE users ADD COLUMN onboarded INTEGER NOT NULL DEFAULT 1;
 CREATE TABLE IF NOT EXISTS users (
   id           TEXT PRIMARY KEY,      -- uuid
@@ -29,7 +33,8 @@ CREATE TABLE IF NOT EXISTS users (
   provider_id  TEXT NOT NULL,         -- google sub, or the email for 'email'
   avatar_url   TEXT,                  -- https url or small data: uri
   password_hash TEXT,                 -- only for provider='email' (PBKDF2)
-  display_name_changed_at INTEGER,    -- for the 7-day rename cooldown
+  display_name_changed_at INTEGER,    -- for the 7-day display-name cooldown
+  username_changed_at INTEGER,        -- for the 7-day username (@handle) cooldown
   onboarded    INTEGER NOT NULL DEFAULT 1, -- 0 = new Google user must pick a username
   created_at   INTEGER NOT NULL,      -- epoch millis
   UNIQUE (provider, provider_id)

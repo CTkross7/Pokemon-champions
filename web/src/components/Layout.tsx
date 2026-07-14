@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@/store/settings'
@@ -88,11 +88,24 @@ export default function Layout() {
   const { t } = useTranslation()
   const location = useLocation()
   const initAuth = useAuth((s) => s.init)
+  const user = useAuth((s) => s.user)
+  const [moreOpen, setMoreOpen] = useState(false)
 
   // Resolve the current session (or fall back to a persisted local account).
   useEffect(() => {
     void initAuth()
   }, [initAuth])
+
+  // Close the mobile "더보기" sheet whenever the route changes.
+  useEffect(() => {
+    setMoreOpen(false)
+  }, [location.pathname])
+
+  // Reset scroll to the top on every route change — otherwise switching tabs
+  // after scrolling leaves the new page scrolled down to the old offset.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   // Per-route document title for SEO / shareable tabs.
   useEffect(() => {
@@ -175,12 +188,15 @@ export default function Layout() {
         </div>
       </footer>
 
+      {/* Mobile "더보기" sheet — profile + settings + secondary destinations */}
+      {moreOpen && <MoreSheet onClose={() => setMoreOpen(false)} loggedIn={Boolean(user)} />}
+
       {/* Mobile bottom tab bar (native-app style) */}
       <nav
         className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden dark:border-white/8 dark:bg-surface-dark"
         aria-label="mobile"
       >
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-6">
           {TAB_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -204,8 +220,55 @@ export default function Layout() {
               )}
             </NavLink>
           ))}
+          <button
+            type="button"
+            onClick={() => setMoreOpen((v) => !v)}
+            className={[
+              'relative flex flex-col items-center gap-1 pt-3 pb-2 text-[10px] font-semibold transition-colors',
+              moreOpen ? 'text-volt-600 dark:text-volt-400' : 'text-zinc-400 dark:text-zinc-600',
+            ].join(' ')}
+            aria-expanded={moreOpen}
+          >
+            <Icon name="grid" size={21} />
+            {t('nav.more')}
+          </button>
         </div>
       </nav>
+    </div>
+  )
+}
+
+/** Bottom sheet of secondary destinations (mobile). Profile + Settings first,
+ *  since those are the shortcuts users reach for most from a tab bar. */
+function MoreSheet({ onClose, loggedIn }: { onClose: () => void; loggedIn: boolean }) {
+  const { t } = useTranslation()
+  const items: ReadonlyArray<{ to: string; key: string; icon: IconName }> = [
+    { to: loggedIn ? '/profile' : '/login', key: loggedIn ? 'nav.profile' : 'auth.login', icon: 'user' },
+    { to: '/settings', key: 'nav.settings', icon: 'settings' },
+    { to: '/stats', key: 'nav.stats', icon: 'chart' },
+    { to: '/gallery', key: 'nav.gallery', icon: 'sparkles' },
+    { to: '/notices', key: 'nav.notices', icon: 'bell' },
+    { to: '/about', key: 'nav.about', icon: 'info' },
+  ]
+  return (
+    <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true">
+      <button type="button" className="absolute inset-0 bg-black/40" aria-label={t('report.close')} onClick={onClose} />
+      <div className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-zinc-200 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] dark:border-white/10 dark:bg-surface-dark">
+        <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-zinc-300 dark:bg-white/15" />
+        <div className="grid grid-cols-3 gap-2">
+          {items.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={onClose}
+              className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-200 py-4 text-xs font-bold text-zinc-600 transition-colors hover:border-volt-500 hover:text-volt-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-volt-400/60 dark:hover:text-volt-300"
+            >
+              <Icon name={item.icon} size={22} />
+              {t(item.key)}
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

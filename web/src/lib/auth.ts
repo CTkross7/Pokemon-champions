@@ -21,6 +21,8 @@ export interface AuthUser {
   onboarded?: boolean
   /** ms until the display name may be changed again (0 = now). */
   renameAvailableInMs?: number
+  /** ms until the username (@handle) may be changed again (0 = now). */
+  usernameRenameAvailableInMs?: number
 }
 
 export interface ProviderConfig {
@@ -154,9 +156,14 @@ export const loginEmail = (id: string, password: string) => postAuth('/api/auth/
 /** Onboarding: a signed-in (Google) user claims their username. */
 export const setUsername = (username: string) => postAuth('/api/auth/username', { username })
 
-export type ProfileResult = { ok: true } | { ok: false; error: 'rename_cooldown' | 'invalid_avatar' | 'error'; availableInMs?: number }
+export type ProfileError = 'rename_cooldown' | 'username_cooldown' | 'username_taken' | 'invalid_username' | 'invalid_avatar' | 'error'
+export type ProfileResult = { ok: true } | { ok: false; error: ProfileError; availableInMs?: number }
 
-export async function updateProfile(patch: { displayName?: string; avatarUrl?: string }): Promise<ProfileResult> {
+export async function updateProfile(patch: {
+  displayName?: string
+  username?: string
+  avatarUrl?: string
+}): Promise<ProfileResult> {
   try {
     const res = await fetch('/api/auth/profile', {
       method: 'PATCH',
@@ -169,7 +176,7 @@ export async function updateProfile(patch: { displayName?: string; avatarUrl?: s
       return { ok: true }
     }
     const b = (await res.json().catch(() => ({}))) as { error?: string; availableInMs?: number }
-    return { ok: false, error: (b.error as 'rename_cooldown' | 'invalid_avatar') ?? 'error', availableInMs: b.availableInMs }
+    return { ok: false, error: (b.error as ProfileError) ?? 'error', availableInMs: b.availableInMs }
   } catch {
     return { ok: false, error: 'error' }
   }

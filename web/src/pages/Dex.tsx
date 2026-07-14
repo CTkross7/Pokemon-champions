@@ -1,28 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { loadPokedex, matchesQuery, statTotal, type Species, type StatKey } from '@/lib/dex'
-import { TYPES, TYPE_COLORS, TYPE_KO, type TypeName } from '@/lib/typechart'
+import { loadPokedex, matchesQuery, statTotal, type Species } from '@/lib/dex'
+import { TYPES, TYPE_COLORS, TYPE_KO } from '@/lib/typechart'
+import { useDexFilters, type DexSortKey } from '@/store/dexFilters'
 import DexTabs from '@/components/DexTabs'
 import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
 import Icon from '@/components/Icon'
 
 const PAGE_SIZE = 60
-type SortKey = 'num' | 'total' | StatKey
 
-const SORT_OPTIONS: SortKey[] = ['num', 'total', 'hp', 'atk', 'def', 'spa', 'spd', 'spe']
+const SORT_OPTIONS: DexSortKey[] = ['num', 'total', 'hp', 'atk', 'def', 'spa', 'spd', 'spe']
 
 export default function Dex() {
   const { t, i18n } = useTranslation()
   const [all, setAll] = useState<Species[] | null>(null)
   const [error, setError] = useState(false)
-  const [query, setQuery] = useState('')
-  const [typeFilter, setTypeFilter] = useState<TypeName | null>(null)
-  // The dex is Champions-only (loadPokedex already filters), so no toggle needed.
-  const [includeFormes, setIncludeFormes] = useState(true)
-  const [sort, setSort] = useState<SortKey>('num')
-  const [limit, setLimit] = useState(PAGE_SIZE)
+  // Filter state lives in a store so it survives leaving/returning to this tab.
+  const { query, typeFilter, includeFormes, sort, limit, set, reset } = useDexFilters()
+  const filtersActive = query.trim() !== '' || typeFilter !== null || sort !== 'num' || !includeFormes
 
   useEffect(() => {
     loadPokedex().then(setAll, () => setError(true))
@@ -49,9 +46,20 @@ export default function Dex() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <DexTabs />
-        <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500">
-          {all ? t('dex.results', { count: filtered.length }) : ''}
-        </span>
+        <div className="flex items-center gap-2">
+          {filtersActive && (
+            <button
+              type="button"
+              onClick={reset}
+              className="inline-flex items-center gap-1 rounded-full border border-zinc-200 px-2.5 py-1 text-[11px] font-bold text-zinc-500 transition-colors hover:border-volt-500 hover:text-volt-700 dark:border-white/10 dark:text-zinc-400 dark:hover:border-volt-400/60 dark:hover:text-volt-300"
+            >
+              {t('dex.resetFilters')}
+            </button>
+          )}
+          <span className="text-xs font-semibold text-zinc-400 dark:text-zinc-500">
+            {all ? t('dex.results', { count: filtered.length }) : ''}
+          </span>
+        </div>
       </div>
 
       {/* Search + controls */}
@@ -60,10 +68,7 @@ export default function Dex() {
           <input
             type="search"
             value={query}
-            onChange={(e) => {
-              setQuery(e.target.value)
-              setLimit(PAGE_SIZE)
-            }}
+            onChange={(e) => set({ query: e.target.value, limit: PAGE_SIZE })}
             placeholder={t('dex.searchPlaceholder')}
             className="h-12 w-full rounded-2xl border border-zinc-200 bg-white pr-4 pl-11 text-[15px] font-medium outline-none placeholder:text-zinc-400 focus:border-volt-500 dark:border-white/10 dark:bg-card-dark dark:placeholder:text-zinc-600 dark:focus:border-volt-400"
           />
@@ -75,7 +80,7 @@ export default function Dex() {
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
             type="button"
-            onClick={() => setTypeFilter(null)}
+            onClick={() => set({ typeFilter: null })}
             className={[
               'shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition-colors',
               typeFilter === null
@@ -89,10 +94,7 @@ export default function Dex() {
             <button
               key={type}
               type="button"
-              onClick={() => {
-                setTypeFilter(typeFilter === type ? null : type)
-                setLimit(PAGE_SIZE)
-              }}
+              onClick={() => set({ typeFilter: typeFilter === type ? null : type, limit: PAGE_SIZE })}
               className="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold text-white transition-opacity"
               style={{
                 backgroundColor: TYPE_COLORS[type],
@@ -110,17 +112,14 @@ export default function Dex() {
             <input
               type="checkbox"
               checked={includeFormes}
-              onChange={(e) => {
-                setIncludeFormes(e.target.checked)
-                setLimit(PAGE_SIZE)
-              }}
+              onChange={(e) => set({ includeFormes: e.target.checked, limit: PAGE_SIZE })}
               className="size-3.5 accent-[--color-volt-500]"
             />
             {t('dex.includeFormes')}
           </label>
           <select
             value={sort}
-            onChange={(e) => setSort(e.target.value as SortKey)}
+            onChange={(e) => set({ sort: e.target.value as DexSortKey })}
             className="ml-auto h-8 rounded-full border border-zinc-200 bg-white px-3 text-xs font-bold text-zinc-600 outline-none dark:border-white/10 dark:bg-card-dark dark:text-zinc-300"
             aria-label={t('dex.sortLabel')}
           >
@@ -183,7 +182,7 @@ export default function Dex() {
             <div className="flex justify-center pt-2">
               <button
                 type="button"
-                onClick={() => setLimit(limit + PAGE_SIZE)}
+                onClick={() => set({ limit: limit + PAGE_SIZE })}
                 className="inline-flex h-10 items-center rounded-full border border-zinc-300 px-6 text-sm font-bold text-zinc-600 transition-colors hover:border-volt-500 hover:text-volt-700 dark:border-white/15 dark:text-zinc-300 dark:hover:border-volt-400/60 dark:hover:text-volt-300"
               >
                 {t('dex.loadMore', { count: filtered.length - limit })}

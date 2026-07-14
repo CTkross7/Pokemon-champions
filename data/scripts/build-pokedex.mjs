@@ -143,15 +143,22 @@ for (const s of Dex.species.all()) {
 }
 species.sort((a, b) => a.num - b.num || a.id.localeCompare(b.id))
 
+// Move categories that genuinely do NOT exist in Champions and must always be
+// dropped (Gigantamax/Max moves, CAP fakemons, Let's-Go-only, custom).
+const EXCLUDED_MOVE_NONSTANDARD = new Set(['Gigantamax', 'CAP', 'Custom', 'LGPE'])
 const moves = {}
 for (const m of Dex.moves.all()) {
-  // Exclude every non-standard move (Gigantamax, Past/Hidden Power, LGPE, CAP,
-  // ...). None exist in Champions, and they lack Korean names — the source of
-  // English move names leaking into the Korean learnset table.
-  if (m.isNonstandard) continue
+  if (m.isNonstandard && EXCLUDED_MOVE_NONSTANDARD.has(m.isNonstandard)) continue
+  const ko = koNames.moves[normalize(m.name)] ?? null
+  // "Past"/"Future"/"Unobtainable" moves (e.g. Light of Ruin 파멸의 빛, the
+  // Eternal-Flower Floette signature) ARE legal in Champions because Pokémon
+  // transfer in from every generation via HOME. Keep them — but only when a
+  // verified Korean name exists, so untranslated fakemon/Hidden-Power moves
+  // never leak English into the Korean learnset table.
+  if (m.isNonstandard && !ko) continue
   moves[m.id] = {
     name: m.name,
-    ko: koNames.moves[normalize(m.name)] ?? m.name,
+    ko: ko ?? m.name,
     type: m.type,
     category: m.category,
     basePower: m.basePower,

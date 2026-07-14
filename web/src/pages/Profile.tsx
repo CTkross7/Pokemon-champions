@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth, updateProfile, type Provider } from '@/lib/auth'
+import { useAuth, updateProfile, USERNAME_RE, type Provider } from '@/lib/auth'
 import Icon from '@/components/Icon'
 
 const PROVIDER_LABEL: Record<Provider, string> = {
@@ -35,6 +35,7 @@ export default function Profile() {
   const { user, ready, init, logout } = useAuth()
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [avatar, setAvatar] = useState<string | null>(null)
   const [msg, setMsg] = useState('')
   const [busy, setBusy] = useState(false)
@@ -47,6 +48,7 @@ export default function Profile() {
   const startEdit = () => {
     if (!user) return
     setName(user.displayName)
+    setUsername(user.username)
     setAvatar(user.avatarUrl)
     setMsg('')
     setEditing(true)
@@ -69,8 +71,15 @@ export default function Profile() {
     if (!user) return
     setBusy(true)
     setMsg('')
-    const patch: { displayName?: string; avatarUrl?: string } = {}
+    const nextUsername = username.trim().toLowerCase()
+    if (nextUsername !== user.username && !USERNAME_RE.test(nextUsername)) {
+      setBusy(false)
+      setMsg(t('auth.usernameInvalid'))
+      return
+    }
+    const patch: { displayName?: string; username?: string; avatarUrl?: string } = {}
     if (name.trim() && name.trim() !== user.displayName) patch.displayName = name.trim()
+    if (nextUsername && nextUsername !== user.username) patch.username = nextUsername
     if (avatar !== user.avatarUrl) patch.avatarUrl = avatar ?? ''
     const r = await updateProfile(patch)
     setBusy(false)
@@ -80,6 +89,13 @@ export default function Profile() {
     } else if (r.error === 'rename_cooldown') {
       const days = Math.ceil((r.availableInMs ?? 0) / (24 * 60 * 60 * 1000))
       setMsg(t('auth.nicknameCooldown', { days }))
+    } else if (r.error === 'username_cooldown') {
+      const days = Math.ceil((r.availableInMs ?? 0) / (24 * 60 * 60 * 1000))
+      setMsg(t('auth.usernameCooldown', { days }))
+    } else if (r.error === 'username_taken') {
+      setMsg(t('auth.usernameTaken'))
+    } else if (r.error === 'invalid_username') {
+      setMsg(t('auth.usernameInvalid'))
     } else {
       setMsg(t('auth.err_error'))
     }
@@ -112,6 +128,7 @@ export default function Profile() {
     day: 'numeric',
   })
   const cooldownDays = Math.ceil((user.renameAvailableInMs ?? 0) / (24 * 60 * 60 * 1000))
+  const usernameCooldownDays = Math.ceil((user.usernameRenameAvailableInMs ?? 0) / (24 * 60 * 60 * 1000))
 
   const avatarNode = (url: string | null) =>
     url ? <img src={url} alt="" className="size-full object-cover" /> : <Icon name="user" size={30} />
@@ -169,6 +186,28 @@ export default function Profile() {
                 <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400">
                   {t('auth.nicknameCooldown', { days: cooldownDays })}
                 </span>
+              )}
+            </label>
+
+            <label className="block space-y-1">
+              <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">{t('auth.usernameLabel')}</span>
+              <div className="flex items-center rounded-lg border border-zinc-200 bg-white px-3 focus-within:border-volt-500 dark:border-white/10 dark:bg-white/5">
+                <span className="text-sm font-bold text-zinc-400">@</span>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                  maxLength={20}
+                  disabled={usernameCooldownDays > 0}
+                  placeholder="username"
+                  className="w-full bg-transparent py-2.5 pl-1 text-sm outline-none disabled:opacity-50"
+                />
+              </div>
+              {usernameCooldownDays > 0 ? (
+                <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                  {t('auth.usernameCooldown', { days: usernameCooldownDays })}
+                </span>
+              ) : (
+                <span className="text-[11px] text-zinc-400 dark:text-zinc-500">{t('auth.usernameHint')}</span>
               )}
             </label>
 

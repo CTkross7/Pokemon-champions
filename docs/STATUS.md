@@ -315,3 +315,15 @@
   - E2E(privacy 렌더·콘솔에러 0) ✅
   - 백엔드 엔드포인트 전수(fresh D1): config `{google:false,email:true}`·signup 201·notices·samples GET/POST 201·reports 201·admin/notices 비권한 403·username 조회 ✅
 - ⚠️ 사용자 조치(출시 전): D1 콘솔에서 schema.sql의 users ALTER(password_hash·display_name_changed_at·onboarded)+reports·moderation 테이블 1회 실행, Pages 환경변수 ADMIN_USERNAMES·GOOGLE_CLIENT_ID/SECRET·(선택)VITE_ADSENSE_CLIENT 등록
+
+## Phase 13.7 — 프로필/홈/데이터/편의 개선 (2026-07-14, 사용자 지적 다건)
+- ✅ **프로필 편집 실패 수정**(사용자 스크린샷: "처리에 실패했습니다"): 원인=라이브 D1에 신규 컬럼 부재. `web/worker/migrate.ts` 신설 — 워커가 첫 API 요청 시 CREATE TABLE IF NOT EXISTS + ADD COLUMN을 idempotent하게 자동 실행(중복 컬럼 무시). 구(舊) 스키마 D1을 시뮬레이션해 me→profile PATCH 성공(displayName·username 변경, 쿨타임 세팅) 검증. 이제 재배포만으로 자동 해결
+- ✅ **프로필에서 아이디(@사용자명) 변경 추가**(사용자 요청): profile PATCH에 username 처리(형식·중복 409·7일 쿨타임 429). users에 `username_changed_at` 컬럼(자동 마이그레이션). 프로필 편집 폼에 @아이디 입력·힌트·쿨타임 표기. 로컬 D1로 성공→429쿨타임→409중복 전수 검증
+- ✅ **홈 화면 UI 개편 + 정보 미리보기**(사용자 요청): 시즌 칩(레귤레이션 라벨+검증된 종료일 있을 때만 D-day), **메타 미리보기**(사용률 상위 8종 스프라이트·%·/stats 링크), **최근 소식 미리보기**(공지 2건). 상세는 도감/통계로 연결
+- ✅ **인게임 시즌 동기화 기반**: `web/public/data/regulation.json`(operator가 공식 일정에서 start/end 입력) + `lib/regulation.ts`(D-day 계산). ⚠️ 공식 종료일은 검증 불가로 null 시드 — 날조 금지 원칙에 따라 종료일 입력 전엔 D-day 미표기(라벨만). 사용자가 공식 일정 종료일 제공 시 즉시 D-day 표기
+- ✅ **하단 탭 프로필·설정 바로가기**(사용자 요청): 모바일 하단 탭에 "더보기"(6번째) 추가 → 프로필/설정/통계/갤러리/공지/소개 바텀시트. 헤더에도 기존 설정·프로필 아이콘 유지
+- ✅ **탭 전환 시 스크롤 상단 복귀**(사용자 지적): Layout에서 pathname 변경 시 window.scrollTo(0,0)
+- ✅ **검색·필터 상태 유지**(사용자 지적: 탭 나갔다 오면 검색 초기화): 도감 필터를 `store/dexFilters.ts`(zustand)로 이관해 탭 재진입 시 유지. "필터 초기화" 버튼 추가(비기본값일 때만)
+- ✅ **스킬명 교차검증·복원**(사용자 지적: 플라엣테 파멸의 빛 등 미존재): 원인=build-pokedex가 isNonstandard 기술 전량 제외 → HOME 전송으로 챔피언스에서 합법인 "Past" 기술(파멸의 빛=Light of Ruin 등 191종)이 통째로 누락. **한글명 검증된 경우만 포함**하도록 수정(무번역 Hidden Power 등은 계속 제외 → 영어 누출 0 유지). 재생성 후 파멸의 빛(140위력)이 플라엣테(영원의꽃) 학습기술에 정상 복원. moves 700→888종
+- ✅ **관리자 등록 방법·광고 안뜸 문서화**: DEPLOYMENT.md에 관리자(ADMIN_USERNAMES) 등록 3단계, **ads.txt**(web/public/ads.txt) 추가, "광고 안뜸" 체크리스트(심사 승인·자동광고 ON·ads.txt·슬롯·무효트래픽)
+- 검증: 빌드·린트·validate(영어누출 0)·E2E(28 케이스)·라이브 D1 프로필 플로우·홈/프로필 스크린샷 ✅

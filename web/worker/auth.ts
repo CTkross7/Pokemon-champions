@@ -35,6 +35,7 @@ interface UserRow {
   avatar_url: string | null
   password_hash: string | null
   display_name_changed_at: number | null
+  username_changed_at: number | null
   onboarded: number
   created_at: number
 }
@@ -125,6 +126,8 @@ const publicUser = (u: UserRow, admin = false) => ({
   onboarded: u.onboarded !== 0,
   // ms until the display name can be changed again (0 = now)
   renameAvailableInMs: Math.max(0, (u.display_name_changed_at ?? 0) + RENAME_COOLDOWN_MS - Date.now()),
+  // ms until the username (@handle) can be changed again (0 = now)
+  usernameRenameAvailableInMs: Math.max(0, (u.username_changed_at ?? 0) + RENAME_COOLDOWN_MS - Date.now()),
 })
 
 // ---- password hashing (PBKDF2-SHA256) --------------------------------------
@@ -334,6 +337,21 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
         await db
           .prepare('UPDATE users SET display_name = ?, display_name_changed_at = ? WHERE id = ?')
           .bind(name, now, user.id)
+          .run()
+      }
+    }
+
+    if (typeof body.username === 'string') {
+      const username = body.username.trim().toLowerCase()
+      if (!USERNAME_RE.test(username)) return json({ error: 'invalid_username' }, 400)
+      if (username !== user.username) {
+        const nextAllowed = (user.username_changed_at ?? 0) + RENAME_COOLDOWN_MS
+        if (now < nextAllowed) return json({ error: 'username_cooldown', availableInMs: nextAllowed - now }, 429)
+        if (await db.prepare('SELECT 1 FROM users WHERE username = ? AND id != ?').bind(username, user.id).first())
+          return json({ error: 'username_taken' }, 409)
+        await db
+          .prepare('UPDATE users SET username = ?, username_changed_at = ? WHERE id = ?')
+          .bind(username, now, user.id)
           .run()
       }
     }

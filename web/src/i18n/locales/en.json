@@ -19,7 +19,9 @@
     "login": "Log in",
     "notices": "Notices",
     "admin": "Admin",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "more": "More",
+    "stats": "Stats"
   },
   "settings": {
     "language": "Language",
@@ -92,7 +94,13 @@
         "title": "Works everywhere",
         "desc": "Optimized for both desktop and mobile, even mid-battle"
       }
-    }
+    },
+    "dday": "D-{{days}}",
+    "metaTitle": "Meta preview",
+    "metaSub": "Top ranked-battle usage · {{month}}",
+    "metaFallback": "Most-used competitive Pokémon",
+    "noticesTitle": "Latest news",
+    "viewAll": "View all"
   },
   "about": {
     "title": "About ChampsNote",
@@ -208,7 +216,8 @@
       "status": "Status"
     },
     "tierBadge": "Champions competitive tier",
-    "tabStats": "Stats"
+    "tabStats": "Stats",
+    "resetFilters": "Reset filters"
   },
   "types": {
     "whenAttacking": "When attacking",
@@ -480,7 +489,12 @@
     "saveProfile": "Save",
     "saved": "Saved ✓",
     "avatarTooBig": "Image too large (max 2MB).",
-    "err_missing_fields": "Enter both your username/email and password."
+    "err_missing_fields": "Enter both your username/email and password.",
+    "usernameLabel": "Username (@handle)",
+    "usernameHint": "3–20 chars: lowercase letters, digits, underscore. Locked 7 days after a change.",
+    "usernameCooldown": "You can change your username again in {{days}} day(s).",
+    "usernameTaken": "That username is already taken.",
+    "usernameInvalid": "Invalid username (3–20 lowercase letters, digits, or underscore)."
   },
   "notices": {
     "title": "Notices",

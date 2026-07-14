@@ -19,7 +19,9 @@
     "login": "로그인",
     "notices": "공지",
     "admin": "관리자",
-    "welcome": "환영"
+    "welcome": "환영",
+    "more": "더보기",
+    "stats": "통계"
   },
   "settings": {
     "language": "언어",
@@ -92,7 +94,13 @@
         "title": "어디서나",
         "desc": "PC와 모바일 모두 최적화 — 대전 중에도 빠르게 확인하세요"
       }
-    }
+    },
+    "dday": "D-{{days}}",
+    "metaTitle": "메타 미리보기",
+    "metaSub": "{{month}} 랭크배틀 사용률 상위",
+    "metaFallback": "경쟁 환경 상위 채용 포켓몬",
+    "noticesTitle": "최근 소식",
+    "viewAll": "전체 보기"
   },
   "about": {
     "title": "챔스노트 소개",
@@ -208,7 +216,8 @@
       "status": "변화"
     },
     "tierBadge": "챔피언스 경쟁 티어",
-    "tabStats": "통계"
+    "tabStats": "통계",
+    "resetFilters": "필터 초기화"
   },
   "types": {
     "whenAttacking": "공격할 때",
@@ -480,7 +489,12 @@
     "saveProfile": "저장",
     "saved": "저장되었습니다 ✓",
     "avatarTooBig": "이미지가 너무 큽니다(최대 2MB).",
-    "err_missing_fields": "아이디와 비밀번호를 모두 입력하세요."
+    "err_missing_fields": "아이디와 비밀번호를 모두 입력하세요.",
+    "usernameLabel": "아이디 (@사용자명)",
+    "usernameHint": "3~20자, 영소문자·숫자·밑줄(_)만. 변경 후 7일간 재변경 불가.",
+    "usernameCooldown": "아이디는 {{days}}일 후 다시 변경할 수 있어요.",
+    "usernameTaken": "이미 사용 중인 아이디예요.",
+    "usernameInvalid": "아이디 형식이 올바르지 않아요 (영소문자·숫자·밑줄 3~20자)."
   },
   "notices": {
     "title": "공지사항",

@@ -1,0 +1,9 @@
+{
+  "regulation": "M-B",
+  "label": { "ko": "레귤레이션 M-B", "en": "Regulation M-B" },
+  "season": null,
+  "startDate": null,
+  "endDate": null,
+  "source": "https://www.pokemon.com/us/pokemon-champions",
+  "_note": "startDate/endDate must be filled from the OFFICIAL Champions ranked-season schedule. When endDate (YYYY-MM-DD, KST) is present the Home page shows a live D-day countdown; while null it shows the regulation label without a fabricated date. Never guess these values."
+}
