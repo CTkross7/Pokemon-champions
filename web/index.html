@@ -13,24 +13,29 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="챔스노트" />
 
-    <!-- Open Graph / social preview -->
+    <!-- Open Graph / social preview. Scrapers (Discord, KakaoTalk, X) require
+         ABSOLUTE image URLs — relative paths are not fetched. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="챔스노트" />
+    <meta property="og:url" content="https://champsnote.pages.dev/" />
     <meta property="og:title" content="챔스노트 — 포켓몬 챔피언스 배틀 파트너" />
     <meta
       property="og:description"
       content="포켓몬 챔피언스 랭크배틀을 위한 도감·데미지 계산기·팀 진단 코칭·실전 매치업 어시스턴트를 챔스노트 단 한곳에서."
     />
-    <meta property="og:image" content="/og-banner.png" />
+    <meta property="og:image" content="https://champsnote.pages.dev/og-banner.png" />
+    <meta property="og:image:secure_url" content="https://champsnote.pages.dev/og-banner.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="챔스노트 — 포켓몬 챔피언스 배틀 파트너" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="챔스노트 — 포켓몬 챔피언스 배틀 파트너" />
     <meta
       name="twitter:description"
       content="포켓몬 챔피언스 랭크배틀을 위한 도감·데미지 계산기·팀 진단 코칭·실전 매치업 어시스턴트를 챔스노트 단 한곳에서."
     />
-    <meta name="twitter:image" content="/og-banner.png" />
+    <meta name="twitter:image" content="https://champsnote.pages.dev/og-banner.png" />
 
     <title>챔스노트 — 포켓몬 챔피언스 배틀 파트너</title>
   </head>

@@ -7,7 +7,9 @@ import Icon, { type IconName } from '@/components/Icon'
 
 const DEV_EMAIL = 'ctkross.dev@gmail.com'
 const BANK_ACCOUNT = '1002-5275-3724'
-const APP_VERSION = '1.0.0'
+// Injected from package.json at build time (see vite.config define).
+declare const __APP_VERSION__: string
+const APP_VERSION = __APP_VERSION__
 
 const THEME_OPTIONS: { value: Theme; icon: IconName; labelKey: string }[] = [
   { value: 'light', icon: 'sun', labelKey: 'settings.themeLight' },

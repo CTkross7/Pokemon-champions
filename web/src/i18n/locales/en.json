@@ -58,7 +58,7 @@
   "home": {
     "badge": "Pokémon Champions · Regulation M-B season",
     "heroTitle": "Every tool you need to win",
-    "heroSubtitle": "Pokédex, damage calculator, and automated team coaching for Pokémon Champions ranked battles — all in one place.",
+    "heroSubtitle": "Pokédex, damage calculator, and automated team coaching for Pokémon Champions ranked battles all in one place.",
     "ctaTeams": "Build a team",
     "ctaCalc": "Damage calculator",
     "features": {
@@ -88,7 +88,7 @@
       },
       "free": {
         "title": "Free to use",
-        "desc": "All core tools work right away — no sign-up required"
+        "desc": "All core tools work right away. No sign-up required"
       },
       "crossPlatform": {
         "title": "Works everywhere",
@@ -107,9 +107,9 @@
     "body": "ChampsNote is a companion toolkit for Pokémon Champions players. Beyond a calculator, it aims to automatically diagnose team weaknesses and assist with live matchups.",
     "roadmapTitle": "Roadmap",
     "dataTitle": "Data & stats sources",
-    "dataBody": "All game data comes only from verifiable official/open sources. No hand-entered guesses; datasets refresh automatically via GitHub Actions to track game updates.",
+    "dataBody": "All game data comes only from verifiable official/open sources, refreshed automatically via GitHub Actions to track game updates.",
     "developer": "Developer",
-    "intro": "ChampsNote is an all-in-one utility for Pokémon Champions ranked battles. From damage calculation to team building, automatic diagnosis & coaching, live matchup analysis, meta statistics and community — every step you need for competitive play, in one place. All game data comes only from verifiable official/open sources and updates automatically as the game changes.",
+    "intro": "ChampsNote is an all-in-one utility for Pokémon Champions ranked battles. From damage calculation to team building, automatic diagnosis & coaching, live matchup analysis, meta statistics and community. Everything you need for competitive play, in one place. All game data comes only from verifiable official/open sources and updates automatically as the game changes.",
     "featuresTitle": "Key features",
     "features": [
       {
@@ -122,11 +122,11 @@
       },
       {
         "t": "Team Builder & Auto Coaching",
-        "d": "Build 6 Pokémon, allocate SP, and get automatic diagnosis of type weaknesses, speed-tier distribution, coverage against top-meta threats and role balance — plus improvement suggestions. Showdown import/export and image-card sharing included."
+        "d": "Build 6 Pokémon, allocate SP, and get automatic diagnosis of type weaknesses, speed-tier distribution, coverage against top-meta threats and role balance, plus improvement suggestions. Showdown import/export and image-card sharing included."
       },
       {
         "t": "Live Matchup Assistant",
-        "d": "Quickly enter the opponent's 6 at the start of a battle and instantly see threat ranking, favorable leads and moves/abilities to watch — relative to your saved team. Designed for a 3-second lookup on mobile."
+        "d": "Quickly enter the opponent's 6 at the start of a battle and instantly see threat ranking, favorable leads and moves/abilities to watch, relative to your saved team. Designed for a 3-second lookup on mobile."
       },
       {
         "t": "Battle Data",
@@ -159,7 +159,7 @@
     "why": [
       {
         "t": "Champions-only data",
-        "d": "Only Pokémon, Megas and moves that truly exist in Champions — no mixing in other generations or games."
+        "d": "Only Pokémon, Megas and moves that truly exist in Champions, with no mixing in other generations or games."
       },
       {
         "t": "Diagnosis, not just math",
@@ -171,7 +171,7 @@
       },
       {
         "t": "Verified data, auto-updated",
-        "d": "No guessed values — official/open sources only, kept current by a weekly automated pipeline."
+        "d": "Official/open sources only, kept current by a weekly automated pipeline."
       }
     ],
     "howTitle": "How to use it",
@@ -198,7 +198,7 @@
       }
     ],
     "updateTitle": "Data update policy",
-    "updateBody": "Pokémon/move/ability/item data come from PokéAPI and Pokémon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokémon or balance changes with no manual work. Unverified values are never shown."
+    "updateBody": "Pokémon/move/ability/item data come from PokéAPI and Pokémon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokémon or balance changes automatically."
   },
   "common": {
     "underConstruction": "This feature is under construction.",
@@ -508,7 +508,7 @@
     "backendPending": "The account server (login/sync) activates when the backend is deployed. For now, username preview and format checks work.",
     "demoNote": "Note: without a backend, the account is stored only on this device.",
     "continueDemo": "Continue with username (demo)",
-    "subtitle2": "No separate sign-up — start right away with your Google account.",
+    "subtitle2": "No separate sign-up. Start right away with your Google account.",
     "privacyNote": "By signing in you agree to the Terms of Service and Privacy Policy.",
     "gateTitle": "Sign-in required",
     "gateBody": "Building/saving teams and community actions (upload, like, report) require signing in.",
