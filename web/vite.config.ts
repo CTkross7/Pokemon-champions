@@ -15,6 +15,19 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    // Emit /version.json carrying the deployed version so a long-lived tab can
+    // detect that a newer build shipped (see src/lib/version.ts).
+    {
+      name: 'emit-version-json',
+      apply: 'build',
+      generateBundle() {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'version.json',
+          source: JSON.stringify({ version: pkg.version, builtAt: Date.now() }),
+        })
+      },
+    },
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],

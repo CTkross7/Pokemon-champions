@@ -106,6 +106,7 @@ const PATHS = {
       <path d="M10 19a2 2 0 0 0 4 0" />
     </>
   ),
+  x: <path d="M6 6l12 12M18 6 6 18" />,
   mail: (
     <>
       <rect x="3" y="5" width="18" height="14" rx="2.5" />

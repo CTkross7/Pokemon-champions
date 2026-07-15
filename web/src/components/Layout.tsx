@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useSettings } from '@/store/settings'
 import { useTeams } from '@/store/teams'
 import { useAuth } from '@/lib/auth'
+import { useAnnounce, unreadNotices } from '@/store/announce'
 import Icon, { type IconName } from '@/components/Icon'
 import Logo from '@/components/Logo'
 import AdSlot from '@/components/AdSlot'
+import UpdateBanner from '@/components/UpdateBanner'
+import AnnouncePopup from '@/components/AnnouncePopup'
 import { AD_BANNER_SLOT } from '@/lib/ads'
 
 const prefersDark = () =>
@@ -92,10 +95,29 @@ export default function Layout() {
   const user = useAuth((s) => s.user)
   const [moreOpen, setMoreOpen] = useState(false)
 
+  // Unread-notice badge: only for signed-in users (guests never see the dot /
+  // popup, to keep the logged-out path error-free).
+  const notices = useAnnounce((s) => s.notices)
+  const lastReadNoticeAt = useAnnounce((s) => s.lastReadNoticeAt)
+  const refreshNotices = useAnnounce((s) => s.refresh)
+  const markNoticesRead = useAnnounce((s) => s.markRead)
+  const hasUnread = Boolean(user) && unreadNotices({ notices, lastReadNoticeAt }).length > 0
+
   // Resolve the current session (or fall back to a persisted local account).
   useEffect(() => {
     void initAuth()
   }, [initAuth])
+
+  // Pull the notice board once on mount so the dot / popup can evaluate.
+  useEffect(() => {
+    void refreshNotices()
+  }, [refreshNotices])
+
+  // Opening the notices tab clears the unread marker (they've now seen them).
+  // Refresh first so a notice posted after mount is still counted as read.
+  useEffect(() => {
+    if (location.pathname === '/notices') void refreshNotices().then(markNoticesRead)
+  }, [location.pathname, refreshNotices, markNoticesRead])
 
   // Once signed in, merge cloud-saved teams so a fresh device / re-login keeps
   // everything the user built.
@@ -142,7 +164,7 @@ export default function Layout() {
                 end={item.end}
                 className={({ isActive }) =>
                   [
-                    'rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
+                    'relative rounded-full px-4 py-1.5 text-sm font-semibold transition-colors',
                     isActive
                       ? 'bg-volt-400 text-black shadow-soft dark:bg-volt-400 dark:text-black'
                       : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white',
@@ -150,6 +172,9 @@ export default function Layout() {
                 }
               >
                 {t(item.key)}
+                {item.to === '/notices' && hasUnread && (
+                  <span className="absolute top-1 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-surface-dark" />
+                )}
               </NavLink>
             ))}
           </nav>
@@ -198,8 +223,17 @@ export default function Layout() {
 
       {/* Mobile "더보기" sheet — profile + settings + secondary destinations */}
       {moreOpen && (
-        <MoreSheet onClose={() => setMoreOpen(false)} loggedIn={Boolean(user)} isAdmin={Boolean(user?.isAdmin)} />
+        <MoreSheet
+          onClose={() => setMoreOpen(false)}
+          loggedIn={Boolean(user)}
+          isAdmin={Boolean(user?.isAdmin)}
+          noticeUnread={hasUnread}
+        />
       )}
+
+      {/* New-notice / patch-note popup + live app-update prompt */}
+      <AnnouncePopup />
+      <UpdateBanner />
 
       {/* Mobile bottom tab bar (native-app style) */}
       <nav
@@ -239,6 +273,9 @@ export default function Layout() {
             ].join(' ')}
             aria-expanded={moreOpen}
           >
+            {hasUnread && (
+              <span className="absolute top-2 right-1/2 mr-[-14px] h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-surface-dark" />
+            )}
             <Icon name="grid" size={21} />
             {t('nav.more')}
           </button>
@@ -250,7 +287,17 @@ export default function Layout() {
 
 /** Bottom sheet of secondary destinations (mobile). Profile + Settings first,
  *  since those are the shortcuts users reach for most from a tab bar. */
-function MoreSheet({ onClose, loggedIn, isAdmin }: { onClose: () => void; loggedIn: boolean; isAdmin: boolean }) {
+function MoreSheet({
+  onClose,
+  loggedIn,
+  isAdmin,
+  noticeUnread,
+}: {
+  onClose: () => void
+  loggedIn: boolean
+  isAdmin: boolean
+  noticeUnread: boolean
+}) {
   const { t } = useTranslation()
   const items: ReadonlyArray<{ to: string; key: string; icon: IconName }> = [
     { to: loggedIn ? '/profile' : '/login', key: loggedIn ? 'nav.profile' : 'auth.login', icon: 'user' },
@@ -272,8 +319,11 @@ function MoreSheet({ onClose, loggedIn, isAdmin }: { onClose: () => void; logged
               key={item.to}
               to={item.to}
               onClick={onClose}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-200 py-4 text-xs font-bold text-zinc-600 transition-colors hover:border-volt-500 hover:text-volt-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-volt-400/60 dark:hover:text-volt-300"
+              className="relative flex flex-col items-center gap-2 rounded-2xl border border-zinc-200 py-4 text-xs font-bold text-zinc-600 transition-colors hover:border-volt-500 hover:text-volt-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-volt-400/60 dark:hover:text-volt-300"
             >
+              {item.to === '/notices' && noticeUnread && (
+                <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-red-500" />
+              )}
               <Icon name={item.icon} size={22} />
               {t(item.key)}
             </Link>

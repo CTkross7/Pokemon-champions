@@ -573,6 +573,19 @@
     "needBackend": "아직 등록된 공지가 없습니다.",
     "postFail": "등록에 실패했습니다. 관리자 권한·로그인 상태를 확인하세요."
   },
+  "announce": {
+    "title": "새 소식",
+    "subtitle": "읽지 않은 소식 {{count}}건",
+    "more": "외 {{count}}건 더",
+    "dontShowToday": "오늘 하루 보지 않기",
+    "confirm": "확인"
+  },
+  "update": {
+    "title": "새로운 버전 준비 완료",
+    "body": "최신 기능·수정 사항 반영을 위한 업데이트",
+    "apply": "지금 업데이트",
+    "applying": "적용 중…"
+  },
   "shareImage": {
     "asImage": "이미지로 보기",
     "building": "생성 중…",

@@ -62,6 +62,18 @@ function scheduleCloudPush(getTeams: () => Team[]) {
   }, 1200)
 }
 
+/**
+ * Immediately flush any pending debounced cloud save. Called right before an
+ * app-update reload so in-flight edits aren't lost when the tab reloads.
+ * Returns a promise that resolves once the save request settles.
+ */
+export async function flushCloudPush(): Promise<void> {
+  if (!pushTimer) return
+  clearTimeout(pushTimer)
+  pushTimer = null
+  await pushCloudTeams(useTeams.getState().teams)
+}
+
 export const useTeams = create<TeamsState>()(
   persist(
     (set, get) => {

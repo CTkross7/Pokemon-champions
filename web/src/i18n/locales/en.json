@@ -573,6 +573,19 @@
     "needBackend": "No announcements yet.",
     "postFail": "Failed to post. Check your admin permission and login."
   },
+  "announce": {
+    "title": "What's new",
+    "subtitle": "{{count}} unread",
+    "more": "+{{count}} more",
+    "dontShowToday": "Don't show again today",
+    "confirm": "Got it"
+  },
+  "update": {
+    "title": "A new version is ready",
+    "body": "Reload to get the latest features and fixes.",
+    "apply": "Update now",
+    "applying": "Applying…"
+  },
   "shareImage": {
     "asImage": "View as image",
     "building": "Building…",
