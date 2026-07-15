@@ -387,3 +387,12 @@
 - ✅ **전체 파이프라인 라이브 실행**: ko-names→roster→learnsets→moves→build→items→usage→validate 전 단계 실행 성공. 커밋 데이터가 라이브 소스와 이미 동일(드리프트 0)
 - ✅ **검증 5종 가드 통과** 포함 Champions 합법성 가드(310종·합법 500기·밴 203 제외)
 - ✅ 문서화: DataSources 페이지·DATA_SOURCES.md에 크롤 URL·검증·주간 자동갱신 명시(한/영)
+
+## Phase 14.0 — 파티 관리·클라우드 저장·홈 로그인 UI (v1.5.0, 2026-07-14, 사용자 요청)
+- ✅ **팀/파티 삭제(삭제 전 확인)**: 기존 confirm 유지 확인
+- ✅ **파티 이름·설명(실시간 저장)**: Team에 description 필드 + 팀 헤더에 이름/설명 입력(입력 즉시 store 반영·클라우드 debounce 저장)
+- ✅ **클라우드 저장(로그아웃/재로그인/기기 간 유지)**: user_teams(D1) 테이블 + `/api/data/teams` GET/PUT(로그인 필수). 팀 변경 시 debounce push, 로그인 시 cloud와 union 병합(최신 updatedAt 우선). 로컬 D1로 PUT/GET·401·병합 검증
+- ✅ **커뮤니티에 파티명·소개 표시**: samples.description 컬럼 + 발행 시 파티 설명 전송 + 갤러리 카드에 2줄 표시
+- ✅ **홈 최상단 로그인/회원가입 UI**: 미로그인 시 안내+로그인·회원가입 버튼, 로그인 시 인사+아바타. **소개/프로필/설정 바로가기 칩** 추가
+- ✅ **버전 자동 상승 지침 반영**: package.json 1.4.0→**1.5.0**(설정›정보 자동 반영)
+- 검증: 빌드·린트·E2E(export 타깃 수정)·로컬 D1 전수 ✅
