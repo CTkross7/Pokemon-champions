@@ -18,7 +18,7 @@ const NAV_ITEMS: ReadonlyArray<{ to: string; key: string; icon: IconName; end?: 
   { to: '/calculator', key: 'nav.calculator', icon: 'calc', tab: true },
   { to: '/teams', key: 'nav.teams', icon: 'users', tab: true },
   { to: '/matchup', key: 'nav.matchup', icon: 'zap', tab: true },
-  { to: '/gallery', key: 'nav.gallery', icon: 'sparkles', tab: false },
+  { to: '/gallery', key: 'nav.gallery', icon: 'sparkles', tab: true },
   { to: '/notices', key: 'nav.notices', icon: 'bell', tab: false },
   { to: '/about', key: 'nav.about', icon: 'info', tab: false },
 ]
@@ -206,7 +206,7 @@ export default function Layout() {
         className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden dark:border-white/8 dark:bg-surface-dark"
         aria-label="mobile"
       >
-        <div className="grid grid-cols-6">
+        <div className="grid" style={{ gridTemplateColumns: `repeat(${TAB_ITEMS.length + 1}, minmax(0, 1fr))` }}>
           {TAB_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -256,7 +256,6 @@ function MoreSheet({ onClose, loggedIn, isAdmin }: { onClose: () => void; logged
     { to: loggedIn ? '/profile' : '/login', key: loggedIn ? 'nav.profile' : 'auth.login', icon: 'user' },
     { to: '/settings', key: 'nav.settings', icon: 'settings' },
     { to: '/stats', key: 'nav.stats', icon: 'chart' },
-    { to: '/gallery', key: 'nav.gallery', icon: 'sparkles' },
     { to: '/notices', key: 'nav.notices', icon: 'bell' },
     { to: '/about', key: 'nav.about', icon: 'info' },
     // Admin dashboard only surfaces for verified admins (ADMIN_USERNAMES).
