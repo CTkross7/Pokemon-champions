@@ -32,6 +32,10 @@
     "gallery": "Comm.",
     "more": "More"
   },
+  "picker": {
+    "typeFilter": "Filter by type (forgot the name? · multi-select)",
+    "clear": "Clear"
+  },
   "settings": {
     "language": "Language",
     "theme": "Theme",

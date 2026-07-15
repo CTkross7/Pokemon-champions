@@ -32,6 +32,10 @@
     "gallery": "커뮤니티",
     "more": "더보기"
   },
+  "picker": {
+    "typeFilter": "타입 필터 (이름이 안 떠오를 때 · 다중 선택)",
+    "clear": "초기화"
+  },
   "settings": {
     "language": "언어",
     "theme": "테마",

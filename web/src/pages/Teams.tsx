@@ -491,6 +491,7 @@ export default function Teams() {
                   <SpeciesPicker
                     value={null}
                     championsFirst
+                    typeFilter
                     placeholder={t('teams.addMon')}
                     onChange={(s) => {
                       setMon(active.id, slot, { ...emptyMon(s.id), ability: s.abilities[0]?.name ?? '' })

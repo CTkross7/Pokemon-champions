@@ -100,7 +100,9 @@ export default function Matchup() {
             ))}
           </div>
         )}
-        {opponents.length < 6 && <SpeciesPicker value={null} placeholder={t('matchup.addOpponent')} onChange={addOpponent} />}
+        {opponents.length < 6 && (
+          <SpeciesPicker value={null} placeholder={t('matchup.addOpponent')} onChange={addOpponent} typeFilter championsFirst />
+        )}
       </div>
 
       {report && (
