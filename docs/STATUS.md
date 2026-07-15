@@ -465,3 +465,13 @@
 - ✅ **수정**: 슬롯 그리드에 items-start 추가 → 각 카드가 자기 콘텐츠 높이만큼만 차지, 펼친 카드가 형제 카드를 늘리지 않음
 - ✅ 버전 1.6.6→**1.6.7**
 - 검증: 빌드·lint ✅ (CSS 표준 동작 — 확정적 수정)
+
+## Phase 15.0 — 안드로이드 런처 앱 (Capacitor + AdMob) 재개·완성 (v1.6.8, 2026-07-15, 사용자 요청)
+- ✅ **Capacitor 런처 셸**: app/capacitor.config.ts — appId dev.champsnote.app, appName 챔스노트, server.url=champsnote.pages.dev(라이브 사이트 로드→웹 배포 시 앱 자동 최신), appendUserAgent 'ChampsNoteApp'
+- ✅ **네이티브 안드로이드 프로젝트 생성**: `cap add android` 성공 → app/android/ 커밋(53파일). AndroidManifest에 AdMob App ID(테스트) + AD_ID 권한 추가, app_name 챔스노트, versionName 1.6.8
+- ✅ **AdMob 연동(웹-Capacitor aware)**: web/src/lib/appAds.ts — 앱 안(isInApp)에서만 @capacitor-community/admob 동적 로드해 적응형 하단 배너 + N회 내비게이션마다 전면 광고. 웹 AdSense는 앱에서 자동 비활성(기존 ads.ts). 광고 단위는 구글 테스트 ID 기본(환경변수로 실 ID 주입)
+- ✅ **배너 공간 확보**: main.tsx가 앱이면 html.champs-in-app 클래스 추가, index.css가 하단 탭바를 배너 높이만큼 올리고 본문 하단 패딩 확보. appAds 청크는 앱에서만 로드(웹 번들 영향 0)
+- ✅ **폴백 화면**: app/www/index.html(로딩·오프라인 브랜드 화면). **문서**: app/README.md에 개발/AdMob 설정/서명·릴리스(AAB)·Play 데이터안전·정책 전 과정 기록
+- ⚠️ 샌드박스에 Android SDK 없어 APK 빌드 불가 — 프로젝트·설정 완성, Android Studio 환경에서 빌드하도록 문서화
+- ✅ 버전 web/app **1.6.8** 정렬
+- 검증: 웹 빌드·lint·E2E 전체 통과(appAds 청크 분리 확인)·cap add android 성공 ✅

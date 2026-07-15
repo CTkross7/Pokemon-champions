@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>챔스노트</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        background: #050505;
+        color: #e6e9ee;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .wrap {
+        height: 100%;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 24px;
+      }
+      .logo {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: #d0f224;
+        color: #050505;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        font-size: 26px;
+        margin: 0 auto 18px;
+      }
+      h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px; }
+      p { font-size: 13px; color: #9aa1ab; margin: 0 0 20px; line-height: 1.6; }
+      .retry {
+        display: inline-block;
+        background: #d0f224;
+        color: #050505;
+        font-weight: 800;
+        font-size: 14px;
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 24px;
+      }
+      .spin {
+        width: 22px; height: 22px; margin: 0 auto;
+        border: 3px solid rgba(255,255,255,.15);
+        border-top-color: #d0f224;
+        border-radius: 50%;
+        animation: r .8s linear infinite;
+      }
+      @keyframes r { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <!--
+      Fallback / first-paint screen. Capacitor loads the live site via
+      server.url; this shows only during launch or when the device is offline.
+    -->
+    <div class="wrap">
+      <div>
+        <div class="logo">CN</div>
+        <h1>챔스노트</h1>
+        <div id="loading">
+          <div class="spin"></div>
+        </div>
+        <div id="offline" style="display:none">
+          <p>네트워크 연결을 확인해 주세요.<br />연결되면 최신 정보를 불러옵니다.</p>
+          <button class="retry" onclick="location.reload()">다시 시도</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      // If the remote site hasn't taken over shortly, assume offline.
+      setTimeout(function () {
+        if (!navigator.onLine) {
+          document.getElementById('loading').style.display = 'none'
+          document.getElementById('offline').style.display = 'block'
+        }
+      }, 2500)
+    </script>
+  </body>
+</html>

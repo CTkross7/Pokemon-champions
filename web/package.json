@@ -1,7 +1,7 @@
 {
   "name": "web",
   "private": true,
-  "version": "1.6.7",
+  "version": "1.6.8",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,6 +13,8 @@
     "deploy": "npm run build && cd .. && npx wrangler deploy"
   },
   "dependencies": {
+    "@capacitor-community/admob": "^6.2.0",
+    "@capacitor/core": "^6.2.1",
     "@pkmn/dex": "^0.10.11",
     "@smogon/calc": "^0.11.0",
     "@tailwindcss/vite": "^4.3.2",

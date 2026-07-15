@@ -93,3 +93,16 @@ body {
 @utility card {
   @apply rounded-2xl border border-zinc-200/80 bg-white shadow-soft dark:border-white/8 dark:bg-card-dark;
 }
+
+/* Android launcher: reserve space for the native AdMob bottom banner so it
+   never covers the mobile tab bar or page content. Height is a safe default
+   for an adaptive banner; tune if the on-device banner differs. */
+html.champs-in-app {
+  --champs-ad-h: 58px;
+}
+html.champs-in-app .champs-bottom-nav {
+  bottom: calc(var(--champs-ad-h) + env(safe-area-inset-bottom));
+}
+html.champs-in-app main {
+  padding-bottom: calc(7rem + var(--champs-ad-h));
+}

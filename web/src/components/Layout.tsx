@@ -10,7 +10,7 @@ import Logo from '@/components/Logo'
 import AdSlot from '@/components/AdSlot'
 import UpdateBanner from '@/components/UpdateBanner'
 import AnnouncePopup from '@/components/AnnouncePopup'
-import { AD_BANNER_SLOT } from '@/lib/ads'
+import { AD_BANNER_SLOT, isInApp } from '@/lib/ads'
 
 const prefersDark = () =>
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches
@@ -134,6 +134,9 @@ export default function Layout() {
   // after scrolling leaves the new page scrolled down to the old offset.
   useEffect(() => {
     window.scrollTo(0, 0)
+    // In the Android app only, occasionally show a native interstitial on nav.
+    // Guarded by isInApp so the plain website never fetches the AdMob chunk.
+    if (isInApp()) void import('@/lib/appAds').then((m) => m.maybeShowInterstitial())
   }, [location.pathname])
 
   // Per-route document title for SEO / shareable tabs.
@@ -237,7 +240,7 @@ export default function Layout() {
 
       {/* Mobile bottom tab bar (native-app style) */}
       <nav
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden dark:border-white/8 dark:bg-surface-dark"
+        className="champs-bottom-nav fixed inset-x-0 bottom-0 z-40 border-t border-zinc-200/70 bg-white pb-[env(safe-area-inset-bottom)] lg:hidden dark:border-white/8 dark:bg-surface-dark"
         aria-label="mobile"
       >
         <div className="grid" style={{ gridTemplateColumns: `repeat(${TAB_ITEMS.length + 1}, minmax(0, 1fr))` }}>

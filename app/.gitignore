@@ -1,0 +1,13 @@
+# Capacitor launcher — ignore installed deps and native build output.
+node_modules/
+*.log
+
+# Android build artifacts (the android/ project itself IS committed).
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/
+android/local.properties
+android/.idea/
+*.keystore
+*.jks
