@@ -41,19 +41,32 @@ function MonEditor({
   const { t, i18n } = useTranslation()
   const abilities = species.abilities
   const moveOptions = useMemo(() => {
+    const myTypes = new Set(species.types)
     const ids = learnsets[species.id] ?? []
+    // Verified Champions movepool, ordered for team-building: damaging moves
+    // before status, STAB before off-type, then by power. (The old type-
+    // alphabetical order + a 30-move cap hid signature moves — e.g. a Fire
+    // Pokemon's Fire moves fell past the cutoff and looked "missing".)
     return ids
       .map((id) => ({ id, move: moves[id] }))
       .filter((x) => x.move)
-      .sort((a, b) => a.move.type.localeCompare(b.move.type) || b.move.basePower - a.move.basePower)
+      .sort((a, b) => {
+        const ad = a.move.basePower > 0 ? 1 : 0
+        const bd = b.move.basePower > 0 ? 1 : 0
+        if (ad !== bd) return bd - ad
+        const as = myTypes.has(a.move.type) ? 1 : 0
+        const bs = myTypes.has(b.move.type) ? 1 : 0
+        if (as !== bs) return bs - as
+        if (b.move.basePower !== a.move.basePower) return b.move.basePower - a.move.basePower
+        return a.move.name.localeCompare(b.move.name)
+      })
   }, [species, moves, learnsets])
   const [moveQuery, setMoveQuery] = useState('')
-  const filteredMoves = moveOptions
-    .filter(({ move }) => {
-      const q = moveQuery.trim().toLowerCase()
-      return !q || move.ko.includes(q) || move.name.toLowerCase().includes(q)
-    })
-    .slice(0, 30)
+  // No cap: the full learnable set is scrollable so every legal move is reachable.
+  const filteredMoves = moveOptions.filter(({ move }) => {
+    const q = moveQuery.trim().toLowerCase()
+    return !q || move.ko.includes(q) || move.name.toLowerCase().includes(q)
+  })
 
   const toggleMove = (id: string) =>
     onChange({
@@ -104,6 +117,7 @@ function MonEditor({
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600">
             {t('teams.moves')} {mon.moves.length}/4
+            <span className="ml-1 font-semibold text-zinc-300 dark:text-zinc-600">· {moveOptions.length}</span>
           </span>
         </div>
         <input
@@ -113,7 +127,7 @@ function MonEditor({
           placeholder={t('teams.searchMove')}
           className="mt-1.5 h-8 w-full rounded-lg border border-zinc-200 bg-white px-2.5 text-xs outline-none focus:border-volt-500 dark:border-white/10 dark:bg-black/40 dark:focus:border-volt-400"
         />
-        <div className="mt-2 flex max-h-40 flex-wrap gap-1 overflow-y-auto">
+        <div className="mt-2 flex max-h-56 flex-wrap gap-1 overflow-y-auto">
           {filteredMoves.map(({ id, move }) => {
             const active = mon.moves.includes(id)
             return (

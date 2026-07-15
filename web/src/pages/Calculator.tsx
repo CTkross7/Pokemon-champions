@@ -170,11 +170,19 @@ export default function Calculator() {
 
   const attackerMoves = useMemo(() => {
     if (!attacker.species || !moves || !learnsets) return []
+    const myTypes = new Set(attacker.species.types)
     const ids = learnsets[attacker.species.id] ?? []
+    // STAB first, then by power — surfaces the moves that matter for calcs.
     return ids
       .map((id) => ({ id, move: moves[id] }))
       .filter((x) => x.move && x.move.category !== 'Status' && x.move.basePower > 0)
-      .sort((a, b) => a.move.type.localeCompare(b.move.type) || b.move.basePower - a.move.basePower)
+      .sort((a, b) => {
+        const as = myTypes.has(a.move.type) ? 1 : 0
+        const bs = myTypes.has(b.move.type) ? 1 : 0
+        if (as !== bs) return bs - as
+        if (b.move.basePower !== a.move.basePower) return b.move.basePower - a.move.basePower
+        return a.move.name.localeCompare(b.move.name)
+      })
   }, [attacker.species, moves, learnsets])
 
   const results = useMemo(() => {
