@@ -36,6 +36,17 @@
     "typeFilter": "Filter by type (forgot the name? · multi-select)",
     "clear": "Clear"
   },
+  "recommend": {
+    "title": "Recommended members",
+    "subtitle": "Pokemon worth adding based on your team's weaknesses, threat coverage, and real co-usage. Tap to add to an empty slot.",
+    "reason": {
+      "synergy": "Used with {{name}} · #{{rank}}",
+      "weakness": "Patches a team weakness",
+      "threat": "Answers an unhandled threat",
+      "coverage": "Adds missing coverage",
+      "meta": "Top meta pick"
+    }
+  },
   "settings": {
     "language": "Language",
     "theme": "Theme",
@@ -400,6 +411,9 @@
     "opponent": "Opponent",
     "addOpponent": "Add opponent Pokemon",
     "leads": "Recommended leads",
+    "favTitle": "Estimated advantage",
+    "favNote": "Type-based estimate (not a real win rate). For reference only.",
+    "topPick": "Top pick",
     "leadsNote": "Ordered by favorable offense/defense against the opponent.",
     "offDef": "Off {{off}} Def {{def}}",
     "threats": "Threat ranking",

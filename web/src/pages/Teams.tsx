@@ -19,6 +19,7 @@ import Sprite from '@/components/Sprite'
 import TypeBadge from '@/components/TypeBadge'
 import Icon from '@/components/Icon'
 import TeamCoach from '@/components/TeamCoach'
+import MemberRecs from '@/components/MemberRecs'
 import type { ResolvedMon } from '@/lib/coach'
 
 const selectClass =
@@ -536,6 +537,25 @@ export default function Teams() {
       {/* Auto-diagnosis & coaching (killer feature) */}
       {resolvedTeam.length > 0 && moves && (
         <TeamCoach team={resolvedTeam} moves={moves} metaRoster={metaRoster} />
+      )}
+
+      {/* Team-completion recommender — which Pokemon to add to patch holes. */}
+      {active && pokedex && moves && resolvedTeam.length > 0 && (
+        <MemberRecs
+          team={resolvedTeam}
+          moves={moves}
+          metaRoster={metaRoster}
+          pokedex={pokedex}
+          usage={usage}
+          speciesById={speciesById}
+          canAdd={active.mons.some((m) => m === null)}
+          onAdd={(s) => {
+            const slot = active.mons.findIndex((m) => m === null)
+            if (slot === -1) return
+            setMon(active.id, slot, { ...emptyMon(s.id), ability: s.abilities[0]?.name ?? '' })
+            setOpenSlot(slot)
+          }}
+        />
       )}
 
       <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('teams.disclaimer')}</p>

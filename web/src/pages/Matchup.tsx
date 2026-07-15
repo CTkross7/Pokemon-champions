@@ -107,6 +107,40 @@ export default function Matchup() {
 
       {report && (
         <>
+          {/* Win estimate + top pick */}
+          <section className="card p-5">
+            <div className="flex items-center gap-4">
+              <div className="relative grid size-20 shrink-0 place-items-center">
+                <svg viewBox="0 0 80 80" className="size-20 -rotate-90">
+                  <circle cx="40" cy="40" r="34" fill="none" strokeWidth="7" className="stroke-zinc-200 dark:stroke-white/10" />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="34"
+                    fill="none"
+                    strokeWidth="7"
+                    strokeLinecap="round"
+                    stroke={report.favorability >= 60 ? '#b8db10' : report.favorability >= 40 ? '#f0c320' : '#ef4444'}
+                    strokeDasharray={2 * Math.PI * 34}
+                    strokeDashoffset={2 * Math.PI * 34 * (1 - report.favorability / 100)}
+                  />
+                </svg>
+                <span className="absolute text-lg font-extrabold tabular-nums">{report.favorability}%</span>
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-[15px] font-bold">{t('matchup.favTitle')}</h2>
+                <p className="mt-0.5 text-[11px] text-zinc-400 dark:text-zinc-600">{t('matchup.favNote')}</p>
+                {report.leads[0] && (
+                  <div className="mt-2 flex items-center gap-2 rounded-xl bg-volt-400/10 p-2">
+                    <span className="text-[10px] font-extrabold text-volt-700 dark:text-volt-300">{t('matchup.topPick')}</span>
+                    <Sprite species={report.leads[0].mon} size={26} />
+                    <span className="text-sm font-bold">{name(report.leads[0].mon)}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
           {/* Recommended leads */}
           <section className="card p-5">
             <h2 className="text-[15px] font-bold">{t('matchup.leads')}</h2>

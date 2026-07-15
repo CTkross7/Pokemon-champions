@@ -42,6 +42,8 @@ export interface MatchupReport {
   leads: LeadRec[]
   threats: ThreatRank[]
   answers: OpponentAnswer[]
+  /** Heuristic favourability 0-100 (50 = even). Type-based estimate, NOT a real win rate. */
+  favorability: number
 }
 
 function resists(defender: Species, attacker: Species): boolean {
@@ -80,7 +82,20 @@ export function analyzeMatchup(myTeam: Species[], opponents: Species[]): Matchup
     return { opponent: opp, answers: list, uncovered: list.length === 0 }
   })
 
-  return { leads, threats, answers }
+  // Heuristic favourability (type matchups only): start even (50), reward broad
+  // answer coverage and super-effective picks, penalise how hard the opponents
+  // pressure the team. Deliberately labelled as an estimate in the UI — it's a
+  // planning aid, not a real win probability.
+  const n = Math.max(1, opponents.length)
+  const covered = answers.filter((a) => !a.uncovered).length / n
+  const avgOffense = leads.reduce((s, l) => s + l.offense, 0) / (leads.length || 1) / n
+  const avgThreat = threats.reduce((s, tr) => s + tr.pressures, 0) / n / Math.max(1, myTeam.length)
+  const favorability = Math.max(
+    3,
+    Math.min(97, Math.round(50 + covered * 30 + avgOffense * 22 - avgThreat * 34)),
+  )
+
+  return { leads, threats, answers, favorability }
 }
 
 function rank(kind: 'offensive' | 'defensive' | 'both'): number {

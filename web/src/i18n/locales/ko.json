@@ -36,6 +36,17 @@
     "typeFilter": "타입 필터 (이름이 안 떠오를 때 · 다중 선택)",
     "clear": "초기화"
   },
+  "recommend": {
+    "title": "추천 멤버",
+    "subtitle": "현재 팀의 약점·위협 대응과 실전 조합을 기준으로 추가하면 좋은 포켓몬. 눌러서 빈 슬롯에 추가.",
+    "reason": {
+      "synergy": "{{name}}와 함께 사용 {{rank}}위",
+      "weakness": "팀 약점을 보완하는 상성 조합",
+      "threat": "미대응 위협에 대응 가능",
+      "coverage": "부족한 공격 범위 보완",
+      "meta": "메타 상위 포켓몬"
+    }
+  },
   "settings": {
     "language": "언어",
     "theme": "테마",
@@ -400,6 +411,9 @@
     "opponent": "상대 포켓몬",
     "addOpponent": "상대 포켓몬 추가",
     "leads": "추천 선출",
+    "favTitle": "예상 우세도",
+    "favNote": "타입 상성 기반 추정치입니다(실제 승률 아님). 참고용.",
+    "topPick": "추천 선봉",
     "leadsNote": "상대 팀 기준 공격·방어 상성이 유리한 순서입니다.",
     "offDef": "공{{off}} 방{{def}}",
     "threats": "위협도 순위",
