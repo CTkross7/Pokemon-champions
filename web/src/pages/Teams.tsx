@@ -443,8 +443,9 @@ export default function Teams() {
         </div>
       )}
 
-      {/* Slots */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Slots — items-start so an expanded card doesn't stretch its row-mates
+          to the same (tall) height, leaving empty gaps in collapsed slots. */}
+      <div className="grid grid-cols-1 items-start gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {active.mons.map((mon, slot) => {
           const species = mon ? speciesById.get(mon.speciesId) : null
           const isOpen = openSlot === slot
