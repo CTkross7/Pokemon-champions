@@ -1,12 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, startGoogleLogin, signupEmail, loginEmail, isValidUsername } from '@/lib/auth'
+import { detectInAppBrowser, openInExternalBrowser, isIOS } from '@/lib/inAppBrowser'
 
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { user, providers, init } = useAuth()
+  // Google OAuth is blocked inside in-app browsers (disallowed_useragent).
+  const inApp = useMemo(() => detectInAppBrowser(), [])
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [email, setEmail] = useState('')
   const [id, setId] = useState('')
@@ -52,17 +55,50 @@ export default function Login() {
         <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{t('auth.subtitle')}</p>
       </div>
 
+      {/* In-app browser (KakaoTalk/Instagram/…) blocks Google login. */}
+      {inApp.isInApp && (
+        <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-[13px] leading-relaxed dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="font-bold text-amber-700 dark:text-amber-300">
+            {t('auth.inAppTitle', { name: inApp.name })}
+          </p>
+          <p className="mt-1 text-amber-700/90 dark:text-amber-200/80">{t('auth.inAppBody')}</p>
+          <button
+            type="button"
+            onClick={() => {
+              if (!openInExternalBrowser()) alert(t('auth.inAppManual'))
+            }}
+            className="mt-2.5 w-full rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-amber-600"
+          >
+            {t('auth.openExternal')}
+          </button>
+          {isIOS() && (
+            <p className="mt-2 text-[11px] text-amber-700/80 dark:text-amber-200/70">{t('auth.inAppIosHint')}</p>
+          )}
+        </div>
+      )}
+
       <div className="card space-y-4 p-6">
         <button
           type="button"
           disabled={!googleOn}
-          onClick={startGoogleLogin}
+          onClick={() => {
+            // In an in-app browser, sending them to Google → disallowed_useragent.
+            // Bounce to the system browser (or show manual guidance) instead.
+            if (inApp.isInApp) {
+              if (!openInExternalBrowser()) alert(t('auth.inAppManual'))
+              return
+            }
+            startGoogleLogin()
+          }}
           className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-800 transition-colors enabled:hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-white"
         >
           <GoogleMark />
           {t('auth.google')}
         </button>
         {!googleOn && <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>}
+        {inApp.isInApp && googleOn && (
+          <p className="text-center text-[11px] font-semibold text-amber-600 dark:text-amber-400">{t('auth.inAppEmailHint')}</p>
+        )}
 
         <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-300 dark:text-zinc-700">
           <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />

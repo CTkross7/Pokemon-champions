@@ -483,3 +483,11 @@
 - ✅ **설정 파일**: web/.env.example(AdSense·AdMob 전 변수), web/public/app-ads.txt(무효 트래픽 방지, 퍼블리셔 확인 주석)
 - ✅ 버전 web **1.6.9**
 - 검증: 웹 빌드·lint·E2E ✅ (UMP 동의 API 타입 일치 확인)
+
+## Phase 15.2 — 인앱 브라우저 구글 로그인 차단(disallowed_useragent) 해결 (v1.7.0, 2026-07-15, 사용자 요청)
+- ✅ **원인**: 카카오톡·인스타그램 등 인앱 브라우저(WebView)에서 구글 OAuth가 '보안 브라우저' 정책으로 차단(403 disallowed_useragent)
+- ✅ **해결**: web/src/lib/inAppBrowser.ts 신설 — KakaoTalk/LINE/Instagram/Facebook/Naver/Daum/BAND/Everytime 및 자체 앱(ChampsNoteApp) UA 감지. `openInExternalBrowser()`로 기본 브라우저 탈출(카톡=openExternal 스킴, LINE=openExternalBrowser=1, Android=Chrome intent, iOS=수동 안내)
+- ✅ **로그인 화면**: 인앱 감지 시 경고 배너 + '기본 브라우저로 열기' 버튼, 구글 버튼도 인앱이면 외부 브라우저로 우회(그냥 누르면 403). 인앱에서도 되는 **이메일 로그인**을 대안으로 강조
+- ✅ i18n(ko/en) auth.inApp* 키 추가. 앱(WebView)은 구글=외부브라우저 우회 or 이메일 로그인 권장(완전한 네이티브 구글 로그인은 후속 과제)
+- ✅ 버전 1.6.9→**1.7.0**
+- 검증: 빌드·lint·E2E·KakaoTalk UA 프리뷰 스크린샷(배너·버튼 노출) ✅
