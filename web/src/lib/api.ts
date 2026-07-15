@@ -11,6 +11,7 @@ export interface SampleMeta {
   likes: number
   views: number
   regulation?: string | null
+  description?: string | null
   comments?: number
   owner_id?: string | null
   created_at: number
@@ -53,7 +54,13 @@ export const getSample = (id: string) => call<{ sample: SampleFull }>(`/samples/
 export const likeSample = (id: string) =>
   call<{ likes: number }>(`/samples/${id}/like`, { method: 'POST' })
 
-export const createSample = (payload: { title: string; author: string; team: string; regulation?: string | null }) =>
+export const createSample = (payload: {
+  title: string
+  author: string
+  team: string
+  regulation?: string | null
+  description?: string | null
+}) =>
   call<{ id: string }>('/samples', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },

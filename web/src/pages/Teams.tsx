@@ -149,7 +149,7 @@ function MonEditor({
 
 export default function Teams() {
   const { t, i18n } = useTranslation()
-  const { teams, activeId, createTeam, deleteTeam, renameTeam, setActive, setMon, importTeam: importToStore } =
+  const { teams, activeId, createTeam, deleteTeam, renameTeam, setDescription, setActive, setMon, importTeam: importToStore } =
     useTeams()
   const user = useAuth((s) => s.user)
   const [pokedex, setPokedex] = useState<Species[] | null>(null)
@@ -284,11 +284,21 @@ export default function Teams() {
 
       {/* Team header: name stays inline; primary actions drop to a thumb-reach
           bottom bar on mobile, stay inline on desktop (MobileActionBar). */}
-      <div className="flex items-center gap-2">
+      <div className="space-y-1.5">
         <input
           value={active.name}
           onChange={(e) => renameTeam(active.id, e.target.value)}
-          className="min-w-0 flex-1 rounded-lg border border-transparent bg-transparent px-1 text-lg font-extrabold outline-none focus:border-zinc-200 dark:focus:border-white/10"
+          maxLength={40}
+          placeholder={t('teams.namePlaceholder')}
+          className="w-full rounded-lg border border-transparent bg-transparent px-1 text-lg font-extrabold outline-none focus:border-zinc-200 dark:focus:border-white/10"
+        />
+        <textarea
+          value={active.description ?? ''}
+          onChange={(e) => setDescription(active.id, e.target.value.slice(0, 500))}
+          maxLength={500}
+          rows={2}
+          placeholder={t('teams.descPlaceholder')}
+          className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-2.5 py-2 text-[13px] leading-relaxed outline-none focus:border-volt-500 dark:border-white/10 dark:bg-white/5"
         />
       </div>
 
@@ -331,6 +341,7 @@ export default function Teams() {
               author: user?.displayName ?? '',
               team: encodeTeam(active),
               regulation: reg?.regulation ?? null,
+              description: active.description ?? null,
             })
             setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
             setTimeout(() => setShareMsg(''), 4000)

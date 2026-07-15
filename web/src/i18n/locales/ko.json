@@ -100,7 +100,10 @@
     "metaSub": "{{month}} 랭크배틀 사용률 상위",
     "metaFallback": "경쟁 환경 상위 채용 포켓몬",
     "noticesTitle": "최근 소식",
-    "viewAll": "전체 보기"
+    "viewAll": "전체 보기",
+    "hello": "{{name}}님",
+    "authTitle": "로그인하고 내 팀을 저장하세요",
+    "authBody": "팀 편성·설명·설정이 계정에 저장되어 다른 기기에서도 이어집니다."
   },
   "about": {
     "title": "챔스노트 소개",
@@ -337,7 +340,9 @@
     "publishAuthor": "작성자 이름을 입력하세요 (비우면 익명)",
     "publishing": "공개 중...",
     "published": "커뮤니티에 공개되었습니다 ✓",
-    "publishUnavailable": "갤러리 백엔드가 아직 설정되지 않았습니다"
+    "publishUnavailable": "갤러리 백엔드가 아직 설정되지 않았습니다",
+    "namePlaceholder": "파티 이름",
+    "descPlaceholder": "파티 소개·운영법을 적어보세요 (커뮤니티 공유 시 함께 표시됩니다)"
   },
   "coach": {
     "title": "팀 자동 진단",

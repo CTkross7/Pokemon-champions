@@ -165,7 +165,9 @@ try {
     check(`[${viewport.tag}] team coach report renders`, await eventually(page.getByText(/Auto-Diagnosis|자동 진단/)))
     check(`[${viewport.tag}] coach meta threats`, await eventually(page.getByText(/Meta threat coverage|메타 위협 대응/)))
     await page.getByRole('button', { name: /^Export|내보내기/ }).first().click()
-    const exportBox = page.locator('textarea')
+    // The team now also has a description textarea, so target the export/IO box
+    // specifically (the last textarea, shown by the import/export panel).
+    const exportBox = page.locator('textarea').last()
     check(
       `[${viewport.tag}] team export contains species`,
       await exportBox

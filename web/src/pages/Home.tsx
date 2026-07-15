@@ -7,6 +7,7 @@ import { loadPokedexAll, type Species } from '@/lib/dex'
 import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
 import { loadRegulation, daysUntil, type Regulation } from '@/lib/regulation'
 import { listNotices, type Notice } from '@/lib/notices'
+import { useAuth } from '@/lib/auth'
 
 // Each feature gets its own accent so the UI reads colorful and clean rather
 // than mono-lime. Tones map to icon-tile + hover-border classes.
@@ -33,6 +34,7 @@ const CAT_STYLE: Record<string, string> = {
 export default function Home() {
   const { t, i18n } = useTranslation()
   const ko = i18n.language === 'ko'
+  const user = useAuth((s) => s.user)
   const [reg, setReg] = useState<Regulation | null>(null)
   const [usage, setUsage] = useState<UsageData | null>(null)
   const [byId, setById] = useState<Map<string, Species>>(new Map())
@@ -57,6 +59,44 @@ export default function Home() {
 
   return (
     <div className="space-y-10">
+      {/* Account strip — sign in/up prompt for guests, quick shortcuts for all */}
+      {user ? (
+        <section className="card flex flex-wrap items-center gap-3 p-3.5">
+          <Link to="/profile" className="flex min-w-0 items-center gap-2.5">
+            <span className="grid size-9 shrink-0 place-items-center overflow-hidden rounded-full bg-volt-400/15 text-volt-600 dark:text-volt-300">
+              {user.avatarUrl ? <img src={user.avatarUrl} alt="" className="size-full object-cover" /> : <Icon name="user" size={18} />}
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-bold">{t('home.hello', { name: user.displayName })}</span>
+              <span className="block truncate text-[11px] text-zinc-400 dark:text-zinc-500">@{user.username}</span>
+            </span>
+          </Link>
+          <div className="ml-auto flex shrink-0 gap-1.5">
+            <HomeChip to="/profile" icon="user" label={t('nav.profile')} />
+            <HomeChip to="/about" icon="info" label={t('nav.about')} />
+            <HomeChip to="/settings" icon="settings" label={t('nav.settings')} />
+          </div>
+        </section>
+      ) : (
+        <section className="card flex flex-wrap items-center gap-3 p-4">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-extrabold">{t('home.authTitle')}</p>
+            <p className="mt-0.5 text-[12px] text-zinc-500 dark:text-zinc-400">{t('home.authBody')}</p>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Link to="/about" className="hidden rounded-full border border-zinc-200 px-3 py-2 text-xs font-bold text-zinc-600 hover:border-volt-500 sm:inline-flex dark:border-white/10 dark:text-zinc-300">
+              {t('nav.about')}
+            </Link>
+            <Link to="/login" className="inline-flex items-center gap-1 rounded-full border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-700 hover:border-volt-500 dark:border-white/10 dark:text-zinc-200">
+              {t('auth.login')}
+            </Link>
+            <Link to="/login" className="inline-flex items-center gap-1 rounded-full bg-volt-400 px-4 py-2 text-xs font-bold text-black transition-colors hover:bg-volt-300">
+              {t('auth.signup')}
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* Hero */}
       <section
         className="relative overflow-hidden rounded-[28px] border border-zinc-200/70 bg-white px-6 py-12 text-zinc-900 sm:px-12 sm:py-16 dark:border-white/10 dark:bg-[#0c0d11] dark:text-white"
@@ -201,5 +241,18 @@ export default function Home() {
         </section>
       )}
     </div>
+  )
+}
+
+function HomeChip({ to, icon, label }: { to: string; icon: IconName; label: string }) {
+  return (
+    <Link
+      to={to}
+      className="inline-flex items-center gap-1 rounded-full border border-zinc-200 px-2.5 py-1.5 text-[11px] font-bold text-zinc-600 transition-colors hover:border-volt-500 hover:text-volt-700 dark:border-white/10 dark:text-zinc-300 dark:hover:border-volt-400/60 dark:hover:text-volt-300"
+      title={label}
+    >
+      <Icon name={icon} size={13} />
+      <span className="hidden sm:inline">{label}</span>
+    </Link>
   )
 }

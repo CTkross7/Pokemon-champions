@@ -100,7 +100,10 @@
     "metaSub": "Top ranked-battle usage · {{month}}",
     "metaFallback": "Most-used competitive Pokemon",
     "noticesTitle": "Latest news",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "hello": "{{name}}",
+    "authTitle": "Sign in to save your teams",
+    "authBody": "Your teams, notes, and settings sync to your account across devices."
   },
   "about": {
     "title": "About ChampsNote",
@@ -337,7 +340,9 @@
     "publishAuthor": "Enter your author name (blank = anonymous)",
     "publishing": "Publishing...",
     "published": "Published to the community ✓",
-    "publishUnavailable": "Gallery backend is not set up yet"
+    "publishUnavailable": "Gallery backend is not set up yet",
+    "namePlaceholder": "Party name",
+    "descPlaceholder": "Describe your party / how to play it (shown when shared to the community)"
   },
   "coach": {
     "title": "Team Auto-Diagnosis",

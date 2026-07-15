@@ -45,6 +45,9 @@ const TABLES = [
   `CREATE TABLE IF NOT EXISTS moderation (
     user_id TEXT PRIMARY KEY, warnings INTEGER NOT NULL DEFAULT 0, banned_until INTEGER, note TEXT,
     updated_at INTEGER NOT NULL)`,
+  // Per-user cloud data (teams blob) so saved teams survive logout / new devices.
+  `CREATE TABLE IF NOT EXISTS user_teams (
+    user_id TEXT PRIMARY KEY, data TEXT NOT NULL, updated_at INTEGER NOT NULL)`,
 ]
 
 // Columns added after the original users table shipped. Safe to attempt every
@@ -59,6 +62,8 @@ const ADD_COLUMNS = [
   // Sample ownership (owner-delete) + regulation tag (gallery filter).
   `ALTER TABLE samples ADD COLUMN owner_id TEXT`,
   `ALTER TABLE samples ADD COLUMN regulation TEXT`,
+  // Party intro / author note shown in the gallery.
+  `ALTER TABLE samples ADD COLUMN description TEXT`,
 ]
 
 async function run(db: D1Database): Promise<void> {

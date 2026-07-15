@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSettings } from '@/store/settings'
+import { useTeams } from '@/store/teams'
 import { useAuth } from '@/lib/auth'
 import Icon, { type IconName } from '@/components/Icon'
 import Logo from '@/components/Logo'
@@ -95,6 +96,12 @@ export default function Layout() {
   useEffect(() => {
     void initAuth()
   }, [initAuth])
+
+  // Once signed in, merge cloud-saved teams so a fresh device / re-login keeps
+  // everything the user built.
+  useEffect(() => {
+    if (user) void useTeams.getState().syncFromCloud()
+  }, [user])
 
   // Close the mobile "더보기" sheet whenever the route changes.
   useEffect(() => {

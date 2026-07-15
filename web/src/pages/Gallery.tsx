@@ -136,6 +136,11 @@ export default function Gallery() {
                   <p className="text-[11px] font-medium text-zinc-400 dark:text-zinc-600">
                     {s.author} · {t('gallery.views', { count: s.views })}
                   </p>
+                  {s.description && (
+                    <p className="mt-1 line-clamp-2 text-[12px] leading-relaxed text-zinc-600 dark:text-zinc-300">
+                      {s.description}
+                    </p>
+                  )}
                   <div className="mt-1 flex items-center gap-2">
                     <ReportButton targetType="sample" targetId={s.id} />
                     {canDelete(s) && (

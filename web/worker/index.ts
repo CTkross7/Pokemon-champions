@@ -33,13 +33,44 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
   const db = env.DB
   const parts = url.pathname.replace(/^\/api\//, '').split('/').filter(Boolean)
 
+  // /api/data/teams — per-user cloud store for saved teams (survives logout /
+  // syncs across devices). GET returns the blob; PUT replaces it. Sign-in only.
+  if (parts[0] === 'data' && parts[1] === 'teams') {
+    const user = await currentUser(db, request)
+    if (!user) return json({ error: 'auth_required' }, 401)
+    if (request.method === 'GET') {
+      const row = await db.prepare('SELECT data FROM user_teams WHERE user_id = ?').bind(user.id).first<{ data: string }>()
+      let teams: unknown = []
+      try {
+        teams = row ? JSON.parse(row.data) : []
+      } catch {
+        teams = []
+      }
+      return json({ teams })
+    }
+    if (request.method === 'PUT') {
+      const body = (await request.json().catch(() => ({}))) as { teams?: unknown }
+      if (!Array.isArray(body.teams)) return json({ error: 'invalid' }, 400)
+      const data = JSON.stringify(body.teams).slice(0, 200_000) // ~200 KB cap
+      await db
+        .prepare(
+          'INSERT INTO user_teams (user_id, data, updated_at) VALUES (?, ?, ?) ' +
+            'ON CONFLICT(user_id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at',
+        )
+        .bind(user.id, data, Date.now())
+        .run()
+      return json({ ok: true })
+    }
+    return json({ error: 'method_not_allowed' }, 405)
+  }
+
   // /api/samples
   if (parts[0] === 'samples' && parts.length === 1) {
     if (request.method === 'GET') {
       // Optional ?regulation=M-B filter; comment count via correlated subquery.
       const reg = url.searchParams.get('regulation')
       const listSql =
-        'SELECT id, title, author, likes, views, regulation, owner_id, created_at, ' +
+        'SELECT id, title, author, likes, views, regulation, owner_id, description, created_at, ' +
         '(SELECT COUNT(*) FROM comments c WHERE c.sample_id = samples.id) AS comments ' +
         'FROM samples' +
         (reg ? ' WHERE regulation = ?' : '') +
@@ -70,12 +101,13 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       const team = clampStr(body.team, MAX_TEAM_BYTES)
       if (!team) return json({ error: 'missing_team' }, 400)
       const regulation = clampStr(body.regulation, 20).trim() || null
+      const description = clampStr(body.description, 500).trim() || null
       const id = crypto.randomUUID().slice(0, 8)
       await db
         .prepare(
-          'INSERT INTO samples (id, title, author, team, likes, views, owner_id, regulation, created_at) VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?)',
+          'INSERT INTO samples (id, title, author, team, likes, views, owner_id, regulation, description, created_at) VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?, ?)',
         )
-        .bind(id, title, author, team, user.id, regulation, Date.now())
+        .bind(id, title, author, team, user.id, regulation, description, Date.now())
         .run()
       return json({ id }, 201)
     }
