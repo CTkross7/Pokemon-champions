@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { spriteUrl, STAT_KEYS, type MoveData, type Species } from '@/lib/dex'
-import { spTotal, natureLabel, statAtLevel50 } from '@/lib/champions'
+import { spTotal, natureLabel, statAtLevel50, NATURE_EFFECTS } from '@/lib/champions'
 import { loadItems } from '@/lib/items'
 import { buildTeamSvg, svgToPngBlob, type ImageMon } from '@/lib/teamImage'
 import type { TeamMon } from '@/store/teams'
@@ -41,11 +41,14 @@ export default function ShareImageButton({
       const stats = Object.fromEntries(
         STAT_KEYS.map((k) => [k, statAtLevel50(species.baseStats[k], k, mon.sp[k], mon.nature)]),
       ) as ImageMon['stats']
+      const natEff = NATURE_EFFECTS[mon.nature] ?? {}
       imageMons.push({
         species,
         item: mon.item ? (ko ? (itemKo.get(mon.item) ?? mon.item) : mon.item) : '',
         ability: ability ? (ko ? ability.ko : ability.name) : mon.ability,
         nature: natureLabel(mon.nature, i18n.language),
+        naturePlus: natEff.plus,
+        natureMinus: natEff.minus,
         spTotal: spTotal(mon.sp),
         sp: mon.sp,
         stats,

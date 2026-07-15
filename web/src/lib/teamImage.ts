@@ -15,6 +15,8 @@ export interface ImageMon {
   spTotal: number
   sp: { hp: number; atk: number; def: number; spa: number; spd: number; spe: number } // per-stat SP
   stats: { hp: number; atk: number; def: number; spa: number; spd: number; spe: number } // final Lv50 stats
+  naturePlus?: keyof ImageMon['stats'] // stat the nature raises (×1.1)
+  natureMinus?: keyof ImageMon['stats'] // stat the nature lowers (×0.9)
   moves: string[] // localized
   sprite: string // /sprites/{id}.png
 }
@@ -96,11 +98,21 @@ export async function buildTeamSvg(title: string, mons: ImageMon[], brand = 'Cha
         const val = m.stats[key]
         const spv = m.sp[key]
         const w = Math.max(3, Math.round((Math.min(val, 230) / 230) * BAR_W))
+        // Nature arrow: ▲ (raised, green) / ▼ (lowered, red) next to the value.
+        const up = m.naturePlus === key
+        const down = m.natureMinus === key
+        const arrow = up
+          ? `<text x="${x + CARD_W - 40}" y="${sy + 8.5}" font-size="9" font-weight="800" fill="#34d399" text-anchor="end">▲</text>`
+          : down
+            ? `<text x="${x + CARD_W - 40}" y="${sy + 8.5}" font-size="9" font-weight="800" fill="#fb7185" text-anchor="end">▼</text>`
+            : ''
+        const valColor = up ? '#34d399' : down ? '#fb7185' : '#e6e9ee'
         return `<text x="${x + 14}" y="${sy + 8.5}" font-size="9.5" font-weight="700" fill="#9aa1ab">${label}</text>
           <text x="${x + 64}" y="${sy + 8.5}" font-size="9" font-weight="700" fill="${spv > 0 ? '#c7f236' : '#565b64'}" text-anchor="end">${spv}</text>
           <rect x="${BAR_X}" y="${sy + 2}" width="${BAR_W}" height="7" rx="3.5" fill="#20242c"/>
           <rect x="${BAR_X}" y="${sy + 2}" width="${w}" height="7" rx="3.5" fill="${color}"/>
-          <text x="${x + CARD_W - 14}" y="${sy + 8.5}" font-size="9.5" font-weight="800" fill="#e6e9ee" text-anchor="end">${val}</text>`
+          ${arrow}
+          <text x="${x + CARD_W - 14}" y="${sy + 8.5}" font-size="9.5" font-weight="800" fill="${valColor}" text-anchor="end">${val}</text>`
       }).join('')
       const moves = m.moves
         .slice(0, 4)

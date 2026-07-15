@@ -23,6 +23,15 @@
     "more": "더보기",
     "stats": "통계"
   },
+  "navShort": {
+    "home": "홈",
+    "dex": "도감",
+    "calculator": "계산기",
+    "teams": "팀빌더",
+    "matchup": "매치업",
+    "gallery": "커뮤니티",
+    "more": "더보기"
+  },
   "settings": {
     "language": "언어",
     "theme": "테마",

@@ -124,7 +124,7 @@ function MonEditor({
           ))}
         </select>
       </label>
-      <SpSliders sp={mon.sp} onChange={(sp) => onChange({ ...mon, sp })} />
+      <SpSliders sp={mon.sp} onChange={(sp) => onChange({ ...mon, sp })} nature={mon.nature} />
 
       <div>
         <div className="flex items-center justify-between">

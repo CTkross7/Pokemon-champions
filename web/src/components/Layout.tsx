@@ -248,7 +248,7 @@ export default function Layout() {
               end={item.end}
               className={({ isActive }) =>
                 [
-                  'relative flex flex-col items-center gap-1 pt-3 pb-2 text-[10px] font-semibold transition-colors',
+                  'relative flex flex-col items-center gap-1 pt-3 pb-2 text-[9px] font-semibold transition-colors',
                   isActive ? 'text-volt-600 dark:text-volt-400' : 'text-zinc-400 dark:text-zinc-600',
                 ].join(' ')
               }
@@ -259,7 +259,9 @@ export default function Layout() {
                     <span className="absolute inset-x-5 top-0 h-0.5 rounded-full bg-volt-500 dark:bg-volt-400" />
                   )}
                   <Icon name={item.icon} size={21} />
-                  {t(item.key)}
+                  <span className="max-w-full truncate whitespace-nowrap px-0.5">
+                    {t(item.key.replace('nav.', 'navShort.'))}
+                  </span>
                 </>
               )}
             </NavLink>
@@ -268,7 +270,7 @@ export default function Layout() {
             type="button"
             onClick={() => setMoreOpen((v) => !v)}
             className={[
-              'relative flex flex-col items-center gap-1 pt-3 pb-2 text-[10px] font-semibold transition-colors',
+              'relative flex flex-col items-center gap-1 pt-3 pb-2 text-[9px] font-semibold transition-colors',
               moreOpen ? 'text-volt-600 dark:text-volt-400' : 'text-zinc-400 dark:text-zinc-600',
             ].join(' ')}
             aria-expanded={moreOpen}
@@ -277,7 +279,7 @@ export default function Layout() {
               <span className="absolute top-2 right-1/2 mr-[-14px] h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-surface-dark" />
             )}
             <Icon name="grid" size={21} />
-            {t('nav.more')}
+            <span className="max-w-full truncate whitespace-nowrap px-0.5">{t('navShort.more')}</span>
           </button>
         </div>
       </nav>

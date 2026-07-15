@@ -23,6 +23,15 @@
     "more": "More",
     "stats": "Stats"
   },
+  "navShort": {
+    "home": "Home",
+    "dex": "Dex",
+    "calculator": "Calc",
+    "teams": "Team",
+    "matchup": "Matchup",
+    "gallery": "Comm.",
+    "more": "More"
+  },
   "settings": {
     "language": "Language",
     "theme": "Theme",
