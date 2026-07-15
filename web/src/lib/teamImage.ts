@@ -5,6 +5,7 @@
  * ability, moves, and the SP spread.
  */
 import type { Species } from '@/lib/dex'
+import { TYPE_KO, type TypeName } from '@/lib/typechart'
 
 export interface ImageMon {
   species: Species
@@ -82,8 +83,9 @@ export async function buildTeamSvg(title: string, mons: ImageMon[], brand = 'Cha
       const types = m.species.types
         .map((tp, j) => {
           const tx = x + 88 + j * 52
+          const label = TYPE_KO[tp as TypeName] ?? tp // card is Korean-styled → Korean type names
           return `<rect x="${tx}" y="${y + 40}" width="46" height="17" rx="8.5" fill="${TYPE_HEX[tp] ?? '#888'}"/>
-            <text x="${tx + 23}" y="${y + 52}" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${esc(tp)}</text>`
+            <text x="${tx + 23}" y="${y + 52}" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${esc(label)}</text>`
         })
         .join('')
       // Stat block: label · SP badge · bar (final stat) · final value.
