@@ -43,22 +43,53 @@ npx cap open android        # Android Studio 열기 → Run ▶
 - 로컬 웹 빌드를 번들하고 싶으면(오프라인 완결형) `npm run build:web` 후
   `capacitor.config.ts`의 `server.url`을 주석 처리하고 `npx cap sync android`.
 
-## AdMob 설정 (출시 전 필수)
+## AdSense와 AdMob 함께 쓰기 (중요)
 
-현재는 구글 **공개 테스트 ID**로 동작합니다(수익 없음, 크래시 방지용). 실제 수익화 시:
+**둘 다 사용하지만, 플랫폼별로 나뉩니다** — 이게 구글 정책상 유일하게 허용되는 방식입니다.
 
-1. **앱 ID** — [AdMob 콘솔](https://apps.admob.com)에서 앱 생성 후 앱 ID를
-   `android/app/src/main/AndroidManifest.xml`의
-   `com.google.android.gms.ads.APPLICATION_ID` 값에 넣기.
-2. **광고 단위 ID** — 배너/전면 단위를 만들고, 웹 빌드 환경변수로 주입:
-   ```
-   VITE_ADMOB_BANNER=ca-app-pub-XXXX/BBBB
-   VITE_ADMOB_INTERSTITIAL=ca-app-pub-XXXX/IIII
-   VITE_ADMOB_TESTING=false
-   ```
-   (웹을 다시 배포하면 앱에도 반영됩니다.)
-3. **app-ads.txt** — 웹 루트에 `app-ads.txt`를 두고 AdMob 퍼블리셔 라인을 추가하면
-   무효 트래픽 방지에 도움이 됩니다.
+| 접속 환경 | 표시 광고 | 코드 |
+|---|---|---|
+| 브라우저(웹) | **AdSense** | `web/src/lib/ads.ts` · `main.tsx` |
+| 챔스노트 앱(WebView) | **AdMob** | `web/src/lib/appAds.ts` |
+
+- 앱 안(WebView)에서는 `isInApp()`이 AdSense를 **끄고** AdMob을 켭니다.
+  > ⚠️ 구글 **AdSense 정책은 앱/WebView 안에서 AdSense 게재를 금지**합니다.
+  > 앱 안에 AdSense를 넣으면 계정이 정지될 수 있어, 앱은 반드시 AdMob만 씁니다.
+  > (두 계정은 동시에 활성 상태로 두고, 각자 자기 화면에서 수익이 발생합니다.)
+- AdSense 계정과 AdMob 계정은 같은 구글 계정에서 함께 운영 가능합니다.
+
+## AdMob 설정 (콘솔 단계별)
+
+현재 코드는 구글 **공개 테스트 ID**로 동작합니다(수익 없음, 크래시 방지용).
+실 수익화하려면 [AdMob 콘솔](https://apps.admob.com)에서:
+
+**1) 앱 등록 → 앱 ID 넣기**
+- 앱 > 앱 추가 > Android > "챔스노트" (스토어 미등록 상태로도 생성 가능).
+- 발급된 **앱 ID**(`ca-app-pub-XXXX~YYYY`, `~` 포함)를
+  `android/app/src/main/AndroidManifest.xml`의
+  `com.google.android.gms.ads.APPLICATION_ID` 값에 붙여넣기.
+- ⚠️ 앱 ID를 바꾸면 **APK 재빌드** 필요.
+
+**2) 광고 단위 만들기** (스크린샷의 "광고 단위 만들기" 화면)
+- **배너** 선택 → 이름(예: `champsnote-banner`) → 생성 → 단위 ID(`ca-app-pub-XXXX/BBBB`) 복사.
+- **전면 광고** 선택 → 이름(예: `champsnote-interstitial`) → 생성 → 단위 ID 복사.
+- (선택) 보상형/네이티브/앱오프닝은 지금 코드에서 미사용 — 나중에 확장 시 추가.
+
+**3) 단위 ID를 웹 빌드 환경변수로 주입** (앱이 라이브 사이트를 로드하므로 웹에 설정)
+- Cloudflare Pages > 프로젝트 > Settings > Environment variables 에 추가:
+  ```
+  VITE_ADMOB_BANNER=ca-app-pub-XXXX/BBBB
+  VITE_ADMOB_INTERSTITIAL=ca-app-pub-XXXX/IIII
+  VITE_ADMOB_TESTING=false
+  ```
+- 웹을 다시 배포하면 **APK 재빌드 없이** 앱에도 실 광고가 반영됩니다.
+  (단위 ID는 웹 빌드에 들어가고, 앱 ID만 APK에 들어갑니다.)
+- 로컬 테스트는 `web/.env.local`에 같은 변수 + `VITE_ADMOB_TEST_DEVICE=<기기 테스트ID>`.
+
+**4) 동의(UMP)·app-ads.txt**
+- EEA/영국 사용자 동의는 `appAds.ts`가 UMP로 자동 처리(요청→필요 시 동의 폼).
+  AdMob 콘솔 > 개인정보 보호 및 메시지에서 GDPR 메시지를 만들어두세요.
+- 웹 루트에 `app-ads.txt`를 두고 AdMob 퍼블리셔 라인을 추가하면 무효 트래픽 방지에 도움.
 
 ## 릴리스 빌드 (Play 스토어)
 

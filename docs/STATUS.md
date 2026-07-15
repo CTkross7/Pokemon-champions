@@ -475,3 +475,11 @@
 - ⚠️ 샌드박스에 Android SDK 없어 APK 빌드 불가 — 프로젝트·설정 완성, Android Studio 환경에서 빌드하도록 문서화
 - ✅ 버전 web/app **1.6.8** 정렬
 - 검증: 웹 빌드·lint·E2E 전체 통과(appAds 청크 분리 확인)·cap add android 성공 ✅
+
+## Phase 15.1 — AdMob 구체 설정 + AdSense·AdMob 공존 정리 (v1.6.9, 2026-07-15, 사용자 요청)
+- ✅ **AdSense·AdMob 공존(정책 준수)**: 브라우저=AdSense, 앱(WebView)=AdMob으로 플랫폼 분리 — 구글 정책상 앱 안 AdSense 게재 금지라 이 방식만 허용. 두 계정 동시 활성, 각자 화면에서 수익. 앱에서 AdSense 자동 off(isInApp) 유지, 웹 AdSense는 그대로 동작
+- ✅ **AdMob 고도화(appAds.ts)**: 배너+전면에 더해 **UMP 동의(EEA/영국) 흐름** 추가(requestConsentInfo→필요 시 showConsentForm), 테스트 기기 등록(VITE_ADMOB_TEST_DEVICE), 전 옵션 환경변수화. 플러그인은 배너/전면/보상/보상전면/동의 지원(앱오프닝 미지원 확인)
+- ✅ **콘솔 단계별 문서(app/README.md)**: 앱 등록→앱 ID(매니페스트, APK 재빌드), 배너/전면 단위 생성→단위 ID(웹 env, APK 재빌드 불필요), Cloudflare Pages 환경변수 주입, UMP 메시지, app-ads.txt까지 스크린샷 흐름대로 기록
+- ✅ **설정 파일**: web/.env.example(AdSense·AdMob 전 변수), web/public/app-ads.txt(무효 트래픽 방지, 퍼블리셔 확인 주석)
+- ✅ 버전 web **1.6.9**
+- 검증: 웹 빌드·lint·E2E ✅ (UMP 동의 API 타입 일치 확인)
