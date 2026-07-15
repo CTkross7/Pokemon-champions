@@ -8,6 +8,7 @@ import { createSample } from '@/lib/api'
 import { useAuth } from '@/lib/auth'
 import { loadRegulation } from '@/lib/regulation'
 import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
+import { recommendedMoveIds } from '@/lib/moveFilter'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import ItemSelect from '@/components/ItemSelect'
@@ -28,6 +29,7 @@ function MonEditor({
   species,
   moves,
   learnsets,
+  usageMoveIds,
   onChange,
   onRemove,
 }: {
@@ -35,6 +37,7 @@ function MonEditor({
   species: Species
   moves: Record<string, MoveData>
   learnsets: Record<string, string[]>
+  usageMoveIds: Set<string>
   onChange: (mon: TeamMon) => void
   onRemove: () => void
 }) {
@@ -62,11 +65,21 @@ function MonEditor({
       })
   }, [species, moves, learnsets])
   const [moveQuery, setMoveQuery] = useState('')
-  // No cap: the full learnable set is scrollable so every legal move is reachable.
-  const filteredMoves = moveOptions.filter(({ move }) => {
-    const q = moveQuery.trim().toLowerCase()
-    return !q || move.ko.includes(q) || move.name.toLowerCase().includes(q)
+  const [showAllMoves, setShowAllMoves] = useState(false)
+  // Recommended default: meta usage + STAB + key utility (~18), so the picker
+  // isn't buried under every legal-but-niche move. "전체 보기" reveals the full
+  // verified movepool, and already-picked moves always stay visible.
+  const recommended = useMemo(
+    () => recommendedMoveIds(species, moveOptions, usageMoveIds),
+    [species, moveOptions, usageMoveIds],
+  )
+  const q = moveQuery.trim().toLowerCase()
+  const filteredMoves = moveOptions.filter(({ id, move }) => {
+    if (q) return move.ko.includes(q) || move.name.toLowerCase().includes(q)
+    // No query: recommended set (+ anything already selected), unless showing all.
+    return showAllMoves || recommended.has(id) || mon.moves.includes(id)
   })
+  const hiddenCount = moveOptions.length - (showAllMoves ? moveOptions.length : filteredMoves.length)
 
   const toggleMove = (id: string) =>
     onChange({
@@ -117,7 +130,9 @@ function MonEditor({
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600">
             {t('teams.moves')} {mon.moves.length}/4
-            <span className="ml-1 font-semibold text-zinc-300 dark:text-zinc-600">· {moveOptions.length}</span>
+            <span className="ml-1 font-semibold text-zinc-300 dark:text-zinc-600">
+              · {showAllMoves || q ? t('teams.movesAll') : t('teams.movesRecommended')}
+            </span>
           </span>
         </div>
         <input
@@ -147,7 +162,21 @@ function MonEditor({
               </button>
             )
           })}
+          {filteredMoves.length === 0 && (
+            <span className="px-1 py-1 text-[11px] text-zinc-400">{t('dex.noResults')}</span>
+          )}
         </div>
+        {!q && (
+          <button
+            type="button"
+            onClick={() => setShowAllMoves((v) => !v)}
+            className="mt-1.5 text-[11px] font-bold text-volt-600 hover:underline dark:text-volt-400"
+          >
+            {showAllMoves
+              ? t('teams.showRecommended')
+              : t('teams.showAllMoves', { count: hiddenCount })}
+          </button>
+        )}
       </div>
 
       <button
@@ -183,6 +212,12 @@ export default function Teams() {
   }, [])
 
   const speciesById = useMemo(() => new Map((pokedex ?? []).map((s) => [s.id, s])), [pokedex])
+  // Per-species meta moves (from usage stats) — feeds the recommended move view.
+  const usageMovesBySpecies = useMemo(() => {
+    const map = new Map<string, Set<string>>()
+    for (const p of usage?.pokemon ?? []) map.set(p.id, new Set(p.moves.map((m) => m.name)))
+    return map
+  }, [usage])
   // Meta threats = the TOP usage Pokemon (not the whole roster), so the coach's
   // "threat coverage" and score stay meaningful. Falls back to the highest-BST
   // Champions Pokemon when usage data isn't available.
@@ -439,6 +474,7 @@ export default function Teams() {
                       species={species}
                       moves={moves}
                       learnsets={learnsets}
+                      usageMoveIds={usageMovesBySpecies.get(species.id) ?? new Set()}
                       onChange={(m) => setMon(active.id, slot, m)}
                       onRemove={() => {
                         setMon(active.id, slot, null)
