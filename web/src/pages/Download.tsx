@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import Icon from '@/components/Icon'
@@ -6,8 +7,8 @@ import {
   APK_VERSION,
   APK_SIZE,
   PLAY_URL,
-  apkAvailable,
   playAvailable,
+  probeApk,
   detectPlatform,
   isInApp,
 } from '@/lib/appDownload'
@@ -24,8 +25,24 @@ export default function Download() {
   const { t } = useTranslation()
   const platform = detectPlatform()
   const inApp = isInApp()
-  const hasApk = apkAvailable()
   const hasPlay = playAvailable()
+
+  // Probe the hosted APK: confirms it's really there and reads its size, so the
+  // page shows the real current file with no manual config. undefined = checking.
+  const [probe, setProbe] = useState<{ size: string } | null | undefined>(undefined)
+  useEffect(() => {
+    let alive = true
+    probeApk().then((r) => {
+      if (alive) setProbe(r)
+    })
+    return () => {
+      alive = false
+    }
+  }, [])
+  // Show the button while checking (optimistic) and when confirmed present;
+  // only fall back to "coming soon" once the probe confirms it's missing (404).
+  const hasApk = probe !== null
+  const apkSize = probe?.size || APK_SIZE
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
@@ -65,8 +82,8 @@ export default function Download() {
             <span className="rounded-full border border-zinc-200 px-2.5 py-1 dark:border-white/10">
               v{APK_VERSION}
             </span>
-            {APK_SIZE && (
-              <span className="rounded-full border border-zinc-200 px-2.5 py-1 dark:border-white/10">{APK_SIZE}</span>
+            {apkSize && (
+              <span className="rounded-full border border-zinc-200 px-2.5 py-1 dark:border-white/10">{apkSize}</span>
             )}
           </div>
 

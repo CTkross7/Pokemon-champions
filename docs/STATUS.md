@@ -598,3 +598,10 @@
 - ✅ **APK_VERSION = APP_VERSION 고정**: `VITE_APK_VERSION` 지정 방식 제거 → /download의 버전 칩이 항상 웹 사이트 버전(package.json)과 동일. 실행 중 웹앱과 표기 불일치 원천 차단. build.gradle versionName도 웹 버전과 동일 유지 규칙 문서화
 - ✅ .env.example·appDownload.ts 주석 정리(VITE_APK_VERSION 참조 제거)
 - 검증: tsc·빌드 통과
+
+## Phase 16.8 — 다운로드 페이지 파일명 기본값 + 파일 크기 자동 감지 (2026-07-16, 사용자 요청)
+- ✅ **파일명 기본 셋팅**: `VITE_APK_URL` 기본값을 `/champsnote.apk`로 → 환경변수 없이도 web/public/champsnote.apk 서빙. 다른 곳 호스팅 시에만 override
+- ✅ **파일 크기 자동 감지**: `probeApk()`가 HEAD(실패 시 Range GET) 요청으로 Content-Length 읽어 사람이 읽는 크기(formatBytes)로 표시. APK 새로 올리면 크기 자동 갱신. VITE_APK_SIZE는 폴백만
+- ✅ **존재 확인**: 프로브 404면 버튼 대신 "준비 중"으로 자동 강등(깨진 다운로드 방지), 확인 전엔 낙관적 표시
+- ✅ .env.example 정리(제로 컨피그 명시)
+- 검증: tsc·빌드 통과
