@@ -33,7 +33,7 @@ export default function About() {
       <p className="text-[15px] leading-relaxed text-zinc-600 dark:text-zinc-300">{t('about.intro')}</p>
 
       {/* Features */}
-      <section className="cv-section">
+      <section>
         <h2 className="mb-3 text-[15px] font-bold">{t('about.featuresTitle')}</h2>
         <div className="grid gap-2.5 sm:grid-cols-2">
           {(Array.isArray(features) ? features : []).map((f, i) => (
@@ -51,7 +51,7 @@ export default function About() {
       </section>
 
       {/* Why ChampsNote — differentiation */}
-      <section className="cv-section">
+      <section>
         <h2 className="mb-3 text-[15px] font-bold">{t('about.whyTitle')}</h2>
         <div className="grid gap-2.5 sm:grid-cols-2">
           {(Array.isArray(why) ? why : []).map((w, i) => (
@@ -69,7 +69,7 @@ export default function About() {
       </section>
 
       {/* How to use — numbered flow */}
-      <section className="cv-section card p-6">
+      <section className="card p-6">
         <h2 className="text-[15px] font-bold">{t('about.howTitle')}</h2>
         <ol className="mt-4 space-y-3">
           {(Array.isArray(how) ? how : []).map((h) => (
@@ -87,13 +87,13 @@ export default function About() {
       </section>
 
       {/* Data update policy */}
-      <section className="cv-section card p-6">
+      <section className="card p-6">
         <h2 className="text-[15px] font-bold">{t('about.updateTitle')}</h2>
         <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{t('about.updateBody')}</p>
       </section>
 
       {/* Data sources */}
-      <section className="cv-section card p-6">
+      <section className="card p-6">
         <div className="flex items-center gap-2.5">
           <span className="grid size-9 place-items-center rounded-xl bg-sky-100 text-sky-700 dark:bg-sky-400/12 dark:text-sky-300">
             <Icon name="shield" size={18} />
@@ -115,7 +115,7 @@ export default function About() {
       </section>
 
       {/* Contact + developer */}
-      <section className="cv-section card p-6">
+      <section className="card p-6">
         <div className="flex items-center gap-2.5">
           <span className="grid size-9 place-items-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-400/12 dark:text-violet-300">
             <Icon name="mail" size={18} />

@@ -528,3 +528,10 @@
 - ✅ **핵심 안내**: 분할화면이 아닌 **전체화면**에서 사용 시 대부분 해소. 배포 후 최신(1.7.5) 여부·하드리로드 확인 필요
 - ✅ 버전 1.7.4→**1.7.5**
 - 검증: 빌드·lint 통과
+
+## Phase 15.9 — content-visibility 원복(Mali GPU containment 래스터 버그) (v1.7.6, 2026-07-16, 사용자 스크린샷)
+- ✅ **확정**: 전체화면 Chrome에서도 소개 페이지의 **content-visibility 섹션 위치에 정확히 노이즈 밴드**(카드는 정상), 홈(cv 없음)은 노이즈 밴드 없음 → `content-visibility: auto`(CSS containment)가 이 Mali GPU에서 타일 래스터를 깨뜨림
+- ✅ **원복**: About 6개 섹션의 cv-section 제거 + index.css `.cv-section` 규칙 제거(15.6 되돌림). 유지: 불투명 헤더/바(15.7)·smooth-scroll 제거(15.8)·모달 스크롤잠금(15.5)
+- ✅ 홈의 가벼운 잔상은 별개(스크롤 컴포지팅) — 위 유지 항목으로 완화, 잔여 시 sticky 헤더 non-sticky 등 후속
+- ✅ 버전 1.7.5→**1.7.6**
+- 검증: 빌드·lint·E2E 통과
