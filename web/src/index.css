@@ -60,7 +60,9 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* No smooth-scroll: it forces compositor-thread scrolling, which adds GPU
+     memory pressure and can make low-end Android GPUs (e.g. Mali tablets in
+     split-screen) raster the page layer as noise. JS scroll-to-top still works. */
   -webkit-tap-highlight-color: transparent;
 }
 
