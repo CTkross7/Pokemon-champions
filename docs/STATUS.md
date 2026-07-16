@@ -496,3 +496,8 @@
 - ✅ **원인**: 클래스파이어 장애 중 재시도에서 버전 상승 sed가 실행되지 못했고, 이후 1.7.0 sed가 "1.6.9"를 찾도록 돼 있어 매칭 실패 → 1.6.9·1.7.0 커밋에 **코드는 반영됐으나 web/app package.json이 1.6.8 그대로** 남음. 배포돼도 버전이 1.6.8로 표기됨
 - ✅ **정정**: web·app package.json·android versionName·web package-lock 모두 **1.7.0**으로 정정, version.json=1.7.0 재생성
 - ✅ **참고**: 클린 `npm install && npm run build` 정상(빌드 실패 아님). 이 푸시로 최신 코드(인앱 브라우저 로그인 우회·AdMob UMP 등)와 함께 1.7.0으로 재배포 트리거
+
+## Phase 15.4 — AdSense 미채움 광고 접힘 처리 (v1.7.1, 2026-07-16, 사용자 요청)
+- ✅ 하단 배너 광고 자리가 미채움(unfilled) 시 회색 깨진 박스가 보이던 문제 → `ins.adsbygoogle[data-ad-status='unfilled'] { display:none }` 추가(구글 권장 방식)로 광고 없을 땐 자동 접힘
+- ✅ 실제 광고 노출은 AdSense 계정/사이트 승인 + 트래픽 문제(코드 아님): ads.txt 존재·슬롯 설정·스크립트 로드는 완료 상태
+- ✅ 버전 1.7.0→**1.7.1**

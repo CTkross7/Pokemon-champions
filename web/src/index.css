@@ -106,3 +106,10 @@ html.champs-in-app .champs-bottom-nav {
 html.champs-in-app main {
   padding-bottom: calc(7rem + var(--champs-ad-h));
 }
+
+/* Collapse AdSense units that come back unfilled (no ad available) so the page
+   doesn't show an empty gray placeholder. This is Google's recommended way to
+   handle empty ad slots. Filled units render normally. */
+ins.adsbygoogle[data-ad-status='unfilled'] {
+  display: none !important;
+}
