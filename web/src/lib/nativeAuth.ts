@@ -19,7 +19,11 @@
 import { registerPlugin } from '@capacitor/core'
 import { isOwnApp } from '@/lib/inAppBrowser'
 
-const CLIENT_ID = ((import.meta.env.VITE_GOOGLE_CLIENT_ID as string) || '').trim()
+// Web OAuth client id (public). Defaults to the project's client id; overridable
+// via env. MUST equal the Worker's GOOGLE_CLIENT_ID so the id_token audience
+// validates. This is the "Web application" client id, NOT the Android one.
+const DEFAULT_CLIENT_ID = '899351806890-5jmq7l0vg9qq22jnm4m7sebfvgh4r54u.apps.googleusercontent.com'
+const CLIENT_ID = ((import.meta.env.VITE_GOOGLE_CLIENT_ID as string) || DEFAULT_CLIENT_ID).trim()
 
 interface GoogleAuthPlugin {
   initialize(options: { clientId: string; scopes: string[]; grantOfflineAccess: boolean }): Promise<void>
