@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, startGoogleLogin, signupEmail, loginEmail, isValidUsername } from '@/lib/auth'
 import { detectInAppBrowser, openInExternalBrowser, isIOS, isOwnApp } from '@/lib/inAppBrowser'
+import { nativeGoogleAvailable, nativeGoogleLogin } from '@/lib/nativeAuth'
 
 export default function Login() {
   const { t } = useTranslation()
@@ -94,11 +95,20 @@ export default function Login() {
         <div className={ownApp ? 'order-3' : 'order-1'}>
           <button
             type="button"
-            disabled={!googleOn}
-            onClick={() => {
-              // In-app browser → Google returns disallowed_useragent. Bounce to
-              // the system browser (or show manual guidance) instead.
+            disabled={!googleOn || busy}
+            onClick={async () => {
+              // In our app: prefer native Google sign-in (keeps you signed in).
+              // Falls back to opening the browser only if native isn't set up.
               if (inApp.isInApp) {
+                if (nativeGoogleAvailable()) {
+                  setBusy(true)
+                  const ok = await nativeGoogleLogin()
+                  setBusy(false)
+                  if (ok) {
+                    await init()
+                    return
+                  }
+                }
                 if (!openInExternalBrowser()) alert(t('auth.inAppManual'))
                 return
               }
@@ -107,7 +117,7 @@ export default function Login() {
             className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-800 transition-colors enabled:hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-white"
           >
             <GoogleMark />
-            {ownApp ? t('auth.googleInApp') : t('auth.google')}
+            {ownApp && !nativeGoogleAvailable() ? t('auth.googleInApp') : t('auth.google')}
           </button>
           {!googleOn && <p className="mt-2 text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>}
           {inApp.isInApp && googleOn && (

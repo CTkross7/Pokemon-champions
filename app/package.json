@@ -1,6 +1,6 @@
 {
   "name": "champsnote-app",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "ChampsNote Android launcher — a Capacitor WebView shell that loads the live champsnote.pages.dev site and shows native AdMob ads.",
   "private": true,
   "type": "module",
@@ -16,7 +16,8 @@
     "@capacitor/app": "^6.0.2",
     "@capacitor/core": "^6.1.2",
     "@capacitor/splash-screen": "^6.0.3",
-    "@capacitor/status-bar": "^6.0.2"
+    "@capacitor/status-bar": "^6.0.2",
+    "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4"
   },
   "devDependencies": {
     "@capacitor/cli": "^6.1.2",

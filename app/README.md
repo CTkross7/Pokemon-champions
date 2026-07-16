@@ -211,3 +211,34 @@ VITE_PLAY_URL=...              # 스토어 출시 후 Play 링크(선택)
 - WebView 단순 래핑 앱은 Play 정책의 "최소 기능" 심사를 받을 수 있으므로, 네이티브
   광고·스플래시·오프라인 폴백 등 부가 가치를 유지합니다.
 - 상표: 앱 이름/아이콘에 "Pokémon"을 직접 쓰지 않습니다(브랜드는 "챔스노트").
+
+## 네이티브 구글 로그인 (앱 내 구글 로그인 유지)
+
+앱(WebView)에서 구글 로그인을 그대로 쓰고 **로그인 상태도 유지**되게 하는 네이티브 연동.
+구조: 네이티브 구글 SDK로 `id_token` 획득 → 앱 WebView에서 `/api/auth/google/native`로
+전송 → Worker가 검증 후 **세션 쿠키 발급**(같은 도메인이라 앱에 그대로 저장). 브라우저 이탈·
+딥링크 불필요. (미설정 시 앱은 자동으로 브라우저 열기로 폴백하므로 언제든 안전.)
+
+**1) 구글 클라우드 — Android OAuth 클라이언트 생성**
+console.cloud.google.com → APIs & Services → Credentials → Create credentials →
+OAuth client ID → **Android**:
+- 패키지 이름: `dev.champsnote.ctkross`
+- SHA-1 인증서 지문(업로드 키에서 추출):
+  `& "C:\Program Files\Android\Android Studio\jbr\bin\keytool.exe" -list -v -keystore "champsnote.jks" -alias upload`
+  (출력의 `SHA1:` 값. Play App Signing을 켜면 Play 콘솔의 앱 서명 SHA-1도 추가 등록 필요.)
+
+**2) Web 클라이언트 ID 확인** — 기존 웹 구글 로그인 값(= Worker의 `GOOGLE_CLIENT_ID`,
+`...apps.googleusercontent.com`). 공개값이며 네이티브 serverClientId로 사용.
+
+**3) 웹 환경변수** (Cloudflare Pages > Environment variables): `VITE_GOOGLE_CLIENT_ID=<Web 클라이언트 ID>`
+- Worker `GOOGLE_CLIENT_ID`와 **같은 값**이어야 audience 검증 통과.
+
+**4) 플러그인 설치 + APK 재빌드**
+```powershell
+cd app
+npm install
+npx cap sync android
+cd android
+.\gradlew.bat assembleRelease
+```
+- 미설정 시 버튼은 기존처럼 브라우저 열기로 폴백(무해).

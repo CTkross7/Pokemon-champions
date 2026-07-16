@@ -584,3 +584,12 @@
 - ⏭ **② 네이티브 구글 로그인(정석, 다음 작업)**: 사용자 승인('둘 다'). 구글 클라우드 OAuth 안드로이드 클라이언트+SHA-1, capacitor google-auth 플러그인, Worker 토큰 검증/세션 발급, 딥링크 콜백 필요 — 사용자 설정값 수령 후 착수
 - ✅ i18n(ko/en) auth.appLoginTitle/appLoginBody/googleInApp, 버전 web·app 1.8.1→**1.8.2**
 - 검증: tsc·빌드 통과
+
+## Phase 16.6 — 네이티브 구글 로그인(앱 내 로그인 유지) 백엔드+연동 (v1.8.3, 2026-07-16, 사용자 '둘 다' 승인)
+- ✅ **Worker 엔드포인트** `POST /api/auth/google/native`: 앱이 네이티브로 받은 id_token을 Google tokeninfo로 검증(서명·만료) + aud===GOOGLE_CLIENT_ID + iss 확인 → upsertUser+createSession → **기존과 동일한 세션 쿠키 발급**. 앱 WebView 같은 도메인이라 쿠키가 앱에 저장돼 로그인 유지(브라우저 이탈·딥링크 불필요). 기존 web 플로우 무변경(추가형)
+- ✅ **웹 연동** `lib/nativeAuth.ts`: `@capacitor/core` registerPlugin('GoogleAuth')로 네이티브 호출(플러그인 JS를 웹 번들에 넣지 않아 웹 빌드 영향 0). `VITE_GOOGLE_CLIENT_ID`(=Web 클라이언트 ID) 설정 시에만 활성, 미설정 시 nativeGoogleAvailable()=false→브라우저 열기로 안전 폴백
+- ✅ **Login.tsx**: 자사 앱에서 구글 버튼이 nativeGoogleLogin() 우선 시도→성공 시 init()로 로그인 반영, 실패/미설정 시 브라우저 폴백
+- ✅ **앱 플러그인**: app/package.json에 `@codetrix-studio/capacitor-google-auth` 추가(사용자 npm install+cap sync+재빌드 시 APK 포함)
+- ✅ **SHA-1 수령**: `5D:08:BD:06:52:BE:63:A1:A2:CB:F3:83:BF:17:92:4A:A3:7E:A7:F0`(업로드 키). 사용자 남은 작업: 구글 Android OAuth 클라이언트 생성(패키지+SHA-1) + `VITE_GOOGLE_CLIENT_ID` 설정 + 재빌드
+- ✅ .env.example·README 절차 문서화. versionCode 2→**3**, 버전 web·app 1.8.2→**1.8.3**
+- 검증: tsc·vite·worker 번들 전체 통과

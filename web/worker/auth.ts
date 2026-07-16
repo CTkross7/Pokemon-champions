@@ -431,5 +431,55 @@ export async function handleAuth(request: Request, env: AuthEnv, url: URL): Prom
     })
   }
 
+  // Native Google sign-in (Android app): the app obtains an id_token from the
+  // native Google SDK and posts it here. We verify it with Google, then issue
+  // the SAME session cookie as the web flow — since the app WebView is same-
+  // origin, the cookie lands in the app and it stays signed in (no browser
+  // bounce, no disallowed_useragent). Audience must match our OAuth client id.
+  if (path === 'google/native' && request.method === 'POST') {
+    if (!env.GOOGLE_CLIENT_ID) return json({ error: 'google_disabled' }, 503)
+    const body = (await request.json().catch(() => null)) as { idToken?: string } | null
+    const idToken = body?.idToken
+    if (!idToken) return json({ error: 'no_id_token' }, 400)
+
+    // Google validates the signature + expiry and returns the claims.
+    const vRes = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`,
+    )
+    if (!vRes.ok) return json({ error: 'invalid_token' }, 401)
+    const claims = (await vRes.json()) as {
+      aud?: string
+      iss?: string
+      sub?: string
+      email?: string
+      name?: string
+      picture?: string
+    }
+    const issOk = claims.iss === 'accounts.google.com' || claims.iss === 'https://accounts.google.com'
+    if (!claims.sub || claims.aud !== env.GOOGLE_CLIENT_ID || !issOk) {
+      return json({ error: 'invalid_token' }, 401)
+    }
+
+    const userId = await upsertUser(
+      db,
+      'google',
+      claims.sub,
+      claims.email ?? null,
+      claims.name ?? null,
+      claims.picture ?? null,
+    )
+    const session = await createSession(db, userId)
+    const row = await db
+      .prepare('SELECT onboarded FROM users WHERE id = ?')
+      .bind(userId)
+      .first<{ onboarded: number }>()
+    const dest = row && row.onboarded === 0 ? '/welcome' : '/profile'
+    return json(
+      { ok: true, dest },
+      200,
+      { 'set-cookie': cookie(SESSION_COOKIE, session, SESSION_TTL_MS / 1000) },
+    )
+  }
+
   return json({ error: 'not_found' }, 404)
 }
