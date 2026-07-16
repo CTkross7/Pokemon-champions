@@ -1,4 +1,4 @@
-package dev.champsnote.app;
+package dev.champsnote.ctkross;
 
 import com.getcapacitor.BridgeActivity;
 

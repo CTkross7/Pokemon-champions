@@ -14,10 +14,13 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace "dev.champsnote.app"
+    namespace "dev.champsnote.ctkross"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "dev.champsnote.app"
+        // App identity — reverse of ctkross.champsnote.dev. applicationId (Play
+        // Store id) and namespace (code package) are unified as dev.champsnote.ctkross.
+        // Permanent once published — set before the first upload.
+        applicationId "dev.champsnote.ctkross"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Bump versionCode (+1) on EVERY Play upload; versionName is the label.

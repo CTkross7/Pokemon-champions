@@ -15,7 +15,9 @@ import type { CapacitorConfig } from '@capacitor/cli'
  * letting native AdMob own the ad slots instead.
  */
 const config: CapacitorConfig = {
-  appId: 'dev.champsnote.app',
+  // Play Store identity (reverse of ctkross.champsnote.dev). Permanent once
+  // published — chosen now, before first upload.
+  appId: 'dev.champsnote.ctkross',
   appName: '챔스노트',
   // Capacitor requires a webDir with an index.html even when loading a remote
   // server.url — www/index.html is the offline/first-paint fallback.

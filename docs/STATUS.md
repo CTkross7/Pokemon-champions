@@ -543,3 +543,9 @@
 - ✅ **README 릴리스 가이드**: 준비→아이콘→키스토어→버전→`./gradlew bundleRelease`→Play Console(데이터안전·개인정보 URL) 단계별. 광고 미반영 상태로도 빌드·출시 가능(테스트 광고) 명시
 - ⚠️ 샌드박스에 Android SDK 없어 AAB 컴파일은 Android Studio/SDK PC에서 수행(문서화 완료)
 - 검증: gradle 서명 블록 구성 확인. (SDK 컴파일은 외부 환경)
+
+## Phase 16.1 — 앱 식별자/서명 주체를 ctkross.champsnote.dev로 반영 (2026-07-16, 사용자 요청)
+- ✅ **applicationId·namespace 통일**: dev.champsnote.app → **dev.champsnote.ctkross**(= ctkross.champsnote.dev 역순). build.gradle(applicationId+namespace), MainActivity.java 패키지·폴더 이동, strings.xml(package_name·custom_url_scheme), capacitor.config.ts/json 전부 반영. 잔여 참조 0
+- ✅ **서명 주체(dname)**: 키스토어 생성 시 `CN=ctkross.champsnote.dev, OU=ChampsNote, O=CTkross, ...`로 인증서에 박히도록 README 명시
+- ✅ 미출시 상태라 지금 확정(출시 후 applicationId 변경 불가)
+- 검증: 매니페스트 `.MainActivity`(namespace 상대) 정상, 잔여 dev.champsnote.app 0

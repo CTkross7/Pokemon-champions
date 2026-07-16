@@ -114,11 +114,17 @@ npx cap sync android
 ```
 (이 도구는 `sharp`를 쓰며 일반 PC에선 정상 설치됩니다.)
 
-**2) 업로드 키스토어 생성(최초 1회)**
+**2) 업로드 키스토어 생성(최초 1회)** — 서명 주체를 `ctkross.champsnote.dev`로 반영:
 ```bash
-keytool -genkey -v -keystore champsnote.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+keytool -genkeypair -v \
+  -keystore champsnote.jks -alias upload \
+  -keyalg RSA -keysize 2048 -validity 10950 \
+  -dname "CN=ctkross.champsnote.dev, OU=ChampsNote, O=CTkross, L=Seoul, S=Seoul, C=KR"
 ```
-`app/android/keystore.properties` 생성(**커밋 금지** — .gitignore에 포함):
+- `CN`(주체)에 `ctkross.champsnote.dev`가 서명 인증서에 박힙니다. `O`/`OU`는 자유롭게 조정.
+- 앱 식별자(applicationId)도 `dev.champsnote.ctkross`(= ctkross.champsnote.dev 역순)로 반영돼 있습니다. **출시 후에는 변경 불가**이니 지금 값이 맞는지 확인하세요.
+
+`app/android/keystore.properties` 생성(**커밋 금지** — .gitignore 등록됨):
 ```
 storeFile=/absolute/path/to/champsnote.jks
 storePassword=<키스토어 비밀번호>
@@ -126,6 +132,7 @@ keyAlias=upload
 keyPassword=<키 비밀번호>
 ```
 > build.gradle의 서명 설정이 이 파일을 자동으로 읽습니다(없으면 debug 키로 폴백).
+> Play App Signing을 켜면 이 키는 "업로드 키"로 쓰이고 실제 배포 서명은 Google이 관리합니다(권장).
 
 **3) 버전 올리기** — `app/android/app/build.gradle`에서 업로드마다 `versionCode`를 **+1**
 (현재 1), `versionName`은 라벨(현재 "1.7.6").
