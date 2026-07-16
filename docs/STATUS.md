@@ -535,3 +535,11 @@
 - ✅ 홈의 가벼운 잔상은 별개(스크롤 컴포지팅) — 위 유지 항목으로 완화, 잔여 시 sticky 헤더 non-sticky 등 후속
 - ✅ 버전 1.7.5→**1.7.6**
 - 검증: 빌드·lint·E2E 통과
+
+## Phase 16.0 — 안드로이드 릴리스 빌드 준비(서명·버전·아이콘·가이드) (2026-07-16, 사용자 요청)
+- ✅ **릴리스 서명 설정**: build.gradle에 signingConfigs.release 추가 — android/keystore.properties(커밋 금지, .gitignore 등록)에서 storeFile/비번/별칭 읽음. 없으면 debug 키로 폴백(로컬 assembleRelease 가능)
+- ✅ **버전 정렬**: app package.json·build.gradle versionName 1.7.6, versionCode 1(업로드마다 +1 안내)
+- ✅ **아이콘 소스 스테이징**: app/assets/icon*.png(web icon-512 기반). sharp 바이너리가 프록시 차단으로 여기선 생성 불가 → 사용자 PC에서 `npx @capacitor/assets generate` 한 줄로 전 밀도 아이콘·스플래시 생성하도록 문서화
+- ✅ **README 릴리스 가이드**: 준비→아이콘→키스토어→버전→`./gradlew bundleRelease`→Play Console(데이터안전·개인정보 URL) 단계별. 광고 미반영 상태로도 빌드·출시 가능(테스트 광고) 명시
+- ⚠️ 샌드박스에 Android SDK 없어 AAB 컴파일은 Android Studio/SDK PC에서 수행(문서화 완료)
+- 검증: gradle 서명 블록 구성 확인. (SDK 컴파일은 외부 환경)

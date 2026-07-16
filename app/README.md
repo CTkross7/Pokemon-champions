@@ -91,22 +91,62 @@ npx cap open android        # Android Studio 열기 → Run ▶
   AdMob 콘솔 > 개인정보 보호 및 메시지에서 GDPR 메시지를 만들어두세요.
 - 웹 루트에 `app-ads.txt`를 두고 AdMob 퍼블리셔 라인을 추가하면 무효 트래픽 방지에 도움.
 
-## 릴리스 빌드 (Play 스토어)
+## 릴리스 빌드 (Play 스토어) — 단계별
 
-1. `android/app/build.gradle`에서 `versionCode`(정수 +1)·`versionName` 갱신.
-2. 업로드 키스토어 생성(최초 1회):
-   ```bash
-   keytool -genkey -v -keystore champsnote.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
-   ```
-   `android/keystore.properties`에 경로/별칭/비밀번호를 두고 `build.gradle` 서명 설정에 연결
-   (키스토어·비밀번호는 **커밋 금지**, `.gitignore`에 포함됨).
-3. Android Studio → **Build > Generate Signed Bundle/APK > Android App Bundle(.aab)**.
-4. [Play Console](https://play.google.com/console)에 AAB 업로드:
-   - 앱 이름/아이콘/스크린샷은 `docs/store-assets/` 참고.
-   - **데이터 안전(Data safety)** 양식: 이메일/구글 로그인·팀 데이터 저장(계정 연동),
-     AdMob 광고 식별자 사용을 정확히 신고.
-   - 콘텐츠 등급, 개인정보처리방침 URL(`/privacy`) 입력.
-5. 내부 테스트 → 비공개/공개 테스트 → 프로덕션 단계로 출시.
+> ⚠️ 이 저장소 개발환경엔 Android SDK가 없어 AAB 컴파일은 **Android Studio(또는 SDK
+> 설치된 PC)** 에서 해야 합니다. 아래는 그 PC에서의 절차이며, 서명 설정·버전은 이미
+> 프로젝트에 반영돼 있습니다.
+
+**0) 최초 1회 준비**
+```bash
+cd app
+npm install
+npx cap sync android   # 웹 폴백·플러그인·설정 동기화
+```
+
+**1) 앱 아이콘·스플래시(브랜드 반영, 권장)** — 현재는 Capacitor 기본 아이콘입니다.
+`app/assets/icon.png`(챔스노트 로고, 1024px 권장)를 소스로 한 줄이면 전 밀도 아이콘·스플래시가 생성됩니다:
+```bash
+npx @capacitor/assets generate --android \
+  --iconBackgroundColor '#050505' --iconBackgroundColorDark '#050505' \
+  --splashBackgroundColor '#050505' --splashBackgroundColorDark '#050505'
+npx cap sync android
+```
+(이 도구는 `sharp`를 쓰며 일반 PC에선 정상 설치됩니다.)
+
+**2) 업로드 키스토어 생성(최초 1회)**
+```bash
+keytool -genkey -v -keystore champsnote.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+```
+`app/android/keystore.properties` 생성(**커밋 금지** — .gitignore에 포함):
+```
+storeFile=/absolute/path/to/champsnote.jks
+storePassword=<키스토어 비밀번호>
+keyAlias=upload
+keyPassword=<키 비밀번호>
+```
+> build.gradle의 서명 설정이 이 파일을 자동으로 읽습니다(없으면 debug 키로 폴백).
+
+**3) 버전 올리기** — `app/android/app/build.gradle`에서 업로드마다 `versionCode`를 **+1**
+(현재 1), `versionName`은 라벨(현재 "1.7.6").
+
+**4) AAB 빌드**
+```bash
+cd app/android
+./gradlew bundleRelease
+# 산출물: app/build/outputs/bundle/release/app-release.aab
+```
+또는 Android Studio → **Build > Generate Signed Bundle/APK > Android App Bundle**.
+
+**5) [Play Console](https://play.google.com/console) 업로드**
+- 앱 이름/아이콘/스크린샷/피처 그래픽: `docs/store-assets/` 참고.
+- **데이터 안전(Data safety)**: 이메일/구글 로그인·팀 데이터 저장(계정 연동), AdMob
+  광고 식별자(AD_ID) 사용을 정확히 신고.
+- 콘텐츠 등급, 개인정보처리방침 URL(`https://champsnote.pages.dev/privacy`) 입력.
+- 내부 테스트 → 비공개/공개 테스트 → 프로덕션.
+
+> 광고: 실 AdMob ID 미반영 상태로도 빌드·출시는 가능합니다(테스트 광고만 노출, 수익 0).
+> 위 "AdMob 설정"대로 실 ID를 넣으면 재빌드 없이(단위 ID) 광고가 실 광고로 바뀝니다.
 
 ## 참고 / 정책
 
