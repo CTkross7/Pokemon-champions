@@ -82,6 +82,7 @@ const TITLE_BY_PATH: Record<string, string> = {
   '/matchup': 'matchup',
   '/gallery': 'gallery',
   '/notices': 'notices',
+  '/download': 'download',
   '/about': 'about',
   '/settings': 'settings',
   '/profile': 'profile',
@@ -214,6 +215,9 @@ export default function Layout() {
           </div>
           <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>
           <div className="flex flex-wrap gap-3 text-[11px] font-semibold text-zinc-400 dark:text-zinc-500">
+            <NavLink to="/download" className="hover:text-zinc-700 dark:hover:text-zinc-300">
+              {t('nav.download')}
+            </NavLink>
             <NavLink to="/notices" className="hover:text-zinc-700 dark:hover:text-zinc-300">
               {t('nav.notices')}
             </NavLink>
@@ -321,6 +325,7 @@ function MoreSheet({
     { to: '/settings', key: 'nav.settings', icon: 'settings' },
     { to: '/stats', key: 'nav.stats', icon: 'chart' },
     { to: '/notices', key: 'nav.notices', icon: 'bell' },
+    { to: '/download', key: 'nav.download', icon: 'download' },
     { to: '/about', key: 'nav.about', icon: 'info' },
     // Admin dashboard only surfaces for verified admins (ADMIN_USERNAMES).
     ...(isAdmin ? [{ to: '/admin', key: 'nav.admin', icon: 'shield' as IconName }] : []),

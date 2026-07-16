@@ -18,6 +18,7 @@
     "profile": "Profile",
     "login": "Log in",
     "notices": "Notices",
+    "download": "App",
     "admin": "Admin",
     "welcome": "Welcome",
     "more": "More",
@@ -127,7 +128,9 @@
     "viewAll": "View all",
     "hello": "{{name}}",
     "authTitle": "Sign in to save your teams",
-    "authBody": "Your teams, notes, and settings sync to your account across devices."
+    "authBody": "Your teams, notes, and settings sync to your account across devices.",
+    "appTitle": "ChampsNote Android app is here",
+    "appDesc": "Install it and launch straight from your home screen"
   },
   "about": {
     "title": "About ChampsNote",
@@ -673,5 +676,32 @@
     "forbidden": "You are not an administrator.",
     "needBackend": "",
     "noticeCompose": "Compose notices on the Notices page."
+  },
+  "download": {
+    "badge": "Android app now available",
+    "title": "ChampsNote App",
+    "subtitle": "Everything on the web, faster in an app. Install it and launch full-screen right from your home screen.",
+    "cta": "Download APK",
+    "comingSoon": "Download coming soon",
+    "playStore": "Get it on Google Play",
+    "alreadyApp": "You're already using the ChampsNote app",
+    "iosHint": "iOS (iPhone/iPad) is not supported yet — use the browser",
+    "desktopHint": "Open this on an Android device to install directly",
+    "whyTitle": "Why use the app",
+    "perks": [
+      "One-tap launch from a home-screen icon — no typing the URL",
+      "Full-screen, no browser address bar",
+      "Always up to date — app reflects web updates automatically",
+      "Android back-button support"
+    ],
+    "installTitle": "How to install",
+    "steps": [
+      "Tap the Download APK button to get the file",
+      "Tap the downloaded file to start installing",
+      "If prompted about \"unknown sources\", allow installs from this browser",
+      "Once installed, launch from the ChampsNote icon on your home screen"
+    ],
+    "safeTitle": "Safety note",
+    "safeBody": "ChampsNote is an unofficial, fan-made utility not affiliated with The Pokémon Company. The APK is signed with the developer (CTkross) key and is a thin launcher that simply loads the website, so it requests only minimal permissions."
   }
 }

@@ -158,6 +158,47 @@ cd app/android
 > 광고: 실 AdMob ID 미반영 상태로도 빌드·출시는 가능합니다(테스트 광고만 노출, 수익 0).
 > 위 "AdMob 설정"대로 실 ID를 넣으면 재빌드 없이(단위 ID) 광고가 실 광고로 바뀝니다.
 
+## APK 직접 배포 (웹 /download 페이지)
+
+스토어(AAB) 외에, 웹사이트에서 **APK를 바로 내려받게** 하는 다운로드 페이지가 있습니다
+(`champsnote.pages.dev/download`, 홈 상단 배너·하단 "앱" 메뉴에서 진입). APK 파일만
+호스팅하고 그 URL을 환경변수로 넣으면 다운로드 버튼이 활성화됩니다.
+
+**1) APK 만들기 (release, 서명됨)**
+```powershell
+cd app\android
+.\gradlew.bat assembleRelease
+# 산출물: app\build\outputs\apk\release\app-release.apk
+```
+
+**Android Studio에서 만들고 파일 찾기(GUI):**
+- **Build > Build Bundle(s) / APK(s) > Build APK(s)** 실행.
+- 완료 알림(우하단)에서 **"locate"** 클릭 → 파일 탐색기에서 `app-release.apk` 위치가 열림.
+- 경로: `app\android\app\build\outputs\apk\release\app-release.apk`.
+- 그 파일을 아무 이름(예: `champsnote.apk`)으로 복사해 아래 중 한 곳에 올립니다.
+
+**2) APK 호스팅 — 둘 중 하나**
+
+- **(권장) GitHub Releases** — 저장소 용량을 안 늘림.
+  1. GitHub 저장소 > Releases > "Draft a new release" > 태그(예: `v1.8.0`) 생성.
+  2. `champsnote.apk`를 릴리스 첨부파일로 업로드 > Publish.
+  3. 다운로드 URL(고정): `https://github.com/CTkross7/Pokemon-champions/releases/latest/download/champsnote.apk`
+     (파일명을 매번 `champsnote.apk`로 통일하면 `latest`가 항상 최신을 가리킴.)
+
+- **(간단) Cloudflare Pages public 폴더** — `web/public/champsnote.apk`로 커밋 후 배포하면
+  `/champsnote.apk`로 서빙됨. 대신 바이너리가 git에 쌓이니 파일이 크면 비권장.
+
+**3) 다운로드 버튼 활성화 (Cloudflare Pages 환경변수)**
+```
+VITE_APK_URL=https://github.com/CTkross7/Pokemon-champions/releases/latest/download/champsnote.apk
+VITE_APK_VERSION=1.8.0
+VITE_APK_SIZE=8.4 MB          # 실제 파일 크기(선택)
+VITE_PLAY_URL=...             # 스토어 출시 후 Play 링크(선택)
+```
+- 웹을 다시 배포하면 `/download` 페이지의 **"APK 다운로드"** 버튼이 켜지고, 위 값이 반영됩니다.
+- `VITE_APK_URL`이 비어 있으면 버튼은 "다운로드 준비 중" 상태로 안전하게 표시됩니다(깨진 링크 없음).
+- 새 버전 배포: APK 새로 올리고(같은 파일명) `VITE_APK_VERSION`만 올린 뒤 웹 재배포.
+
 ## 참고 / 정책
 
 - 팬메이드 비공식 유틸리티임을 앱 설명·앱 내에 고지(웹 About/Privacy와 동일).

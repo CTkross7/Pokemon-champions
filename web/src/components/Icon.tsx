@@ -135,6 +135,20 @@ const PATHS = {
       <path d="M5 15V5a1 1 0 0 1 1-1h9" />
     </>
   ),
+  download: (
+    <>
+      <path d="M12 3.5v11" />
+      <path d="m7.5 10.5 4.5 4.5 4.5-4.5" />
+      <path d="M4.5 19.5h15" />
+    </>
+  ),
+  smartphone: (
+    <>
+      <rect x="6.5" y="2.5" width="11" height="19" rx="2.6" />
+      <path d="M10.5 18.5h3" />
+    </>
+  ),
+  check: <path d="m5 12.5 4.5 4.5L19 7.5" />,
 } as const
 
 export type IconName = keyof typeof PATHS

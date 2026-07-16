@@ -8,6 +8,7 @@ import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
 import { loadRegulation, daysUntil, type Regulation } from '@/lib/regulation'
 import { listNotices, type Notice } from '@/lib/notices'
 import { useAuth } from '@/lib/auth'
+import { isInApp } from '@/lib/appDownload'
 
 // Each feature gets its own accent so the UI reads colorful and clean rather
 // than mono-lime. Tones map to icon-tile + hover-border classes.
@@ -140,6 +141,33 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Android app release banner — hidden inside the app itself */}
+      {!isInApp() && (
+        <Link
+          to="/download"
+          className="group relative flex items-center gap-4 overflow-hidden rounded-3xl border border-volt-500/40 bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-lift dark:border-volt-400/30 dark:bg-[#0c0d11]"
+          style={{
+            backgroundImage:
+              'radial-gradient(70% 140% at 100% 0%, rgba(208,242,36,0.16), transparent 60%)',
+          }}
+        >
+          <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-volt-400 text-black shadow-soft transition-transform group-hover:scale-105">
+            <Icon name="smartphone" size={24} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <span className="inline-flex items-center gap-1 rounded-full bg-volt-400/20 px-2 py-0.5 text-[10px] font-extrabold text-volt-700 dark:text-volt-300">
+              {t('download.badge')}
+            </span>
+            <p className="mt-1 text-[15px] font-extrabold tracking-tight">{t('home.appTitle')}</p>
+            <p className="truncate text-[12px] text-zinc-500 dark:text-zinc-400">{t('home.appDesc')}</p>
+          </div>
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-volt-400 px-3.5 py-2 text-[12px] font-extrabold text-black">
+            <Icon name="download" size={14} strokeWidth={2.4} />
+            <span className="hidden sm:inline">{t('download.cta')}</span>
+          </span>
+        </Link>
+      )}
 
       {/* Meta preview — top usage Pokemon, links to the full stats page */}
       {top.length > 0 && (

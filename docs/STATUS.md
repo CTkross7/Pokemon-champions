@@ -549,3 +549,14 @@
 - ✅ **서명 주체(dname)**: 키스토어 생성 시 `CN=ctkross.champsnote.dev, OU=ChampsNote, O=CTkross, ...`로 인증서에 박히도록 README 명시
 - ✅ 미출시 상태라 지금 확정(출시 후 applicationId 변경 불가)
 - 검증: 매니페스트 `.MainActivity`(namespace 상대) 정상, 잔여 dev.champsnote.app 0
+
+## Phase 16.2 — APK 직접 다운로드 페이지(웹 /download) + 앱 출시 배너 (v1.8.0, 2026-07-16, 사용자 요청)
+- ✅ **다운로드 랜딩 페이지**(`/download`): 앱 아이콘·버전·크기 칩·"APK 다운로드" CTA + 설치 4단계·앱 장점·안전 안내(팬메이드·서명·최소권한). 플랫폼 인식(안드로이드 강조/iOS 미지원 안내/데스크톱 안내), **인앱 접속 시 CTA 숨김**("이미 앱으로 접속 중")
+- ✅ **홈 앱 출시 배너**: 히어로 하단에 네온라임 배너(스마트폰 아이콘+다운로드 버튼) → /download. isInApp이면 미노출
+- ✅ **진입 동선**: 데스크톱 상단 nav 대신 footer·모바일 "더보기" 시트에 "앱" 항목 추가(download 아이콘), 홈 배너
+- ✅ **APK URL 환경변수화**(`web/src/lib/appDownload.ts`): `VITE_APK_URL`(비면 "준비 중" 안전 표시)·`VITE_APK_VERSION`·`VITE_APK_SIZE`·`VITE_PLAY_URL`. GitHub Releases 권장(레포 비대화 방지) 또는 public 폴더. 새 APK = URL만 교체·웹 재배포(코드 변경 불필요)
+- ✅ **Icon 3종 추가**: download·smartphone·check
+- ✅ **README**: Android Studio에서 APK 만들고 파일 찾는 법(Build APK(s)→locate) + GitHub Releases/public 호스팅 + 환경변수 주입 절차
+- ✅ i18n(ko/en): nav.download·home.appTitle/appDesc·download 네임스페이스(badge/title/subtitle/cta/comingSoon/playStore/alreadyApp/힌트/perks[]/steps[]/safe)
+- ✅ 버전 web·app 1.7.6→**1.8.0**
+- 검증: tsc·빌드·worker 번들 전체 통과
