@@ -567,3 +567,11 @@
 - ✅ **앱 자동 반영**: 런처가 라이브 사이트를 로드하므로 웹 배포만으로 설치된 앱에 즉시 반영(APK 재빌드 불필요)
 - ✅ 버전 web·app 1.8.0→**1.8.1**
 - 검증: tsc·빌드 통과
+
+## Phase 16.4 — 앱 아이콘 어댑티브 수정(검은 테두리 제거) (v1.8.1, 2026-07-16, 사용자 스크린샷)
+- ✅ **원인**: 어댑티브 배경=흰색(#FFFFFF)·레거시 아이콘 모서리 투명 → 삼성 런처가 원형/스퀘어클로 자를 때 로고 둘레에 검은/빈 테두리, 로고가 안전영역으로 축소돼 "딱 안 맞음"
+- ✅ **수정(res 직접 재생성, Pillow)**: `ic_launcher_background` 색 #FFFFFF→**볼트 #CAFB02**. 전 밀도(mdpi~xxxhdpi) `ic_launcher.png`(볼트 풀블리드+로고)·`ic_launcher_round.png`(원형 마스크)·`ic_launcher_foreground.png`(로고 0.92 스케일, 사각 테두리는 66.7% 뷰포트 밖으로 잘려 유령 윤곽 제거) 재작성. app/assets 소스 3종(icon/foreground/background)도 정비
+- ✅ **결과**: 런처가 원형·스퀘어클·라운드 어떤 마스크로 잘라도 볼트 배경이 꽉 차고 CN 로고 중앙 크게 표시, 검정 0. 미리보기(뷰포트 크롭+마스크) 검증
+- ✅ **APK만 재빌드하면 반영**(@capacitor/assets 불필요) — README 갱신
+- ✅ versionCode 1→**2**, versionName 1.7.6→**1.8.1**(app package.json 정렬)
+- 검증: 전 밀도 PNG 코너/센터 픽셀 확인, 마스크 미리보기 렌더

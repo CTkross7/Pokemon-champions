@@ -104,20 +104,19 @@ npm install
 npx cap sync android   # 웹 폴백·플러그인·설정 동기화
 ```
 
-**1) 앱 아이콘·스플래시(브랜드 반영, 권장)** — 현재는 Capacitor 기본 아이콘입니다.
-`app/assets/icon.png`(챔스노트 로고, 1024px 권장)를 소스로 한 줄이면 전 밀도 아이콘·스플래시가 생성됩니다.
+**1) 앱 아이콘** — **이미 브랜드 아이콘이 `android/.../res/mipmap-*`에 반영돼 있습니다.**
+어댑티브 아이콘 배경=볼트그린(`#CAFB02`, `res/values/ic_launcher_background.xml`), 전경=챔스노트
+CN 로고(안전영역 여백 포함). 런처가 원형·스퀘어클로 잘라도 검은 테두리 없이 볼트 배경이 꽉 찹니다.
+> **아이콘만 바꿀 거면 별도 명령 없이 APK만 다시 빌드하면 됩니다.**
 
-macOS/Linux(bash):
-```bash
-npx @capacitor/assets generate --android --iconBackgroundColor '#050505' --iconBackgroundColorDark '#050505' --splashBackgroundColor '#050505' --splashBackgroundColorDark '#050505'
-npx cap sync android
-```
-Windows(PowerShell) — **반드시 한 줄로**(줄바꿈 `\` 금지):
+(선택) 로고를 교체하려면 `app/assets/`의 소스(`icon.png`·`icon-foreground.png`·`icon-background.png`)를
+바꾼 뒤 아래로 재생성합니다. 스플래시만 새로 뽑을 때도 사용:
 ```powershell
-npx @capacitor/assets generate --android --iconBackgroundColor '#050505' --iconBackgroundColorDark '#050505' --splashBackgroundColor '#050505' --splashBackgroundColorDark '#050505'
+npx @capacitor/assets generate --android --splashBackgroundColor "#050505" --splashBackgroundColorDark "#050505"
 npx cap sync android
 ```
-(이 도구는 `sharp`를 쓰며 일반 PC에선 정상 설치됩니다.)
+(이 도구는 `sharp`를 쓰며 일반 PC에선 정상 설치됩니다. `icon-foreground.png`+`icon-background.png`가
+있으면 그 두 레이어로 어댑티브 아이콘을 만듭니다.)
 
 **2) 업로드 키스토어 생성(최초 1회)** — 서명 주체를 `ctkross.champsnote.dev`로 반영:
 한 줄로(bash·PowerShell 공통):
