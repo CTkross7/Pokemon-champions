@@ -113,3 +113,13 @@ html.champs-in-app main {
 ins.adsbygoogle[data-ad-status='unfilled'] {
   display: none !important;
 }
+
+/* Long content pages: skip rasterizing off-screen sections so the page never
+   becomes one giant compositing layer that overflows the GPU's max texture
+   size — the cause of ghosted text + rainbow noise on some Android WebViews
+   (worst when a translucent modal backdrop composites the whole background).
+   `contain-intrinsic-size: auto <h>` keeps scroll height stable. */
+.cv-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 260px;
+}
