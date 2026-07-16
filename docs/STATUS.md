@@ -514,3 +514,10 @@
 - ✅ 15.5의 모달 스크롤 잠금과 함께 배경 대형 레이어 승격 자체를 억제
 - ✅ 버전 1.7.2→**1.7.3**
 - 검증: 빌드·lint·E2E(전체 통과, 렌더 회귀 없음) ✅ (content-visibility는 온스크린 외형 불변, 표준 Chromium 기능)
+
+## Phase 15.7 — EGS104p(Mali GPU) 스크롤 잔상·노이즈: 반투명 sticky/fixed 불투명화 (v1.7.4, 2026-07-16, 사용자 보고)
+- ✅ **핵심 원인 특정**: 반투명 sticky 헤더(bg-surface-dark/95)와 반투명 fixed 하단 액션바(bg-*/95)가 스크롤 콘텐츠 위에 매 프레임 재합성 → 일부 Mali GPU(EGS104p 등)에서 잔상(스크롤 트레일)+노이즈. content-visibility·스크롤잠금으로는 안 잡힘
+- ✅ **수정**: 헤더·MobileActionBar 배경을 **불투명**(bg-white dark:bg-surface-dark)으로 변경 → 스크롤 콘텐츠 재합성 제거
+- ✅ 15.6(About content-visibility)·15.5(모달 스크롤잠금)과 합쳐 스크롤 트레일·거대 레이어·모달 아래 재도색을 다층 방어
+- ✅ 버전 1.7.3→**1.7.4**
+- 검증: 빌드·lint·E2E 전체 통과. 잔여 시 모달 backdrop 불투명화·전역 확대가 다음 단계

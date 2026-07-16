@@ -148,7 +148,10 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/95 dark:border-white/6 dark:bg-surface-dark/95">
+      {/* Opaque (not translucent): a see-through sticky header forces the GPU to
+          re-composite the scrolling content under it every frame, which leaves
+          ghost trails + noise on some Android GPUs (e.g. Mali tablets). */}
+      <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white dark:border-white/6 dark:bg-surface-dark">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <NavLink to="/" className="flex items-center gap-2.5">
             <Logo />
