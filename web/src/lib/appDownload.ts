@@ -8,7 +8,6 @@
  * new APK never needs a code change — only a redeploy with a new URL.
  *
  *   VITE_APK_URL      full download URL of the .apk (empty ⇒ "coming soon")
- *   VITE_APK_VERSION  version label shown on the button (defaults to APP_VERSION)
  *   VITE_APK_SIZE     human size label, e.g. "8.4 MB" (optional)
  *   VITE_PLAY_URL     Play Store listing URL once published (optional)
  */
@@ -16,7 +15,10 @@ import { APP_VERSION } from '@/lib/version'
 import { isInApp } from '@/lib/ads'
 
 export const APK_URL = ((import.meta.env.VITE_APK_URL as string) || '').trim()
-export const APK_VERSION = ((import.meta.env.VITE_APK_VERSION as string) || APP_VERSION).trim()
+// APK version is always the site version, so the download page and the running
+// web app never disagree. Rebuild + re-upload the APK on each release (its
+// build.gradle versionName is kept equal to the web package.json version).
+export const APK_VERSION = APP_VERSION
 export const APK_SIZE = ((import.meta.env.VITE_APK_SIZE as string) || '').trim()
 export const PLAY_URL = ((import.meta.env.VITE_PLAY_URL as string) || '').trim()
 

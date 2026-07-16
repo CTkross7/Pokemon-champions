@@ -593,3 +593,8 @@
 - ✅ **SHA-1 수령**: `5D:08:BD:06:52:BE:63:A1:A2:CB:F3:83:BF:17:92:4A:A3:7E:A7:F0`(업로드 키). 사용자 남은 작업: 구글 Android OAuth 클라이언트 생성(패키지+SHA-1) + `VITE_GOOGLE_CLIENT_ID` 설정 + 재빌드
 - ✅ .env.example·README 절차 문서화. versionCode 2→**3**, 버전 web·app 1.8.2→**1.8.3**
 - 검증: tsc·vite·worker 번들 전체 통과
+
+## Phase 16.7 — 다운로드 페이지 APK 버전 = 사이트 버전 자동 연동 (2026-07-16, 사용자 요청)
+- ✅ **APK_VERSION = APP_VERSION 고정**: `VITE_APK_VERSION` 지정 방식 제거 → /download의 버전 칩이 항상 웹 사이트 버전(package.json)과 동일. 실행 중 웹앱과 표기 불일치 원천 차단. build.gradle versionName도 웹 버전과 동일 유지 규칙 문서화
+- ✅ .env.example·appDownload.ts 주석 정리(VITE_APK_VERSION 참조 제거)
+- 검증: tsc·빌드 통과
