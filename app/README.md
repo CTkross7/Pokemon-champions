@@ -105,21 +105,24 @@ npx cap sync android   # 웹 폴백·플러그인·설정 동기화
 ```
 
 **1) 앱 아이콘·스플래시(브랜드 반영, 권장)** — 현재는 Capacitor 기본 아이콘입니다.
-`app/assets/icon.png`(챔스노트 로고, 1024px 권장)를 소스로 한 줄이면 전 밀도 아이콘·스플래시가 생성됩니다:
+`app/assets/icon.png`(챔스노트 로고, 1024px 권장)를 소스로 한 줄이면 전 밀도 아이콘·스플래시가 생성됩니다.
+
+macOS/Linux(bash):
 ```bash
-npx @capacitor/assets generate --android \
-  --iconBackgroundColor '#050505' --iconBackgroundColorDark '#050505' \
-  --splashBackgroundColor '#050505' --splashBackgroundColorDark '#050505'
+npx @capacitor/assets generate --android --iconBackgroundColor '#050505' --iconBackgroundColorDark '#050505' --splashBackgroundColor '#050505' --splashBackgroundColorDark '#050505'
+npx cap sync android
+```
+Windows(PowerShell) — **반드시 한 줄로**(줄바꿈 `\` 금지):
+```powershell
+npx @capacitor/assets generate --android --iconBackgroundColor '#050505' --iconBackgroundColorDark '#050505' --splashBackgroundColor '#050505' --splashBackgroundColorDark '#050505'
 npx cap sync android
 ```
 (이 도구는 `sharp`를 쓰며 일반 PC에선 정상 설치됩니다.)
 
 **2) 업로드 키스토어 생성(최초 1회)** — 서명 주체를 `ctkross.champsnote.dev`로 반영:
+한 줄로(bash·PowerShell 공통):
 ```bash
-keytool -genkeypair -v \
-  -keystore champsnote.jks -alias upload \
-  -keyalg RSA -keysize 2048 -validity 10950 \
-  -dname "CN=ctkross.champsnote.dev, OU=ChampsNote, O=CTkross, L=Seoul, S=Seoul, C=KR"
+keytool -genkeypair -v -keystore champsnote.jks -alias upload -keyalg RSA -keysize 2048 -validity 10950 -dname "CN=ctkross.champsnote.dev, OU=ChampsNote, O=CTkross, L=Seoul, S=Seoul, C=KR"
 ```
 - `CN`(주체)에 `ctkross.champsnote.dev`가 서명 인증서에 박힙니다. `O`/`OU`는 자유롭게 조정.
 - 앱 식별자(applicationId)도 `dev.champsnote.ctkross`(= ctkross.champsnote.dev 역순)로 반영돼 있습니다. **출시 후에는 변경 불가**이니 지금 값이 맞는지 확인하세요.
