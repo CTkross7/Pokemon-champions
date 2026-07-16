@@ -45,6 +45,28 @@ export function openInExternalBrowser(url: string = location.href): boolean {
   if (typeof navigator === 'undefined') return false
   const ua = navigator.userAgent
 
+  // Our own Capacitor app WebView. An `intent://` URL is NOT resolved by the
+  // Capacitor WebView (that's a Chrome feature), which is why the old approach
+  // did nothing here. Capacitor routes window.open(_blank) to the OS, and a
+  // final ACTION_VIEW intent lets the OS pick the default browser.
+  if (/ChampsNoteApp/i.test(ua)) {
+    try {
+      const w = window.open(url, '_blank')
+      if (w) return true
+    } catch {
+      /* fall through to the intent attempt */
+    }
+    try {
+      const u = new URL(url)
+      location.href =
+        `intent://${u.host}${u.pathname}${u.search}` +
+        `#Intent;scheme=https;action=android.intent.action.VIEW;` +
+        `S.browser_fallback_url=${encodeURIComponent(url)};end`
+      return true
+    } catch {
+      return false
+    }
+  }
   // KakaoTalk has a dedicated scheme to open the system browser.
   if (/KAKAOTALK/i.test(ua)) {
     location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(url)
@@ -55,13 +77,15 @@ export function openInExternalBrowser(url: string = location.href): boolean {
     location.href = url + (url.includes('?') ? '&' : '?') + 'openExternalBrowser=1'
     return true
   }
-  // Android (Instagram/Facebook/Naver/etc.): force Chrome via an intent URL.
+  // Android (Instagram/Facebook/Naver/etc.): open in a full browser via an
+  // ACTION_VIEW intent (default browser, with a fallback URL if none resolves).
   if (/Android/i.test(ua)) {
     try {
       const u = new URL(url)
       location.href =
         `intent://${u.host}${u.pathname}${u.search}` +
-        `#Intent;scheme=https;package=com.android.chrome;end`
+        `#Intent;scheme=https;action=android.intent.action.VIEW;` +
+        `S.browser_fallback_url=${encodeURIComponent(url)};end`
       return true
     } catch {
       return false
@@ -70,3 +94,7 @@ export function openInExternalBrowser(url: string = location.href): boolean {
   // iOS in-app browsers can't be forced out programmatically.
   return false
 }
+
+/** True for our own Capacitor app WebView (vs a third-party in-app browser). */
+export const isOwnApp = (): boolean =>
+  typeof navigator !== 'undefined' && /ChampsNoteApp/i.test(navigator.userAgent)

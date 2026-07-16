@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, startGoogleLogin, signupEmail, loginEmail, isValidUsername } from '@/lib/auth'
-import { detectInAppBrowser, openInExternalBrowser, isIOS } from '@/lib/inAppBrowser'
+import { detectInAppBrowser, openInExternalBrowser, isIOS, isOwnApp } from '@/lib/inAppBrowser'
 
 export default function Login() {
   const { t } = useTranslation()
@@ -10,6 +10,10 @@ export default function Login() {
   const { user, providers, init } = useAuth()
   // Google OAuth is blocked inside in-app browsers (disallowed_useragent).
   const inApp = useMemo(() => detectInAppBrowser(), [])
+  // Our own Android app (vs a third-party in-app browser like KakaoTalk): here
+  // we recommend email login (which works and stays signed in) rather than
+  // nagging users out to the browser, and lead with it.
+  const ownApp = inApp.isInApp && isOwnApp()
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [email, setEmail] = useState('')
   const [id, setId] = useState('')
@@ -55,8 +59,16 @@ export default function Login() {
         <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">{t('auth.subtitle')}</p>
       </div>
 
-      {/* In-app browser (KakaoTalk/Instagram/…) blocks Google login. */}
-      {inApp.isInApp && (
+      {/* Our own app: recommend email login (works + stays signed in). */}
+      {ownApp && (
+        <div className="rounded-xl border border-volt-500/40 bg-volt-400/10 p-4 text-[13px] leading-relaxed">
+          <p className="font-bold text-volt-700 dark:text-volt-300">{t('auth.appLoginTitle')}</p>
+          <p className="mt-1 text-zinc-600 dark:text-zinc-300">{t('auth.appLoginBody')}</p>
+        </div>
+      )}
+
+      {/* Third-party in-app browser (KakaoTalk/Instagram/…) blocks Google login. */}
+      {inApp.isInApp && !ownApp && (
         <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-[13px] leading-relaxed dark:border-amber-500/30 dark:bg-amber-500/10">
           <p className="font-bold text-amber-700 dark:text-amber-300">
             {t('auth.inAppTitle', { name: inApp.name })}
@@ -77,37 +89,40 @@ export default function Login() {
         </div>
       )}
 
-      <div className="card space-y-4 p-6">
-        <button
-          type="button"
-          disabled={!googleOn}
-          onClick={() => {
-            // In an in-app browser, sending them to Google → disallowed_useragent.
-            // Bounce to the system browser (or show manual guidance) instead.
-            if (inApp.isInApp) {
-              if (!openInExternalBrowser()) alert(t('auth.inAppManual'))
-              return
-            }
-            startGoogleLogin()
-          }}
-          className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-800 transition-colors enabled:hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-white"
-        >
-          <GoogleMark />
-          {t('auth.google')}
-        </button>
-        {!googleOn && <p className="text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>}
-        {inApp.isInApp && googleOn && (
-          <p className="text-center text-[11px] font-semibold text-amber-600 dark:text-amber-400">{t('auth.inAppEmailHint')}</p>
-        )}
+      <div className="card flex flex-col gap-4 p-6">
+        {/* Google — secondary (order-3) inside our own app so email leads. */}
+        <div className={ownApp ? 'order-3' : 'order-1'}>
+          <button
+            type="button"
+            disabled={!googleOn}
+            onClick={() => {
+              // In-app browser → Google returns disallowed_useragent. Bounce to
+              // the system browser (or show manual guidance) instead.
+              if (inApp.isInApp) {
+                if (!openInExternalBrowser()) alert(t('auth.inAppManual'))
+                return
+              }
+              startGoogleLogin()
+            }}
+            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-800 transition-colors enabled:hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/5 dark:text-white"
+          >
+            <GoogleMark />
+            {ownApp ? t('auth.googleInApp') : t('auth.google')}
+          </button>
+          {!googleOn && <p className="mt-2 text-center text-[11px] text-zinc-400 dark:text-zinc-600">{t('auth.providerHint')}</p>}
+          {inApp.isInApp && googleOn && (
+            <p className="mt-2 text-center text-[11px] font-semibold text-amber-600 dark:text-amber-400">{t('auth.inAppEmailHint')}</p>
+          )}
+        </div>
 
-        <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-300 dark:text-zinc-700">
+        <div className="order-2 flex items-center gap-3 text-[11px] font-bold text-zinc-300 dark:text-zinc-700">
           <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />
           {t('auth.or')}
           <span className="h-px flex-1 bg-zinc-200 dark:bg-white/10" />
         </div>
 
-        {/* Email + password */}
-        <div className="space-y-2.5">
+        {/* Email + password — primary (order-1) inside our own app. */}
+        <div className={`space-y-2.5 ${ownApp ? 'order-1' : 'order-3'}`}>
           {mode === 'signup' ? (
             <>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t('auth.emailLabel')} autoComplete="email" className={input} />

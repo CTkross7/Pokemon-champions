@@ -575,3 +575,12 @@
 - ✅ **APK만 재빌드하면 반영**(@capacitor/assets 불필요) — README 갱신
 - ✅ versionCode 1→**2**, versionName 1.7.6→**1.8.1**(app package.json 정렬)
 - 검증: 전 밀도 PNG 코너/센터 픽셀 확인, 마스크 미리보기 렌더
+
+## Phase 16.5 — 앱 로그인 개선(이메일 우선) + 외부 브라우저 열기 수정 (v1.8.2, 2026-07-16, 사용자 스크린샷)
+- ✅ **원인**: 앱(Capacitor WebView)에서 "기본 브라우저로 열기"가 `intent://...package=com.android.chrome`을 쓰는데 Capacitor WebView는 intent:// 미해석 → 아무 동작 안 함. 또한 구글 로그인은 외부 브라우저/커스텀탭에서 해도 쿠키 분리로 앱에 로그인 안 이어짐(WebView 앱 구조적 한계)
+- ✅ **① 이메일 우선(즉시, 웹배포만)**: 자사 앱(ChampsNoteApp) 감지 시 로그인 카드에서 **이메일/비번 로그인을 상단(order-1)**, 구글은 하단 보조로 재배치. 무서운 주황 배너 대신 볼트 안내("앱에서는 이메일 로그인 권장, 구글은 브라우저로 열려 로그인 유지 안 됨"). 서드파티 인앱브라우저(카톡 등)는 기존 외부열기 유지
+- ✅ **외부 열기 보강**: 자사 앱은 `window.open(_blank)`(Capacitor가 OS로 라우팅) 후 ACTION_VIEW intent 폴백. 서드파티 안드로이드도 `package=com.android.chrome` 강제 제거→`action=VIEW`+`browser_fallback_url`로 기본 브라우저 사용
+- ✅ **앱 자동 반영**: 웹 코드라 배포만으로 설치된 앱에 반영(APK 재빌드 불필요)
+- ⏭ **② 네이티브 구글 로그인(정석, 다음 작업)**: 사용자 승인('둘 다'). 구글 클라우드 OAuth 안드로이드 클라이언트+SHA-1, capacitor google-auth 플러그인, Worker 토큰 검증/세션 발급, 딥링크 콜백 필요 — 사용자 설정값 수령 후 착수
+- ✅ i18n(ko/en) auth.appLoginTitle/appLoginBody/googleInApp, 버전 web·app 1.8.1→**1.8.2**
+- 검증: tsc·빌드 통과
