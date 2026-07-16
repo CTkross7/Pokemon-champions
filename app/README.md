@@ -177,23 +177,30 @@ cd app\android
 - 경로: `app\android\app\build\outputs\apk\release\app-release.apk`.
 - 그 파일을 아무 이름(예: `champsnote.apk`)으로 복사해 아래 중 한 곳에 올립니다.
 
-**2) APK 호스팅 — 둘 중 하나**
+**2) APK 호스팅 — 저장소 공개 여부에 따라**
 
-- **(권장) GitHub Releases** — 저장소 용량을 안 늘림.
-  1. GitHub 저장소 > Releases > "Draft a new release" > 태그(예: `v1.8.0`) 생성.
-  2. `champsnote.apk`를 릴리스 첨부파일로 업로드 > Publish.
-  3. 다운로드 URL(고정): `https://github.com/CTkross7/Pokemon-champions/releases/latest/download/champsnote.apk`
+> ⚠️ 이 저장소는 **비공개(private)**입니다. **비공개 저장소의 GitHub Releases 첨부파일은
+> 로그인·권한이 있는 사람만** 받을 수 있어(비로그인 방문자는 404), 웹사이트 공개 배포엔
+> 쓸 수 없습니다. 그래서 아래 **(권장) public 폴더** 방식을 사용합니다.
+
+- **(권장, 비공개 저장소용) Cloudflare Pages public 폴더** — `web/public/champsnote.apk`로
+  커밋·배포하면 `/champsnote.apk`(같은 도메인)로 **누구나** 받습니다. 소스는 비공개 그대로.
+  1. 빌드한 `app-release.apk`를 `web/public/champsnote.apk`로 복사.
+  2. 커밋·푸시 → Cloudflare Pages가 자동 배포.
+  - PWA 프리캐시 대상(js/css/html/svg/woff2)에 apk는 없어 캐시로 부풀지 않고, 실제 파일이라
+    SPA 폴백보다 우선 서빙됩니다.
+
+- **(저장소가 public일 때만) GitHub Releases** — 바이너리를 git에 안 쌓음.
+  1. Releases > "Draft a new release" > 태그(예: `v1.8.0`) > `champsnote.apk` 첨부 > Publish.
+  2. URL: `https://github.com/<owner>/<repo>/releases/latest/download/champsnote.apk`
      (파일명을 매번 `champsnote.apk`로 통일하면 `latest`가 항상 최신을 가리킴.)
-
-- **(간단) Cloudflare Pages public 폴더** — `web/public/champsnote.apk`로 커밋 후 배포하면
-  `/champsnote.apk`로 서빙됨. 대신 바이너리가 git에 쌓이니 파일이 크면 비권장.
 
 **3) 다운로드 버튼 활성화 (Cloudflare Pages 환경변수)**
 ```
-VITE_APK_URL=https://github.com/CTkross7/Pokemon-champions/releases/latest/download/champsnote.apk
+VITE_APK_URL=/champsnote.apk   # public 폴더 방식(비공개 저장소 권장)
 VITE_APK_VERSION=1.8.0
-VITE_APK_SIZE=8.4 MB          # 실제 파일 크기(선택)
-VITE_PLAY_URL=...             # 스토어 출시 후 Play 링크(선택)
+VITE_APK_SIZE=6.97 MB          # 실제 파일 크기(선택)
+VITE_PLAY_URL=...              # 스토어 출시 후 Play 링크(선택)
 ```
 - 웹을 다시 배포하면 `/download` 페이지의 **"APK 다운로드"** 버튼이 켜지고, 위 값이 반영됩니다.
 - `VITE_APK_URL`이 비어 있으면 버튼은 "다운로드 준비 중" 상태로 안전하게 표시됩니다(깨진 링크 없음).
