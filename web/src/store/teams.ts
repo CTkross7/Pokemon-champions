@@ -41,6 +41,8 @@ interface TeamsState {
   teams: Team[]
   activeId: string | null
   cloudSynced: boolean
+  /** Ids deleted locally — kept so a cloud sync can't resurrect them. */
+  deletedIds: string[]
   createTeam: (name?: string) => string
   deleteTeam: (id: string) => void
   renameTeam: (id: string, name: string) => void
@@ -86,6 +88,7 @@ export const useTeams = create<TeamsState>()(
         teams: [],
         activeId: null,
         cloudSynced: false,
+        deletedIds: [],
         createTeam: (name) => {
           const team = newTeam(name || `팀 ${get().teams.length + 1}`)
           mutate((s) => ({ teams: [...s.teams, team], activeId: team.id }))
@@ -94,7 +97,12 @@ export const useTeams = create<TeamsState>()(
         deleteTeam: (id) =>
           mutate((s) => {
             const teams = s.teams.filter((t) => t.id !== id)
-            return { teams, activeId: s.activeId === id ? (teams[0]?.id ?? null) : s.activeId }
+            return {
+              teams,
+              activeId: s.activeId === id ? (teams[0]?.id ?? null) : s.activeId,
+              // Tombstone the id so syncFromCloud can't bring it back.
+              deletedIds: s.deletedIds.includes(id) ? s.deletedIds : [...s.deletedIds, id],
+            }
           }),
         renameTeam: (id, name) =>
           mutate((s) => ({
@@ -118,17 +126,24 @@ export const useTeams = create<TeamsState>()(
           const cloud = await fetchCloudTeams()
           if (cloud === null) return // not signed in / no backend — keep local
           set((s) => {
-            // Union by id; the newer updatedAt wins on conflicts.
+            const tombstoned = new Set(s.deletedIds)
+            // Union by id; the newer updatedAt wins on conflicts. Tombstoned ids
+            // (deleted locally) are never re-added, even if still in the cloud.
             const byId = new Map<string, Team>()
             for (const t of s.teams) byId.set(t.id, t)
             for (const t of cloud) {
+              if (tombstoned.has(t.id)) continue
               const local = byId.get(t.id)
               if (!local || (t.updatedAt ?? 0) >= (local.updatedAt ?? 0)) byId.set(t.id, t)
             }
             const teams = [...byId.values()].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
-            return { teams, activeId: s.activeId ?? teams[0]?.id ?? null, cloudSynced: true }
+            // Drop tombstones for ids the cloud no longer has (already gone) to
+            // keep the list bounded.
+            const cloudIds = new Set(cloud.map((t) => t.id))
+            const deletedIds = s.deletedIds.filter((id) => cloudIds.has(id))
+            return { teams, activeId: s.activeId ?? teams[0]?.id ?? null, cloudSynced: true, deletedIds }
           })
-          // Push the merged set so the cloud gets any local-only teams.
+          // Push the merged set so the cloud drops deleted teams and gains local-only ones.
           void pushCloudTeams(get().teams)
         },
       }

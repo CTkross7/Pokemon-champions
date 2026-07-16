@@ -304,6 +304,15 @@ function MoreSheet({
   noticeUnread: boolean
 }) {
   const { t } = useTranslation()
+  // Lock background scroll while the sheet is open (correct modal behaviour +
+  // avoids the under-overlay repaint glitch on some Android WebViews).
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [])
   const items: ReadonlyArray<{ to: string; key: string; icon: IconName }> = [
     { to: loggedIn ? '/profile' : '/login', key: loggedIn ? 'nav.profile' : 'auth.login', icon: 'user' },
     { to: '/settings', key: 'nav.settings', icon: 'settings' },

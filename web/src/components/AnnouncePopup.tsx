@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/lib/auth'
 import { useAnnounce, unreadNotices } from '@/store/announce'
@@ -37,6 +37,19 @@ export default function AnnouncePopup() {
 
   const suppressed = Date.now() < popupSuppressedUntil
   const open = Boolean(user) && loaded && unread.length > 0 && !suppressed && !dismissed
+
+  // Lock background scroll while the modal is open. Besides being correct modal
+  // behaviour, it stops the page from repainting under the fixed overlay, which
+  // triggered a WebView rasterization glitch (ghosted text + noise) on some
+  // Android GPUs.
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [open])
 
   const fmtDate = (ms: number) =>
     new Date(ms).toLocaleDateString(i18n.language === 'ko' ? 'ko-KR' : 'en-US', {
