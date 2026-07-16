@@ -560,3 +560,10 @@
 - ✅ i18n(ko/en): nav.download·home.appTitle/appDesc·download 네임스페이스(badge/title/subtitle/cta/comingSoon/playStore/alreadyApp/힌트/perks[]/steps[]/safe)
 - ✅ 버전 web·app 1.7.6→**1.8.0**
 - 검증: tsc·빌드·worker 번들 전체 통과
+
+## Phase 16.3 — 인앱 하단바 위치 오류 수정(배너 미표시 시 빈 자리) (v1.8.1, 2026-07-16, 사용자 스크린샷)
+- ✅ **원인**: champs-in-app이 AdMob 배너 자리(--champs-ad-h: 58px)를 **항상** 비워둠. 테스트/미필드로 배너가 실제 표시 안 되면 하단 탭바가 바닥에서 58px 떠 보임(스크린샷의 빈 공간)
+- ✅ **수정**: 기본값 `--champs-ad-h: 0px`(탭바 바닥 밀착). appAds.ts가 배너 `SizeChanged` 이벤트에서 **실제 배너 높이**만 주입, `FailedToLoad` 시 0으로 복귀 → 배너가 실제 뜰 때만 그 높이만큼만 확보
+- ✅ **앱 자동 반영**: 런처가 라이브 사이트를 로드하므로 웹 배포만으로 설치된 앱에 즉시 반영(APK 재빌드 불필요)
+- ✅ 버전 web·app 1.8.0→**1.8.1**
+- 검증: tsc·빌드 통과

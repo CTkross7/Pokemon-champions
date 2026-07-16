@@ -97,10 +97,11 @@ body {
 }
 
 /* Android launcher: reserve space for the native AdMob bottom banner so it
-   never covers the mobile tab bar or page content. Height is a safe default
-   for an adaptive banner; tune if the on-device banner differs. */
+   never covers the mobile tab bar or page content. Starts at 0 — appAds.ts sets
+   the real banner height via --champs-ad-h ONLY once the banner actually loads,
+   so the tab bar sits flush at the bottom when no ad is shown (no empty gap). */
 html.champs-in-app {
-  --champs-ad-h: 58px;
+  --champs-ad-h: 0px;
 }
 html.champs-in-app .champs-bottom-nav {
   bottom: calc(var(--champs-ad-h) + env(safe-area-inset-bottom));

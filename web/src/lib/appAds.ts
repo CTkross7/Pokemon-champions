@@ -37,9 +37,19 @@ export async function initAppAds(): Promise<void> {
   if (!isInApp() || started) return
   started = true
   try {
-    const { AdMob, BannerAdPosition, BannerAdSize, AdmobConsentStatus } = await import(
-      '@capacitor-community/admob'
+    const { AdMob, BannerAdPosition, BannerAdSize, BannerAdPluginEvents, AdmobConsentStatus } =
+      await import('@capacitor-community/admob')
+
+    // Reserve layout space for the banner ONLY once it actually renders, using
+    // its real reported height. Until then (and if it fails to fill) the tab bar
+    // stays flush at the bottom — no empty gap. See --champs-ad-h in index.css.
+    const root = document.documentElement
+    const setAdHeight = (h: number) =>
+      root.style.setProperty('--champs-ad-h', `${Math.max(0, Math.round(h))}px`)
+    void AdMob.addListener(BannerAdPluginEvents.SizeChanged, (size: { height?: number }) =>
+      setAdHeight(size?.height ?? 0),
     )
+    void AdMob.addListener(BannerAdPluginEvents.FailedToLoad, () => setAdHeight(0))
 
     // 1) EEA/UK consent (Google User Messaging Platform). Required before ads
     //    can serve to consented-region users; a no-op elsewhere.
