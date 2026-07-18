@@ -54,13 +54,15 @@ interface TeamsState {
   syncFromCloud: () => Promise<void>
 }
 
-// Debounced push so rapid slider/move edits collapse into one save.
+// Debounced push so rapid slider/move edits collapse into one save. Sends teams
+// AND deletion tombstones so deletes propagate across devices.
 let pushTimer: ReturnType<typeof setTimeout> | null = null
-function scheduleCloudPush(getTeams: () => Team[]) {
+function scheduleCloudPush(getState: () => TeamsState) {
   if (pushTimer) clearTimeout(pushTimer)
   pushTimer = setTimeout(() => {
     pushTimer = null
-    void pushCloudTeams(getTeams())
+    const s = getState()
+    void pushCloudTeams(s.teams, s.deletedIds)
   }, 1200)
 }
 
@@ -73,7 +75,8 @@ export async function flushCloudPush(): Promise<void> {
   if (!pushTimer) return
   clearTimeout(pushTimer)
   pushTimer = null
-  await pushCloudTeams(useTeams.getState().teams)
+  const s = useTeams.getState()
+  await pushCloudTeams(s.teams, s.deletedIds)
 }
 
 export const useTeams = create<TeamsState>()(
@@ -82,7 +85,7 @@ export const useTeams = create<TeamsState>()(
       // Wrap a mutation so every change also schedules a cloud save.
       const mutate = (fn: (s: TeamsState) => Partial<TeamsState>) => {
         set(fn)
-        scheduleCloudPush(() => get().teams)
+        scheduleCloudPush(get)
       }
       return {
         teams: [],
@@ -126,25 +129,29 @@ export const useTeams = create<TeamsState>()(
           const cloud = await fetchCloudTeams()
           if (cloud === null) return // not signed in / no backend — keep local
           set((s) => {
-            const tombstoned = new Set(s.deletedIds)
-            // Union by id; the newer updatedAt wins on conflicts. Tombstoned ids
-            // (deleted locally) are never re-added, even if still in the cloud.
+            // Tombstones are shared across devices (stored in the cloud), so a
+            // delete on ANY device is honoured everywhere. Union local + cloud.
+            const deleted = new Set<string>([...s.deletedIds, ...cloud.deletedIds])
             const byId = new Map<string, Team>()
-            for (const t of s.teams) byId.set(t.id, t)
-            for (const t of cloud) {
-              if (tombstoned.has(t.id)) continue
+            // Start from local teams but DROP any that were deleted (locally or
+            // on another device) — this is what stops a deleted team from being
+            // re-uploaded and "coming back".
+            for (const t of s.teams) if (!deleted.has(t.id)) byId.set(t.id, t)
+            // Merge cloud teams; newer updatedAt wins, deleted ids skipped.
+            for (const t of cloud.teams) {
+              if (deleted.has(t.id)) continue
               const local = byId.get(t.id)
               if (!local || (t.updatedAt ?? 0) >= (local.updatedAt ?? 0)) byId.set(t.id, t)
             }
             const teams = [...byId.values()].sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0))
-            // Drop tombstones for ids the cloud no longer has (already gone) to
-            // keep the list bounded.
-            const cloudIds = new Set(cloud.map((t) => t.id))
-            const deletedIds = s.deletedIds.filter((id) => cloudIds.has(id))
-            return { teams, activeId: s.activeId ?? teams[0]?.id ?? null, cloudSynced: true, deletedIds }
+            // Keep the merged tombstone list (bounded — UUIDs never recur).
+            const deletedIds = [...deleted].slice(-500)
+            const activeId = teams.some((t) => t.id === s.activeId) ? s.activeId : (teams[0]?.id ?? null)
+            return { teams, activeId, cloudSynced: true, deletedIds }
           })
-          // Push the merged set so the cloud drops deleted teams and gains local-only ones.
-          void pushCloudTeams(get().teams)
+          // Push the converged state (teams + tombstones) so every device agrees.
+          const s = get()
+          void pushCloudTeams(s.teams, s.deletedIds)
         },
       }
     },

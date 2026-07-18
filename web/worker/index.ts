@@ -41,17 +41,30 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
     if (request.method === 'GET') {
       const row = await db.prepare('SELECT data FROM user_teams WHERE user_id = ?').bind(user.id).first<{ data: string }>()
       let teams: unknown = []
+      let deletedIds: unknown = []
       try {
-        teams = row ? JSON.parse(row.data) : []
+        const parsed = row ? JSON.parse(row.data) : null
+        if (Array.isArray(parsed)) {
+          teams = parsed // legacy blob: a bare teams array
+        } else if (parsed && typeof parsed === 'object') {
+          teams = Array.isArray((parsed as { teams?: unknown }).teams) ? (parsed as { teams: unknown }).teams : []
+          deletedIds = Array.isArray((parsed as { deletedIds?: unknown }).deletedIds)
+            ? (parsed as { deletedIds: unknown }).deletedIds
+            : []
+        }
       } catch {
         teams = []
       }
-      return json({ teams })
+      return json({ teams, deletedIds })
     }
     if (request.method === 'PUT') {
-      const body = (await request.json().catch(() => ({}))) as { teams?: unknown }
+      const body = (await request.json().catch(() => ({}))) as { teams?: unknown; deletedIds?: unknown }
       if (!Array.isArray(body.teams)) return json({ error: 'invalid' }, 400)
-      const data = JSON.stringify(body.teams).slice(0, 200_000) // ~200 KB cap
+      // Tombstones for deleted team ids, so deletions sync across devices.
+      const deletedIds = Array.isArray(body.deletedIds)
+        ? body.deletedIds.filter((x): x is string => typeof x === 'string').slice(-500)
+        : []
+      const data = JSON.stringify({ teams: body.teams, deletedIds }).slice(0, 200_000) // ~200 KB cap
       await db
         .prepare(
           'INSERT INTO user_teams (user_id, data, updated_at) VALUES (?, ?, ?) ' +

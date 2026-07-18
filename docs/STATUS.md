@@ -632,3 +632,13 @@
 - ✅ i18n(ko/en) teams.emptyTitle/emptyBody. 버전 1.8.6→**1.8.7**
 - ✅ 웹 수정이라 배포만으로 앱 반영(APK 재빌드 불필요)
 - 검증: tsc·빌드 통과
+
+## Phase 17.3 — 팀 삭제 기기간 동기화(앱↔웹 재생성) 근본 수정 (v1.8.8, 2026-07-16, 사용자 재보고)
+- ✅ **원인**: 클라우드 동기화가 로컬∪클라우드 합집합인데 tombstone(deletedIds)이 **각 기기 로컬에만** 있어, 한 기기(웹)에서 삭제해도 다른 기기(앱)는 모르고 로컬에 남은 팀을 다시 업로드→재생성(핑퐁)
+- ✅ **수정(tombstone 클라우드 공유)**:
+  - teamsCloud/Worker payload에 **deletedIds 포함**(GET/PUT), 옛 배열 blob 호환. 500개 상한
+  - syncFromCloud: 로컬∪클라우드 tombstone 합집합으로 **로컬 팀 중 삭제된 것도 제거**(다른 기기 삭제 반영) 후 teams+deletedIds 함께 push → 전 기기 수렴
+  - 디바운스/flush 푸시도 deletedIds 동반
+- ✅ 결과: 앱·웹 어디서 삭제해도 양쪽 모두 삭제 유지(재생성 없음)
+- ✅ 버전 1.8.7→**1.8.8**, versionCode 8. 웹+worker 수정이라 배포로 앱 반영(APK 재빌드 불필요)
+- 검증: tsc·빌드·worker 번들 통과
