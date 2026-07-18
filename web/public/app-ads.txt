@@ -1,4 +1,4 @@
 # app-ads.txt — authorizes AdMob to serve ads for the ChampsNote app and helps
 # prevent invalid/spoofed traffic. AdMob console > Apps > app-ads.txt shows the
 # exact line to use; confirm the publisher id matches your AdMob account.
-google.com, pub-4878038748315573, DIRECT, f08c47fec0942fa0
+google.com, pub-5919918265532990, DIRECT, f08c47fec0942fa0

@@ -5,7 +5,7 @@
  * (dev / preview / E2E) — so there are no console errors or invalid-traffic
  * pings before deploy.
  */
-export const ADSENSE_CLIENT = (import.meta.env.VITE_ADSENSE_CLIENT as string) || 'ca-pub-4878038748315573'
+export const ADSENSE_CLIENT = (import.meta.env.VITE_ADSENSE_CLIENT as string) || 'ca-pub-5919918265532990'
 
 export const AD_BANNER_SLOT = import.meta.env.VITE_ADSENSE_SLOT_BANNER as string | undefined
 

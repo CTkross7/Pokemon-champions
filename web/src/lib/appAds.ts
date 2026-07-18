@@ -21,9 +21,12 @@
  */
 import { isInApp } from '@/lib/ads'
 
-const BANNER_ID = (import.meta.env.VITE_ADMOB_BANNER as string) || 'ca-app-pub-3940256099942544/6300978111'
+const BANNER_ID = (import.meta.env.VITE_ADMOB_BANNER as string) || 'ca-app-pub-5919918265532990/8995827229'
 const INTERSTITIAL_ID =
-  (import.meta.env.VITE_ADMOB_INTERSTITIAL as string) || 'ca-app-pub-3940256099942544/1033173712'
+  (import.meta.env.VITE_ADMOB_INTERSTITIAL as string) || 'ca-app-pub-5919918265532990/3184831417'
+// Real ad-unit ids above, but test mode stays ON until you set
+// VITE_ADMOB_TESTING=false — so the app shows Google test ads (never your live
+// ads) during development, avoiding invalid-traffic strikes on your account.
 const TESTING = (import.meta.env.VITE_ADMOB_TESTING as string) !== 'false'
 const TEST_DEVICE = (import.meta.env.VITE_ADMOB_TEST_DEVICE as string) || undefined
 
