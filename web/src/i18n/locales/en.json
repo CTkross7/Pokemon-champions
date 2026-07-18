@@ -352,6 +352,8 @@
     "searchMove": "Search move",
     "removeMon": "Remove this Pokemon",
     "newTeam": "New team",
+    "emptyTitle": "No teams yet",
+    "emptyBody": "Create a team to build your party and get a weakness report.",
     "import": "Import",
     "export": "Export",
     "delete": "Delete",

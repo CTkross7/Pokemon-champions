@@ -625,3 +625,10 @@
 - ✅ **브라우저 표시 수정**: PWA 서비스워커 navigateFallback이 /ads.txt 등 탐색요청을 index.html로 폴백하던 문제 → navigateFallbackDenylist에 `/\.[^/]+$/` 추가(확장자 있는 실제 파일은 SPA 셸 대신 원본 서빙). ads.txt·app-ads.txt·robots·sitemap·apk 모두 브라우저에서도 원본 표시
 - ✅ 버전 1.8.5→**1.8.6**, versionCode 6
 - 검증: 빌드 통과
+
+## Phase 17.2 — 팀 삭제 후 재생성(마지막 팀 삭제 시) 버그 수정 (v1.8.7, 2026-07-16, 사용자 보고)
+- ✅ **원인**: Teams.tsx의 `useEffect(if teams.length===0 createTeam())` 자동생성이 **마지막 팀 삭제 즉시** 새 빈 팀을 만들어 "삭제한 팀이 되살아난 것처럼" 보임(팀 1개일 때만 발생). 재접속/동기화로 tombstone 정리 후 재방문 시 또 생성돼 "어느 순간" 재발
+- ✅ **수정**: 자동생성 제거 → 팀이 0개면 **빈 상태 UI**(아이콘+안내+"새 팀 만들기" 버튼) 표시. `active`는 activeId 무효 시 teams[0] 폴백. 매치업은 원래 빈 상태만 표시라 함께 해결(공유 스토어)
+- ✅ i18n(ko/en) teams.emptyTitle/emptyBody. 버전 1.8.6→**1.8.7**
+- ✅ 웹 수정이라 배포만으로 앱 반영(APK 재빌드 불필요)
+- 검증: tsc·빌드 통과

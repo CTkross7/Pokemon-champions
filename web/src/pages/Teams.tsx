@@ -236,7 +236,9 @@ export default function Teams() {
       .sort((a, b) => Object.values(b.baseStats).reduce((x, y) => x + y, 0) - Object.values(a.baseStats).reduce((x, y) => x + y, 0))
       .slice(0, 24)
   }, [pokedex, usage, speciesById])
-  const active = teams.find((tm) => tm.id === activeId) ?? null
+  // Fall back to the first team when activeId is stale (e.g. after deleting the
+  // active team, or a persisted id that no longer exists).
+  const active = teams.find((tm) => tm.id === activeId) ?? teams[0] ?? null
 
   const resolvedTeam = useMemo<ResolvedMon[]>(() => {
     if (!active) return []
@@ -248,11 +250,6 @@ export default function Teams() {
       })
       .filter((x): x is ResolvedMon => x !== null)
   }, [active, speciesById])
-
-  // Create a first team automatically for new users
-  useEffect(() => {
-    if (pokedex && teams.length === 0) createTeam()
-  }, [pokedex, teams.length, createTeam])
 
   const speedRows = useMemo(() => {
     if (!active) return []
@@ -300,7 +297,30 @@ export default function Teams() {
     }
   }
 
-  if (!active) return <div className="card h-64 animate-pulse" />
+  if (!active) {
+    // Dex still loading → skeleton. Otherwise the user has no teams (e.g. deleted
+    // them all): show an empty state with a create button instead of silently
+    // auto-recreating a team (which looked like a deleted team "coming back").
+    if (pokedex === null) return <div className="card h-64 animate-pulse" />
+    return (
+      <div className="card flex flex-col items-center gap-4 px-6 py-16 text-center">
+        <span className="grid size-14 place-items-center rounded-2xl bg-volt-400/15 text-volt-600 dark:text-volt-400">
+          <Icon name="users" size={26} />
+        </span>
+        <div className="space-y-1">
+          <p className="text-lg font-extrabold tracking-tight">{t('teams.emptyTitle')}</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('teams.emptyBody')}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => createTeam()}
+          className="inline-flex items-center gap-1.5 rounded-full bg-volt-400 px-5 py-2.5 text-sm font-bold text-black transition-transform hover:scale-[1.03] active:scale-[0.98]"
+        >
+          + {t('teams.newTeam')}
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-5">
