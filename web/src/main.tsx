@@ -9,14 +9,9 @@ import App from './App.tsx'
 // Load Google AdSense on the live site only (see lib/ads). Enabling Auto Ads
 // in the AdSense dashboard also provides the bottom anchor and interstitial
 // (popup) formats with no extra code.
-import { ADSENSE_CLIENT, adsEnabled, isInApp } from './lib/ads'
-if (adsEnabled()) {
-  const s = document.createElement('script')
-  s.async = true
-  s.crossOrigin = 'anonymous'
-  s.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`
-  document.head.appendChild(s)
-}
+import { isInApp } from './lib/ads'
+// The AdSense loader now lives in index.html <head> (guarded against in-app /
+// localhost there) so site review finds it early. Nothing to inject here.
 
 // Inside the Android launcher: tag <html> so the layout reserves space for the
 // native AdMob banner, and start native ads (no-op on the plain website).

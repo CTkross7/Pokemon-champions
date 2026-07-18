@@ -613,3 +613,9 @@
 - ✅ 옛 ID(4878038748315573·3940256099942544) 잔여 참조 0 확인
 - ✅ versionCode 3→**4**, 버전 web·app 1.8.3→**1.8.4**
 - 검증: tsc·빌드 통과
+
+## Phase 17.0 — AdSense 검토 대비 <head> 코드 삽입 (v1.8.5, 2026-07-16, 사용자 사이트 추가 성공)
+- ✅ **사이트 추가 성공**: AdSense 콘텐츠 계정에 champsnote.pages.dev 연결됨(같은 계정 pub-5919918265532990). ads.txt 라인 이미 일치
+- ✅ **<head> AdSense 스니펫**: index.html head에 정식 adsbygoogle 로더 삽입(검토 크롤러가 확실히 인식) — 단 인라인 가드로 앱 WebView(ChampsNoteApp)·localhost 제외(AdSense 정책·정확성). main.tsx의 동적 주입 제거(중복 로드 방지, isInApp만 유지)
+- ✅ 버전 web·app 1.8.4→**1.8.5**, versionCode 5
+- 검증: tsc·빌드 통과

@@ -38,6 +38,24 @@
     <meta name="twitter:image" content="https://champsnote.pages.dev/og-banner.png" />
 
     <title>챔스노트 — 포켓몬 챔피언스 배틀 파트너</title>
+
+    <!-- Google AdSense. Loaded early in <head> so AdSense site review reliably
+         finds the code, but SKIPPED inside the Android app WebView (AdSense
+         forbids in-app — native AdMob serves there) and on localhost/preview.
+         This is the single AdSense loader; the app path uses AdMob instead. -->
+    <script>
+      (function () {
+        var ua = navigator.userAgent || ''
+        if (/ChampsNoteApp/.test(ua)) return
+        if (/^(localhost|127\.|0\.0\.0\.0|\[)/.test(location.hostname)) return
+        var s = document.createElement('script')
+        s.async = true
+        s.crossOrigin = 'anonymous'
+        s.src =
+          'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5919918265532990'
+        document.head.appendChild(s)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
