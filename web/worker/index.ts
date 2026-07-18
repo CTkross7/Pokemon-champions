@@ -80,15 +80,29 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
   // /api/samples
   if (parts[0] === 'samples' && parts.length === 1) {
     if (request.method === 'GET') {
-      // Optional ?regulation=M-B filter; comment count via correlated subquery.
+      // Optional ?regulation= and ?kind=(team|mon) filters; comment count via
+      // correlated subquery. kind: NULL rows are legacy teams, so a 'team'
+      // filter also matches NULL.
       const reg = url.searchParams.get('regulation')
+      const kind = url.searchParams.get('kind')
+      const where: string[] = []
+      const binds: string[] = []
+      if (reg) {
+        where.push('regulation = ?')
+        binds.push(reg)
+      }
+      if (kind === 'mon') {
+        where.push("kind = 'mon'")
+      } else if (kind === 'team') {
+        where.push("(kind = 'team' OR kind IS NULL)")
+      }
       const listSql =
-        'SELECT id, title, author, likes, views, regulation, owner_id, description, created_at, ' +
+        "SELECT id, title, author, likes, views, regulation, owner_id, description, COALESCE(kind, 'team') AS kind, created_at, " +
         '(SELECT COUNT(*) FROM comments c WHERE c.sample_id = samples.id) AS comments ' +
         'FROM samples' +
-        (reg ? ' WHERE regulation = ?' : '') +
+        (where.length ? ' WHERE ' + where.join(' AND ') : '') +
         ' ORDER BY created_at DESC LIMIT 50'
-      const stmt = reg ? db.prepare(listSql).bind(reg) : db.prepare(listSql)
+      const stmt = binds.length ? db.prepare(listSql).bind(...binds) : db.prepare(listSql)
       const { results } = await stmt.all()
       // Distinct regulations present, for the filter chips.
       const { results: regs } = await db
@@ -115,12 +129,13 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       if (!team) return json({ error: 'missing_team' }, 400)
       const regulation = clampStr(body.regulation, 20).trim() || null
       const description = clampStr(body.description, 500).trim() || null
+      const kind = body.kind === 'mon' ? 'mon' : 'team'
       const id = crypto.randomUUID().slice(0, 8)
       await db
         .prepare(
-          'INSERT INTO samples (id, title, author, team, likes, views, owner_id, regulation, description, created_at) VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?, ?)',
+          'INSERT INTO samples (id, title, author, team, likes, views, owner_id, regulation, description, kind, created_at) VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?, ?, ?)',
         )
-        .bind(id, title, author, team, user.id, regulation, description, Date.now())
+        .bind(id, title, author, team, user.id, regulation, description, kind, Date.now())
         .run()
       return json({ id }, 201)
     }

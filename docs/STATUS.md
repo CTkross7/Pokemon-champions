@@ -642,3 +642,12 @@
 - ✅ 결과: 앱·웹 어디서 삭제해도 양쪽 모두 삭제 유지(재생성 없음)
 - ✅ 버전 1.8.7→**1.8.8**, versionCode 8. 웹+worker 수정이라 배포로 앱 반영(APK 재빌드 불필요)
 - 검증: tsc·빌드·worker 번들 통과
+
+## Phase 18.0 — 샘플 유형 분리(팀/포켓몬) + 생성 완결성 검증 (v1.9.0, 2026-07-16, 사용자 요청)
+- ✅ **포켓몬 단일 샘플 추가**: 기존 팀 샘플에 더해, 팀빌더 슬롯 에디터에서 **개별 포켓몬 빌드를 샘플로 공개**('포켓몬 공개' 버튼). 단일 몬을 1마리 팀으로 encode해 재사용
+- ✅ **생성 검증(완결성 강제)**: `sampleValidation.ts`(monMissing/isMonComplete/teamIssues) — 도구·기술4개·SP분배(+특성) 필수. **팀은 6슬롯 전부 완성(빈칸 없이)** 아니면 공개 차단, 단일 몬도 미완성이면 버튼 비활성+안내
+- ✅ **데이터모델**: samples에 `kind`('team'|'mon', NULL=레거시 팀) 컬럼(migrate) + Worker POST 저장/GET COALESCE·`?kind=` 필터 + api.ts kind 타입·payload·listSamples 필터
+- ✅ **갤러리**: 전체/팀/포켓몬 탭 필터 + 카드에 유형 배지(팀=보라, 포켓몬=하늘)
+- ✅ i18n(ko/en) teams.publishMon/publishedMon/teamIncomplete/monIncomplete, gallery.kindAll/Team/Mon
+- ✅ 버전 1.8.8→**1.9.0**, versionCode 9. 웹+worker라 배포로 앱 반영
+- 검증: tsc·빌드·worker 번들 통과

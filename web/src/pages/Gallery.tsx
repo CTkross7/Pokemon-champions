@@ -27,22 +27,23 @@ export default function Gallery() {
   const [samples, setSamples] = useState<SampleMeta[]>([])
   const [regulations, setRegulations] = useState<string[]>([])
   const [regFilter, setRegFilter] = useState<string | null>(null)
+  const [kindFilter, setKindFilter] = useState<'all' | 'team' | 'mon'>('all')
   const [liked, setLiked] = useState<Record<string, boolean>>({})
   const [openId, setOpenId] = useState<string | null>(null)
 
-  const load = (reg?: string | null) => {
+  const load = (reg?: string | null, kind: 'all' | 'team' | 'mon' = 'all') => {
     setState('loading')
-    listSamples(reg ?? undefined).then((r) => {
+    listSamples(reg ?? undefined, kind === 'all' ? undefined : kind).then((r) => {
       if (!r.configured) return setState('unconfigured')
       setSamples(r.data.samples)
       // Keep the union of regulations stable across filtered views.
-      if (!reg) setRegulations(r.data.regulations ?? [])
+      if (!reg && kind === 'all') setRegulations(r.data.regulations ?? [])
       setState('ready')
     })
   }
 
   useEffect(() => {
-    load(null)
+    load(null, 'all')
   }, [])
 
   const onLike = async (id: string) => {
@@ -80,14 +81,29 @@ export default function Gallery() {
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{t('gallery.subtitle')}</p>
       </div>
 
+      {/* Kind filter — team vs single-Pokemon samples */}
+      {state !== 'unconfigured' && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          <FilterChip active={kindFilter === 'all'} onClick={() => { setKindFilter('all'); load(regFilter, 'all') }}>
+            {t('gallery.kindAll')}
+          </FilterChip>
+          <FilterChip active={kindFilter === 'team'} onClick={() => { setKindFilter('team'); load(regFilter, 'team') }}>
+            {t('gallery.kindTeam')}
+          </FilterChip>
+          <FilterChip active={kindFilter === 'mon'} onClick={() => { setKindFilter('mon'); load(regFilter, 'mon') }}>
+            {t('gallery.kindMon')}
+          </FilterChip>
+        </div>
+      )}
+
       {/* Regulation filter */}
       {state === 'ready' && regulations.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <FilterChip active={regFilter === null} onClick={() => { setRegFilter(null); load(null) }}>
+          <FilterChip active={regFilter === null} onClick={() => { setRegFilter(null); load(null, kindFilter) }}>
             {t('gallery.filterAll')}
           </FilterChip>
           {regulations.map((reg) => (
-            <FilterChip key={reg} active={regFilter === reg} onClick={() => { setRegFilter(reg); load(reg) }}>
+            <FilterChip key={reg} active={regFilter === reg} onClick={() => { setRegFilter(reg); load(reg, kindFilter) }}>
               {reg}
             </FilterChip>
           ))}
@@ -126,6 +142,15 @@ export default function Gallery() {
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
+                    <span
+                      className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-extrabold ${
+                        s.kind === 'mon'
+                          ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400'
+                          : 'bg-violet-500/15 text-violet-600 dark:text-violet-400'
+                      }`}
+                    >
+                      {s.kind === 'mon' ? t('gallery.kindMon') : t('gallery.kindTeam')}
+                    </span>
                     <p className="truncate text-sm font-bold">{s.title}</p>
                     {s.regulation && (
                       <span className="shrink-0 rounded bg-volt-400/20 px-1.5 py-0.5 text-[9px] font-extrabold text-volt-700 dark:text-volt-300">

@@ -64,6 +64,9 @@ const ADD_COLUMNS = [
   `ALTER TABLE samples ADD COLUMN regulation TEXT`,
   // Party intro / author note shown in the gallery.
   `ALTER TABLE samples ADD COLUMN description TEXT`,
+  // Sample kind: 'team' (6-mon party) or 'mon' (single-Pokemon build). NULL =
+  // legacy row, treated as 'team'.
+  `ALTER TABLE samples ADD COLUMN kind TEXT`,
 ]
 
 async function run(db: D1Database): Promise<void> {

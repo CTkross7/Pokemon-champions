@@ -4,6 +4,8 @@
  * `configured: false` result instead of throwing, so the UI can show a friendly
  * "gallery not set up yet" state while the rest of the app keeps working.
  */
+export type SampleKind = 'team' | 'mon'
+
 export interface SampleMeta {
   id: string
   title: string
@@ -14,6 +16,7 @@ export interface SampleMeta {
   description?: string | null
   comments?: number
   owner_id?: string | null
+  kind?: SampleKind | null // 'team' (6-mon) or 'mon' (single build); null = legacy team
   created_at: number
 }
 
@@ -44,10 +47,13 @@ async function call<T>(path: string, init?: RequestInit): Promise<Result<T>> {
   }
 }
 
-export const listSamples = (regulation?: string) =>
-  call<{ samples: SampleMeta[]; regulations: string[] }>(
-    `/samples${regulation ? `?regulation=${encodeURIComponent(regulation)}` : ''}`,
-  )
+export const listSamples = (regulation?: string, kind?: SampleKind) => {
+  const q = new URLSearchParams()
+  if (regulation) q.set('regulation', regulation)
+  if (kind) q.set('kind', kind)
+  const qs = q.toString()
+  return call<{ samples: SampleMeta[]; regulations: string[] }>(`/samples${qs ? `?${qs}` : ''}`)
+}
 
 export const getSample = (id: string) => call<{ sample: SampleFull }>(`/samples/${id}`)
 
@@ -60,6 +66,7 @@ export const createSample = (payload: {
   team: string
   regulation?: string | null
   description?: string | null
+  kind?: SampleKind
 }) =>
   call<{ id: string }>('/samples', {
     method: 'POST',

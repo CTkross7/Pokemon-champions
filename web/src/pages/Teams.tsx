@@ -9,6 +9,7 @@ import { useAuth } from '@/lib/auth'
 import { loadRegulation } from '@/lib/regulation'
 import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
 import { recommendedMoveIds } from '@/lib/moveFilter'
+import { isMonComplete, teamIssues } from '@/lib/sampleValidation'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
 import ItemSelect from '@/components/ItemSelect'
@@ -33,6 +34,7 @@ function MonEditor({
   usageMoveIds,
   onChange,
   onRemove,
+  onPublishMon,
 }: {
   mon: TeamMon
   species: Species
@@ -41,6 +43,7 @@ function MonEditor({
   usageMoveIds: Set<string>
   onChange: (mon: TeamMon) => void
   onRemove: () => void
+  onPublishMon: () => void
 }) {
   const { t, i18n } = useTranslation()
   const abilities = species.abilities
@@ -180,13 +183,27 @@ function MonEditor({
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={onRemove}
-        className="text-xs font-bold text-red-500 hover:text-red-600"
-      >
-        {t('teams.removeMon')}
-      </button>
+      <div className="flex items-center justify-between gap-2 pt-1">
+        <button
+          type="button"
+          onClick={onRemove}
+          className="text-xs font-bold text-red-500 hover:text-red-600"
+        >
+          {t('teams.removeMon')}
+        </button>
+        {/* Publish this single mon as an individual build sample. Disabled until
+            the build is complete (ability · item · 4 moves · SP). */}
+        <button
+          type="button"
+          disabled={!isMonComplete(mon)}
+          onClick={onPublishMon}
+          title={isMonComplete(mon) ? '' : t('teams.monIncomplete')}
+          className="inline-flex items-center gap-1 rounded-lg border border-volt-500 px-2.5 py-1 text-[11px] font-bold text-volt-700 hover:bg-volt-400/10 disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-400 disabled:hover:bg-transparent dark:border-volt-400/60 dark:text-volt-300 dark:disabled:border-white/10 dark:disabled:text-zinc-600"
+        >
+          <Icon name="sparkles" size={12} />
+          {t('teams.publishMon')}
+        </button>
+      </div>
     </div>
   )
 }
@@ -297,6 +314,51 @@ export default function Teams() {
     }
   }
 
+  // Publish the whole team as a sample — gated on every slot being complete
+  // (6 mons, each with ability · item · 4 moves · SP).
+  const publishTeam = async () => {
+    if (!active) return
+    if (teamIssues(active).length > 0) {
+      setShareMsg(t('teams.teamIncomplete'))
+      setTimeout(() => setShareMsg(''), 5000)
+      return
+    }
+    setShareMsg(t('teams.publishing'))
+    const reg = await loadRegulation()
+    const r = await createSample({
+      title: active.name,
+      author: user?.displayName ?? '',
+      team: encodeTeam(active),
+      regulation: reg?.regulation ?? null,
+      description: active.description ?? null,
+      kind: 'team',
+    })
+    setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
+    setTimeout(() => setShareMsg(''), 4000)
+  }
+
+  // Publish a single finished Pokemon as an individual build sample.
+  const publishMon = async (mon: TeamMon, species: Species) => {
+    if (!isMonComplete(mon)) {
+      setShareMsg(t('teams.monIncomplete'))
+      setTimeout(() => setShareMsg(''), 5000)
+      return
+    }
+    setShareMsg(t('teams.publishing'))
+    const reg = await loadRegulation()
+    const name = i18n.language === 'ko' ? species.ko : species.name
+    const r = await createSample({
+      title: name,
+      author: user?.displayName ?? '',
+      team: encodeTeam({ name, mons: [mon, null, null, null, null, null] }),
+      regulation: reg?.regulation ?? null,
+      description: null,
+      kind: 'mon',
+    })
+    setShareMsg(r.configured ? t('teams.publishedMon') : t('teams.publishUnavailable'))
+    setTimeout(() => setShareMsg(''), 4000)
+  }
+
   if (!active) {
     // Dex still loading → skeleton. Otherwise the user has no teams (e.g. deleted
     // them all): show an empty state with a create button instead of silently
@@ -400,22 +462,7 @@ export default function Teams() {
         </button>
         <button
           type="button"
-          onClick={async () => {
-            // Publishing is login-gated, so the author is always the signed-in
-            // user's chosen display name — synced from their profile, never
-            // anonymous or a free-typed name.
-            setShareMsg(t('teams.publishing'))
-            const reg = await loadRegulation()
-            const r = await createSample({
-              title: active.name,
-              author: user?.displayName ?? '',
-              team: encodeTeam(active),
-              regulation: reg?.regulation ?? null,
-              description: active.description ?? null,
-            })
-            setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
-            setTimeout(() => setShareMsg(''), 4000)
-          }}
+          onClick={publishTeam}
           className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300"
         >
           {t('teams.publish')}
@@ -502,6 +549,7 @@ export default function Teams() {
                         setMon(active.id, slot, null)
                         setOpenSlot(null)
                       }}
+                      onPublishMon={() => publishMon(mon, species)}
                     />
                   )}
                 </>
