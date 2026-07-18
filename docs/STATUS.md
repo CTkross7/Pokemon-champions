@@ -619,3 +619,9 @@
 - ✅ **<head> AdSense 스니펫**: index.html head에 정식 adsbygoogle 로더 삽입(검토 크롤러가 확실히 인식) — 단 인라인 가드로 앱 WebView(ChampsNoteApp)·localhost 제외(AdSense 정책·정확성). main.tsx의 동적 주입 제거(중복 로드 방지, isInApp만 유지)
 - ✅ 버전 web·app 1.8.4→**1.8.5**, versionCode 5
 - 검증: tsc·빌드 통과
+
+## Phase 17.1 — ads.txt 승인 확인 + SW 폴백에서 정적파일 제외 (v1.8.6, 2026-07-16)
+- ✅ **AdSense 상태**: champsnote.pages.dev — Ads.txt **승인됨**, 사이트 **준비 중**(검토 진행). 서버는 ads.txt 정상 서빙(크롤러가 읽어 승인)
+- ✅ **브라우저 표시 수정**: PWA 서비스워커 navigateFallback이 /ads.txt 등 탐색요청을 index.html로 폴백하던 문제 → navigateFallbackDenylist에 `/\.[^/]+$/` 추가(확장자 있는 실제 파일은 SPA 셸 대신 원본 서빙). ads.txt·app-ads.txt·robots·sitemap·apk 모두 브라우저에서도 원본 표시
+- ✅ 버전 1.8.5→**1.8.6**, versionCode 6
+- 검증: 빌드 통과

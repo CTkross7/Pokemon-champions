@@ -53,7 +53,11 @@ export default defineConfig({
         // Precache the app shell; large data/sprites are cached at runtime on demand.
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-        navigateFallbackDenylist: [/^\/api\//],
+        // Never serve the SPA shell for API calls or for real files with an
+        // extension (ads.txt, app-ads.txt, robots.txt, sitemap.xml, *.apk …) —
+        // otherwise a browser navigation to /ads.txt gets index.html from the
+        // service worker instead of the actual file.
+        navigateFallbackDenylist: [/^\/api\//, /\.[^/]+$/],
         runtimeCaching: [
           {
             // Game data changes on updates — serve fresh, fall back to cache
