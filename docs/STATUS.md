@@ -651,3 +651,11 @@
 - ✅ i18n(ko/en) teams.publishMon/publishedMon/teamIncomplete/monIncomplete, gallery.kindAll/Team/Mon
 - ✅ 버전 1.8.8→**1.9.0**, versionCode 9. 웹+worker라 배포로 앱 반영
 - 검증: tsc·빌드·worker 번들 통과
+
+## Phase 18.1 — 샘플 검증 강화 + 포켓몬 샘플 설명칸 (v1.9.1, 2026-07-16, 사용자 요청)
+- ✅ **SP 정확히 66**: monMissing이 spTotal !== 66이면 미완성 처리(부족·초과 모두 차단). REQUIRED_SP 상수
+- ✅ **중복 기술 금지**: `new Set(moves).size !== 4`로 서로 다른 기술 4개 강제(중복 시 미완성). 선택 UI는 이미 토글이라 중복 불가, 임포트 대비 검증도 반영
+- ✅ **포켓몬 샘플 설명칸**: MonEditor에 '포켓몬 샘플로 공개' 블록 + 설명 textarea(선택, 500자) → publishMon(desc)로 createSample description 전달
+- ✅ 안내문(teamIncomplete/monIncomplete) "도구·서로 다른 기술 4개·SP 66" 명시. i18n(ko/en) monSampleNote/monDescPlaceholder
+- ✅ 버전 1.9.0→**1.9.1**, versionCode 10. 웹 수정이라 배포로 앱 반영
+- 검증: tsc·빌드 통과

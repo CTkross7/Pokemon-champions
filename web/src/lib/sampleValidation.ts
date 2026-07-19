@@ -7,14 +7,19 @@
 import { spTotal } from '@/lib/champions'
 import type { Team, TeamMon } from '@/store/teams'
 
+/** Total SP a finished build must spend (Champions: 66 across all stats). */
+export const REQUIRED_SP = 66
+
 /** Which required fields a single mon is missing. Empty ⇒ complete. */
 export function monMissing(mon: TeamMon | null): string[] {
   if (!mon || !mon.speciesId) return ['species', 'ability', 'item', 'moves', 'sp']
   const miss: string[] = []
   if (!mon.ability) miss.push('ability')
   if (!mon.item) miss.push('item')
-  if (mon.moves.filter((m) => !!m).length < 4) miss.push('moves')
-  if (spTotal(mon.sp) <= 0) miss.push('sp')
+  // Exactly 4 DISTINCT moves — a Set drops duplicates, so dupes fail the count.
+  if (new Set(mon.moves.filter((m) => !!m)).size !== 4) miss.push('moves')
+  // SP must be fully distributed — exactly 66, no more, no less.
+  if (spTotal(mon.sp) !== REQUIRED_SP) miss.push('sp')
   return miss
 }
 

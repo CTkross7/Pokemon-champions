@@ -43,7 +43,7 @@ function MonEditor({
   usageMoveIds: Set<string>
   onChange: (mon: TeamMon) => void
   onRemove: () => void
-  onPublishMon: () => void
+  onPublishMon: (description: string) => void
 }) {
   const { t, i18n } = useTranslation()
   const abilities = species.abilities
@@ -70,6 +70,9 @@ function MonEditor({
   }, [species, moves, learnsets])
   const [moveQuery, setMoveQuery] = useState('')
   const [showAllMoves, setShowAllMoves] = useState(false)
+  // Author note for publishing THIS mon as an individual sample (not saved on
+  // the team itself — teams carry their own description field).
+  const [monDesc, setMonDesc] = useState('')
   // Recommended default: meta usage + STAB + key utility (~18), so the picker
   // isn't buried under every legal-but-niche move. "전체 보기" reveals the full
   // verified movepool, and already-picked moves always stay visible.
@@ -183,27 +186,38 @@ function MonEditor({
         )}
       </div>
 
-      <div className="flex items-center justify-between gap-2 pt-1">
-        <button
-          type="button"
-          onClick={onRemove}
-          className="text-xs font-bold text-red-500 hover:text-red-600"
-        >
-          {t('teams.removeMon')}
-        </button>
-        {/* Publish this single mon as an individual build sample. Disabled until
-            the build is complete (ability · item · 4 moves · SP). */}
+      {/* Publish this single mon as an individual build sample. The note is
+          optional; the button is gated on a complete build (ability · item ·
+          4 distinct moves · SP 66). */}
+      <div className="space-y-1.5 rounded-xl border border-zinc-200/70 p-2.5 dark:border-white/8">
+        <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600">{t('teams.monSampleNote')}</span>
+        <textarea
+          value={monDesc}
+          onChange={(e) => setMonDesc(e.target.value.slice(0, 500))}
+          maxLength={500}
+          rows={2}
+          placeholder={t('teams.monDescPlaceholder')}
+          className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs outline-none focus:border-volt-500 dark:border-white/10 dark:bg-black/40 dark:focus:border-volt-400"
+        />
         <button
           type="button"
           disabled={!isMonComplete(mon)}
-          onClick={onPublishMon}
+          onClick={() => onPublishMon(monDesc)}
           title={isMonComplete(mon) ? '' : t('teams.monIncomplete')}
-          className="inline-flex items-center gap-1 rounded-lg border border-volt-500 px-2.5 py-1 text-[11px] font-bold text-volt-700 hover:bg-volt-400/10 disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-400 disabled:hover:bg-transparent dark:border-volt-400/60 dark:text-volt-300 dark:disabled:border-white/10 dark:disabled:text-zinc-600"
+          className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-volt-500 px-2.5 py-1.5 text-[11px] font-bold text-volt-700 hover:bg-volt-400/10 disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-400 disabled:hover:bg-transparent dark:border-volt-400/60 dark:text-volt-300 dark:disabled:border-white/10 dark:disabled:text-zinc-600"
         >
           <Icon name="sparkles" size={12} />
           {t('teams.publishMon')}
         </button>
       </div>
+
+      <button
+        type="button"
+        onClick={onRemove}
+        className="text-xs font-bold text-red-500 hover:text-red-600"
+      >
+        {t('teams.removeMon')}
+      </button>
     </div>
   )
 }
@@ -338,7 +352,7 @@ export default function Teams() {
   }
 
   // Publish a single finished Pokemon as an individual build sample.
-  const publishMon = async (mon: TeamMon, species: Species) => {
+  const publishMon = async (mon: TeamMon, species: Species, description: string) => {
     if (!isMonComplete(mon)) {
       setShareMsg(t('teams.monIncomplete'))
       setTimeout(() => setShareMsg(''), 5000)
@@ -352,7 +366,7 @@ export default function Teams() {
       author: user?.displayName ?? '',
       team: encodeTeam({ name, mons: [mon, null, null, null, null, null] }),
       regulation: reg?.regulation ?? null,
-      description: null,
+      description: description.trim() || null,
       kind: 'mon',
     })
     setShareMsg(r.configured ? t('teams.publishedMon') : t('teams.publishUnavailable'))
@@ -549,7 +563,7 @@ export default function Teams() {
                         setMon(active.id, slot, null)
                         setOpenSlot(null)
                       }}
-                      onPublishMon={() => publishMon(mon, species)}
+                      onPublishMon={(desc) => publishMon(mon, species, desc)}
                     />
                   )}
                 </>
