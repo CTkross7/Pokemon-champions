@@ -681,3 +681,9 @@
 - ✅ **시스템 언어 기본값**: i18n.systemLanguage() — navigator.language(s)에 ko 있으면 ko, 아니면 en. i18n lng·fallbackLng('en')·settings 기본 language를 시스템값으로. 설정에서 명시 변경 시 persist 우선
 - ✅ 버전 1.10.1→**1.10.2**, versionCode 13. 웹+worker라 배포로 앱 반영
 - 검증: tsc·빌드·worker 번들 통과
+
+## Phase 18.5 — 업로드 팝업 알림 + 업로드 후 슬롯 비우기(중복 방지) (v1.10.3, 2026-07-16, 사용자 요청)
+- ✅ **업로드 팝업**: 상단바에 가려지던 배너 대신 **중앙 모달 팝업**(성공=체크/볼트, 실패=X/로즈 + 메시지 + 커뮤니티에서 보기/닫기). 성공 3.5초 자동 닫힘
+- ✅ **중복 업로드 방지**: publishing busy 플래그로 팀/포켓몬 공개 버튼 비활성(연타 방지). 포켓몬 빌드 탭은 업로드 성공 시 **슬롯 비움**(monBuild=null)로 같은 몬 재업로드 차단
+- ✅ i18n(ko/en) teams.uploadDone/uploadFail/viewInGallery. 버전 1.10.2→**1.10.3**, versionCode 14
+- 검증: tsc·빌드 통과

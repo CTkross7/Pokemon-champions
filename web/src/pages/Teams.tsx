@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { loadLearnsets, loadMoves, loadPokedex, type MoveData, type Species } from '@/lib/dex'
 import { statAtLevel50, spTotal, NATURES, natureLabel, type Nature } from '@/lib/champions'
@@ -35,6 +36,7 @@ function MonEditor({
   onChange,
   onRemove,
   onPublishMon,
+  publishing,
 }: {
   mon: TeamMon
   species: Species
@@ -44,6 +46,7 @@ function MonEditor({
   onChange: (mon: TeamMon) => void
   onRemove: () => void
   onPublishMon: (description: string) => void
+  publishing?: boolean
 }) {
   const { t, i18n } = useTranslation()
   const abilities = species.abilities
@@ -201,7 +204,7 @@ function MonEditor({
         />
         <button
           type="button"
-          disabled={!isMonComplete(mon)}
+          disabled={!isMonComplete(mon) || publishing}
           onClick={() => onPublishMon(monDesc)}
           title={isMonComplete(mon) ? '' : t('teams.monIncomplete')}
           className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-volt-500 px-2.5 py-1.5 text-[11px] font-bold text-volt-700 hover:bg-volt-400/10 disabled:cursor-not-allowed disabled:border-zinc-200 disabled:text-zinc-400 disabled:hover:bg-transparent dark:border-volt-400/60 dark:text-volt-300 dark:disabled:border-white/10 dark:disabled:text-zinc-600"
@@ -238,6 +241,17 @@ export default function Teams() {
   // Build mode: 'team' (6-mon party) or 'mon' (single-Pokemon sample builder).
   const [mode, setMode] = useState<'team' | 'mon'>('team')
   const [monBuild, setMonBuild] = useState<TeamMon | null>(null)
+  // Publish state: a centered popup (so the confirmation isn't hidden behind the
+  // top bar) + a busy flag that blocks double-click double-uploads.
+  const [uploadResult, setUploadResult] = useState<{ ok: boolean; msg: string } | null>(null)
+  const [publishing, setPublishing] = useState(false)
+
+  // Auto-dismiss a successful upload popup after a few seconds.
+  useEffect(() => {
+    if (!uploadResult?.ok) return
+    const id = setTimeout(() => setUploadResult(null), 3500)
+    return () => clearTimeout(id)
+  }, [uploadResult])
 
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
@@ -334,13 +348,12 @@ export default function Teams() {
   // Publish the whole team as a sample — gated on every slot being complete
   // (6 mons, each with ability · item · 4 moves · SP).
   const publishTeam = async () => {
-    if (!active) return
+    if (!active || publishing) return
     if (teamIssues(active).length > 0) {
-      setShareMsg(t('teams.teamIncomplete'))
-      setTimeout(() => setShareMsg(''), 5000)
+      setUploadResult({ ok: false, msg: t('teams.teamIncomplete') })
       return
     }
-    setShareMsg(t('teams.publishing'))
+    setPublishing(true)
     const reg = await loadRegulation()
     const r = await createSample({
       title: active.name,
@@ -350,18 +363,19 @@ export default function Teams() {
       description: active.description ?? null,
       kind: 'team',
     })
-    setShareMsg(r.configured ? t('teams.published') : t('teams.publishUnavailable'))
-    setTimeout(() => setShareMsg(''), 4000)
+    setPublishing(false)
+    setUploadResult({ ok: r.configured, msg: r.configured ? t('teams.published') : t('teams.publishUnavailable') })
   }
 
-  // Publish a single finished Pokemon as an individual build sample.
-  const publishMon = async (mon: TeamMon, species: Species, description: string) => {
+  // Publish a single finished Pokemon as an individual build sample. On success
+  // `onDone` runs (the single-mon builder clears its slot to block re-uploads).
+  const publishMon = async (mon: TeamMon, species: Species, description: string, onDone?: () => void) => {
+    if (publishing) return
     if (!isMonComplete(mon)) {
-      setShareMsg(t('teams.monIncomplete'))
-      setTimeout(() => setShareMsg(''), 5000)
+      setUploadResult({ ok: false, msg: t('teams.monIncomplete') })
       return
     }
-    setShareMsg(t('teams.publishing'))
+    setPublishing(true)
     const reg = await loadRegulation()
     const name = i18n.language === 'ko' ? species.ko : species.name
     const r = await createSample({
@@ -372,9 +386,51 @@ export default function Teams() {
       description: description.trim() || null,
       kind: 'mon',
     })
-    setShareMsg(r.configured ? t('teams.publishedMon') : t('teams.publishUnavailable'))
-    setTimeout(() => setShareMsg(''), 4000)
+    setPublishing(false)
+    setUploadResult({ ok: r.configured, msg: r.configured ? t('teams.publishedMon') : t('teams.publishUnavailable') })
+    if (r.configured) onDone?.()
   }
+
+  // Centered upload popup (shown in every mode below via {uploadModal}).
+  const uploadModal = uploadResult ? (
+    <div className="fixed inset-0 z-[60] grid place-items-center p-4" role="dialog" aria-modal="true">
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/50"
+        aria-label={t('report.close')}
+        onClick={() => setUploadResult(null)}
+      />
+      <div className="card relative w-full max-w-xs space-y-3 p-6 text-center">
+        <span
+          className={`mx-auto grid size-14 place-items-center rounded-full ${
+            uploadResult.ok ? 'bg-volt-400/20 text-volt-600 dark:text-volt-400' : 'bg-rose-500/15 text-rose-500'
+          }`}
+        >
+          <Icon name={uploadResult.ok ? 'check' : 'x'} size={28} strokeWidth={2.4} />
+        </span>
+        <p className="text-base font-extrabold">{uploadResult.ok ? t('teams.uploadDone') : t('teams.uploadFail')}</p>
+        <p className="text-[13px] leading-relaxed text-zinc-500 dark:text-zinc-400">{uploadResult.msg}</p>
+        <div className="flex gap-2 pt-1">
+          {uploadResult.ok && (
+            <Link
+              to="/gallery"
+              onClick={() => setUploadResult(null)}
+              className="flex-1 rounded-xl bg-volt-400 px-4 py-2.5 text-sm font-bold text-black transition-colors hover:bg-volt-300"
+            >
+              {t('teams.viewInGallery')}
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={() => setUploadResult(null)}
+            className="flex-1 rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-bold text-zinc-600 hover:border-zinc-300 dark:border-white/10 dark:text-zinc-300"
+          >
+            {t('report.close')}
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : null
 
   // Team / single-Pokemon build-mode tabs (shown in every state below).
   const modeTabs = (
@@ -408,6 +464,7 @@ export default function Teams() {
     const monSpecies = monBuild ? speciesById.get(monBuild.speciesId) : null
     return (
       <div className="space-y-5">
+        {uploadModal}
         {modeTabs}
         {shareBanner}
         <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('teams.monModeHint')}</p>
@@ -436,7 +493,8 @@ export default function Teams() {
                   usageMoveIds={usageMovesBySpecies.get(monSpecies.id) ?? new Set()}
                   onChange={setMonBuild}
                   onRemove={() => setMonBuild(null)}
-                  onPublishMon={(desc) => publishMon(monBuild, monSpecies, desc)}
+                  onPublishMon={(desc) => publishMon(monBuild, monSpecies, desc, () => setMonBuild(null))}
+                  publishing={publishing}
                 />
               )}
             </>
@@ -463,6 +521,7 @@ export default function Teams() {
     if (pokedex === null) return <div className="card h-64 animate-pulse" />
     return (
       <div className="space-y-5">
+        {uploadModal}
         {modeTabs}
         <div className="card flex flex-col items-center gap-4 px-6 py-16 text-center">
         <span className="grid size-14 place-items-center rounded-2xl bg-volt-400/15 text-volt-600 dark:text-volt-400">
@@ -486,6 +545,7 @@ export default function Teams() {
 
   return (
     <div className="space-y-5">
+      {uploadModal}
       {modeTabs}
       {/* Team bar */}
       <div className="flex flex-wrap items-center gap-2">
@@ -564,7 +624,8 @@ export default function Teams() {
         <button
           type="button"
           onClick={publishTeam}
-          className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 dark:border-white/10 dark:text-zinc-300"
+          disabled={publishing}
+          className="shrink-0 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-bold text-zinc-600 hover:border-volt-500 disabled:opacity-50 dark:border-white/10 dark:text-zinc-300"
         >
           {t('teams.publish')}
         </button>
@@ -651,6 +712,7 @@ export default function Teams() {
                         setOpenSlot(null)
                       }}
                       onPublishMon={(desc) => publishMon(mon, species, desc)}
+                      publishing={publishing}
                     />
                   )}
                 </>
