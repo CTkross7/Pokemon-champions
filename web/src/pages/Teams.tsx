@@ -235,6 +235,9 @@ export default function Teams() {
   const [ioMode, setIoMode] = useState<'none' | 'import' | 'export'>('none')
   const [shareMsg, setShareMsg] = useState('')
   const [usage, setUsage] = useState<UsageData | null>(null)
+  // Build mode: 'team' (6-mon party) or 'mon' (single-Pokemon sample builder).
+  const [mode, setMode] = useState<'team' | 'mon'>('team')
+  const [monBuild, setMonBuild] = useState<TeamMon | null>(null)
 
   useEffect(() => {
     loadPokedex().then(setPokedex, () => setPokedex([]))
@@ -373,13 +376,95 @@ export default function Teams() {
     setTimeout(() => setShareMsg(''), 4000)
   }
 
+  // Team / single-Pokemon build-mode tabs (shown in every state below).
+  const modeTabs = (
+    <div className="flex gap-1.5 rounded-full border border-zinc-200 p-1 dark:border-white/10">
+      {(['team', 'mon'] as const).map((m) => (
+        <button
+          key={m}
+          type="button"
+          onClick={() => setMode(m)}
+          className={[
+            'flex-1 rounded-full px-4 py-1.5 text-sm font-bold transition-colors',
+            mode === m
+              ? 'bg-zinc-900 text-white dark:bg-volt-400 dark:text-black'
+              : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white',
+          ].join(' ')}
+        >
+          {t(m === 'team' ? 'teams.modeTeam' : 'teams.modeMon')}
+        </button>
+      ))}
+    </div>
+  )
+
+  const shareBanner = shareMsg ? (
+    <p className="rounded-xl border border-volt-500/40 bg-volt-400/10 px-4 py-2.5 text-center text-sm font-bold text-volt-700 dark:text-volt-300">
+      {shareMsg}
+    </p>
+  ) : null
+
+  // ── Single-Pokemon sample builder ─────────────────────────────────────────
+  if (mode === 'mon') {
+    const monSpecies = monBuild ? speciesById.get(monBuild.speciesId) : null
+    return (
+      <div className="space-y-5">
+        {modeTabs}
+        {shareBanner}
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{t('teams.monModeHint')}</p>
+        <div className="card space-y-3 p-4">
+          {monSpecies && monBuild ? (
+            <>
+              <div className="flex items-center gap-2.5">
+                <Sprite species={monSpecies} size={44} />
+                <p className="min-w-0 flex-1 truncate text-base font-extrabold">
+                  {i18n.language === 'ko' ? monSpecies.ko : monSpecies.name}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setMonBuild(null)}
+                  className="shrink-0 rounded-lg border border-zinc-200 px-2.5 py-1 text-[11px] font-bold text-zinc-500 hover:border-volt-500 dark:border-white/10 dark:text-zinc-400"
+                >
+                  {t('teams.changeMon')}
+                </button>
+              </div>
+              {moves && learnsets && (
+                <MonEditor
+                  mon={monBuild}
+                  species={monSpecies}
+                  moves={moves}
+                  learnsets={learnsets}
+                  usageMoveIds={usageMovesBySpecies.get(monSpecies.id) ?? new Set()}
+                  onChange={setMonBuild}
+                  onRemove={() => setMonBuild(null)}
+                  onPublishMon={(desc) => publishMon(monBuild, monSpecies, desc)}
+                />
+              )}
+            </>
+          ) : pokedex ? (
+            <SpeciesPicker
+              value={null}
+              championsFirst
+              typeFilter
+              placeholder={t('teams.addMon')}
+              onChange={(s) => setMonBuild({ ...emptyMon(s.id), ability: s.abilities[0]?.name ?? '' })}
+            />
+          ) : (
+            <div className="h-40 animate-pulse rounded-xl bg-zinc-100 dark:bg-white/5" />
+          )}
+        </div>
+      </div>
+    )
+  }
+
   if (!active) {
     // Dex still loading → skeleton. Otherwise the user has no teams (e.g. deleted
     // them all): show an empty state with a create button instead of silently
     // auto-recreating a team (which looked like a deleted team "coming back").
     if (pokedex === null) return <div className="card h-64 animate-pulse" />
     return (
-      <div className="card flex flex-col items-center gap-4 px-6 py-16 text-center">
+      <div className="space-y-5">
+        {modeTabs}
+        <div className="card flex flex-col items-center gap-4 px-6 py-16 text-center">
         <span className="grid size-14 place-items-center rounded-2xl bg-volt-400/15 text-volt-600 dark:text-volt-400">
           <Icon name="users" size={26} />
         </span>
@@ -394,12 +479,14 @@ export default function Teams() {
         >
           + {t('teams.newTeam')}
         </button>
+        </div>
       </div>
     )
   }
 
   return (
     <div className="space-y-5">
+      {modeTabs}
       {/* Team bar */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex flex-1 items-center gap-1.5 overflow-x-auto">

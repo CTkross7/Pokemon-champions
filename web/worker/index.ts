@@ -96,12 +96,14 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
       } else if (kind === 'team') {
         where.push("(kind = 'team' OR kind IS NULL)")
       }
+      // sort=popular ranks by likes (then recency); default is newest-first.
+      const orderBy = url.searchParams.get('sort') === 'popular' ? 'likes DESC, created_at DESC' : 'created_at DESC'
       const listSql =
-        "SELECT id, title, author, likes, views, regulation, owner_id, description, COALESCE(kind, 'team') AS kind, created_at, " +
+        "SELECT id, title, author, team, likes, views, regulation, owner_id, description, COALESCE(kind, 'team') AS kind, created_at, " +
         '(SELECT COUNT(*) FROM comments c WHERE c.sample_id = samples.id) AS comments ' +
         'FROM samples' +
         (where.length ? ' WHERE ' + where.join(' AND ') : '') +
-        ' ORDER BY created_at DESC LIMIT 50'
+        ` ORDER BY ${orderBy} LIMIT 50`
       const stmt = binds.length ? db.prepare(listSql).bind(...binds) : db.prepare(listSql)
       const { results } = await stmt.all()
       // Distinct regulations present, for the filter chips.

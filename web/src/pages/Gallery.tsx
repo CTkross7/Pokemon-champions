@@ -13,9 +13,12 @@ import {
   type Comment,
 } from '@/lib/api'
 import { decodeTeam } from '@/lib/share'
+import { sampleSpecies } from '@/lib/sampleSprites'
+import { loadPokedexAll, type Species } from '@/lib/dex'
 import { useTeams } from '@/store/teams'
 import { useAuth } from '@/lib/auth'
 import ReportButton from '@/components/ReportButton'
+import Sprite from '@/components/Sprite'
 import Icon from '@/components/Icon'
 
 export default function Gallery() {
@@ -28,12 +31,22 @@ export default function Gallery() {
   const [regulations, setRegulations] = useState<string[]>([])
   const [regFilter, setRegFilter] = useState<string | null>(null)
   const [kindFilter, setKindFilter] = useState<'all' | 'team' | 'mon'>('all')
+  const [sort, setSort] = useState<'recent' | 'popular'>('recent')
   const [liked, setLiked] = useState<Record<string, boolean>>({})
   const [openId, setOpenId] = useState<string | null>(null)
+  const [byId, setById] = useState<Map<string, Species>>(new Map())
 
-  const load = (reg?: string | null, kind: 'all' | 'team' | 'mon' = 'all') => {
+  useEffect(() => {
+    loadPokedexAll().then((all) => setById(new Map(all.map((s) => [s.id, s]))), () => {})
+  }, [])
+
+  const load = (
+    reg: string | null = regFilter,
+    kind: 'all' | 'team' | 'mon' = kindFilter,
+    srt: 'recent' | 'popular' = sort,
+  ) => {
     setState('loading')
-    listSamples(reg ?? undefined, kind === 'all' ? undefined : kind).then((r) => {
+    listSamples(reg ?? undefined, kind === 'all' ? undefined : kind, srt).then((r) => {
       if (!r.configured) return setState('unconfigured')
       setSamples(r.data.samples)
       // Keep the union of regulations stable across filtered views.
@@ -43,7 +56,8 @@ export default function Gallery() {
   }
 
   useEffect(() => {
-    load(null, 'all')
+    load(null, 'all', 'recent')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onLike = async (id: string) => {
@@ -81,17 +95,24 @@ export default function Gallery() {
         <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{t('gallery.subtitle')}</p>
       </div>
 
-      {/* Kind filter — team vs single-Pokemon samples */}
+      {/* Kind (팀/포켓몬) + sort (최신/인기) */}
       {state !== 'unconfigured' && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <FilterChip active={kindFilter === 'all'} onClick={() => { setKindFilter('all'); load(regFilter, 'all') }}>
+          <FilterChip active={kindFilter === 'all'} onClick={() => { setKindFilter('all'); load(regFilter, 'all', sort) }}>
             {t('gallery.kindAll')}
           </FilterChip>
-          <FilterChip active={kindFilter === 'team'} onClick={() => { setKindFilter('team'); load(regFilter, 'team') }}>
+          <FilterChip active={kindFilter === 'mon'} onClick={() => { setKindFilter('mon'); load(regFilter, 'mon', sort) }}>
+            {t('gallery.kindMon')}
+          </FilterChip>
+          <FilterChip active={kindFilter === 'team'} onClick={() => { setKindFilter('team'); load(regFilter, 'team', sort) }}>
             {t('gallery.kindTeam')}
           </FilterChip>
-          <FilterChip active={kindFilter === 'mon'} onClick={() => { setKindFilter('mon'); load(regFilter, 'mon') }}>
-            {t('gallery.kindMon')}
+          <span className="mx-1 h-4 w-px bg-zinc-200 dark:bg-white/10" />
+          <FilterChip active={sort === 'recent'} onClick={() => { setSort('recent'); load(regFilter, kindFilter, 'recent') }}>
+            {t('gallery.sortRecent')}
+          </FilterChip>
+          <FilterChip active={sort === 'popular'} onClick={() => { setSort('popular'); load(regFilter, kindFilter, 'popular') }}>
+            {t('gallery.sortPopular')}
           </FilterChip>
         </div>
       )}
@@ -99,11 +120,11 @@ export default function Gallery() {
       {/* Regulation filter */}
       {state === 'ready' && regulations.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <FilterChip active={regFilter === null} onClick={() => { setRegFilter(null); load(null, kindFilter) }}>
+          <FilterChip active={regFilter === null} onClick={() => { setRegFilter(null); load(null, kindFilter, sort) }}>
             {t('gallery.filterAll')}
           </FilterChip>
           {regulations.map((reg) => (
-            <FilterChip key={reg} active={regFilter === reg} onClick={() => { setRegFilter(reg); load(reg, kindFilter) }}>
+            <FilterChip key={reg} active={regFilter === reg} onClick={() => { setRegFilter(reg); load(reg, kindFilter, sort) }}>
               {reg}
             </FilterChip>
           ))}
@@ -137,10 +158,12 @@ export default function Gallery() {
 
       {state === 'ready' && samples.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2">
-          {samples.map((s) => (
+          {samples.map((s) => {
+            const species = sampleSpecies(s.team, byId)
+            return (
             <div key={s.id} className="card p-4">
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span
                       className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-extrabold ${
@@ -166,7 +189,14 @@ export default function Gallery() {
                       {s.description}
                     </p>
                   )}
-                  <div className="mt-1 flex items-center gap-2">
+                  {species.length > 0 && (
+                    <div className="mt-2 flex flex-wrap items-center gap-1">
+                      {species.slice(0, 6).map((sp, i) => (
+                        <Sprite key={i} species={sp} size={s.kind === 'mon' ? 40 : 30} />
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-1.5 flex items-center gap-2">
                     <ReportButton targetType="sample" targetId={s.id} />
                     {canDelete(s) && (
                       <button type="button" onClick={() => onDelete(s.id)} className="text-[11px] font-bold text-red-500">
@@ -179,9 +209,9 @@ export default function Gallery() {
                   <button
                     type="button"
                     onClick={() => onLike(s.id)}
-                    className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${liked[s.id] ? 'bg-volt-400/20 text-volt-700 dark:text-volt-300' : 'bg-zinc-100 text-zinc-500 dark:bg-white/6 dark:text-zinc-400'}`}
+                    className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${liked[s.id] ? 'bg-orange-500/15 text-orange-600 dark:text-orange-400' : 'bg-zinc-100 text-zinc-500 dark:bg-white/6 dark:text-zinc-400'}`}
                   >
-                    ♥ {s.likes}
+                    🔥 {s.likes}
                   </button>
                   <button
                     type="button"
@@ -211,7 +241,8 @@ export default function Gallery() {
                 />
               )}
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

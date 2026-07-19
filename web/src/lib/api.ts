@@ -10,6 +10,7 @@ export interface SampleMeta {
   id: string
   title: string
   author: string
+  team?: string // encoded build — included in list responses so cards can show sprites
   likes: number
   views: number
   regulation?: string | null
@@ -47,10 +48,11 @@ async function call<T>(path: string, init?: RequestInit): Promise<Result<T>> {
   }
 }
 
-export const listSamples = (regulation?: string, kind?: SampleKind) => {
+export const listSamples = (regulation?: string, kind?: SampleKind, sort?: 'popular' | 'recent') => {
   const q = new URLSearchParams()
   if (regulation) q.set('regulation', regulation)
   if (kind) q.set('kind', kind)
+  if (sort === 'popular') q.set('sort', 'popular')
   const qs = q.toString()
   return call<{ samples: SampleMeta[]; regulations: string[] }>(`/samples${qs ? `?${qs}` : ''}`)
 }

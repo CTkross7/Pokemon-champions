@@ -659,3 +659,12 @@
 - ✅ 안내문(teamIncomplete/monIncomplete) "도구·서로 다른 기술 4개·SP 66" 명시. i18n(ko/en) monSampleNote/monDescPlaceholder
 - ✅ 버전 1.9.0→**1.9.1**, versionCode 10. 웹 수정이라 배포로 앱 반영
 - 검증: tsc·빌드 통과
+
+## Phase 18.2 — 포케챔스식 샘플 커뮤니티(인기 섹션·정렬·스프라이트·작성 탭) (v1.10.0, 2026-07-16, 사용자 레퍼런스)
+- ✅ **홈 인기 섹션**: 인기 샘플(싱글 몬, 스프라이트 1개) + 인기 파티(팀, 스프라이트 6개) 가로 스크롤, 🔥좋아요순. '전체 보기'→갤러리
+- ✅ **갤러리 개편**: 카드에 스프라이트 썸네일(몬=1·팀=6), 🔥좋아요, 작성자/조회, 설명 + 유형배지. **최신/인기 정렬** 토글 + 팀/포켓몬 탭. 기존 좋아요·댓글·신고·임포트 그대로 통합
+- ✅ **백엔드**: 목록 SELECT에 team 포함(스프라이트용) + `?sort=popular`(likes DESC). api.ts SampleMeta.team·listSamples(sort). sampleSprites.ts(decode→species)
+- ✅ **작성 팀/포켓몬 탭**: 팀빌더 상단 '팀 빌드 / 포켓몬 빌드' 토글. 포켓몬 모드=단일 몬 빌더(SpeciesPicker+MonEditor+포켓몬 공개)
+- ✅ i18n(ko/en) home.popularSamples/Parties, gallery.sortRecent/Popular, teams.modeTeam/modeMon/changeMon/monModeHint
+- ✅ 버전 1.9.1→**1.10.0**, versionCode 11. 웹+worker라 배포로 앱 반영
+- 검증: tsc·빌드·worker 번들 통과

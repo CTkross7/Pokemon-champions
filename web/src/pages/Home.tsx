@@ -7,6 +7,8 @@ import { loadPokedexAll, type Species } from '@/lib/dex'
 import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
 import { loadRegulation, daysUntil, type Regulation } from '@/lib/regulation'
 import { listNotices, type Notice } from '@/lib/notices'
+import { listSamples, type SampleMeta } from '@/lib/api'
+import { sampleSpecies } from '@/lib/sampleSprites'
 import { useAuth } from '@/lib/auth'
 import { isInApp } from '@/lib/appDownload'
 
@@ -40,6 +42,8 @@ export default function Home() {
   const [usage, setUsage] = useState<UsageData | null>(null)
   const [byId, setById] = useState<Map<string, Species>>(new Map())
   const [notices, setNotices] = useState<Notice[]>([])
+  const [popMon, setPopMon] = useState<SampleMeta[]>([])
+  const [popTeam, setPopTeam] = useState<SampleMeta[]>([])
 
   useEffect(() => {
     loadRegulation().then(setReg)
@@ -48,6 +52,9 @@ export default function Home() {
     listNotices()
       .then((n) => setNotices(n.slice(0, 2)))
       .catch(() => {})
+    // Popular community picks: top samples (single mon) and parties (teams).
+    listSamples(undefined, 'mon', 'popular').then((r) => r.configured && setPopMon(r.data.samples.slice(0, 8)), () => {})
+    listSamples(undefined, 'team', 'popular').then((r) => r.configured && setPopTeam(r.data.samples.slice(0, 8)), () => {})
   }, [])
 
   const dday = daysUntil(reg)
@@ -246,6 +253,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Popular community picks — single-mon samples + full parties (by likes) */}
+      {popMon.length > 0 && (
+        <PopularRow title={t('home.popularSamples')} samples={popMon} byId={byId} single />
+      )}
+      {popTeam.length > 0 && <PopularRow title={t('home.popularParties')} samples={popTeam} byId={byId} />}
+
       {/* Latest notices preview */}
       {notices.length > 0 && (
         <section>
@@ -272,6 +285,70 @@ export default function Home() {
   )
 }
 
+/** Horizontal row of popular samples/parties — sprite preview + 🔥 like count. */
+function PopularRow({
+  title,
+  samples,
+  byId,
+  single,
+}: {
+  title: string
+  samples: SampleMeta[]
+  byId: Map<string, Species>
+  single?: boolean
+}) {
+  const { t } = useTranslation()
+  return (
+    <section>
+      <div className="mb-3 flex items-end justify-between">
+        <h2 className="text-lg font-extrabold tracking-tight">{title}</h2>
+        <Link to="/gallery" className="shrink-0 text-[13px] font-bold text-volt-600 dark:text-volt-400">
+          {t('home.viewAll')} →
+        </Link>
+      </div>
+      <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+        {samples.map((s) => {
+          const species = sampleSpecies(s.team, byId)
+          return (
+            <Link
+              key={s.id}
+              to="/gallery"
+              className="card group flex w-64 shrink-0 snap-start items-center gap-3 p-4 transition-all hover:-translate-y-0.5 hover:border-volt-500/60 dark:hover:border-volt-400/40"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <p className="truncate text-sm font-extrabold">{s.title}</p>
+                  <span className="inline-flex shrink-0 items-center gap-0.5 text-[12px] font-extrabold text-orange-500">
+                    🔥 {s.likes}
+                  </span>
+                </div>
+                <p className="truncate text-[11px] font-medium text-zinc-400 dark:text-zinc-500">{s.author}</p>
+                {s.description && (
+                  <p className="mt-1 line-clamp-1 text-[11px] text-zinc-500 dark:text-zinc-400">{s.description}</p>
+                )}
+              </div>
+              {single ? (
+                species[0] ? (
+                  <Sprite species={species[0]} size={56} className="shrink-0 transition-transform group-hover:scale-110" />
+                ) : (
+                  <span className="grid size-14 shrink-0 place-items-center text-zinc-300">
+                    <Icon name="sparkles" size={22} />
+                  </span>
+                )
+              ) : (
+                <div className="grid shrink-0 grid-cols-3 gap-0.5">
+                  {species.slice(0, 6).map((sp, i) => (
+                    <Sprite key={i} species={sp} size={24} />
+                  ))}
+                </div>
+              )}
+            </Link>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
 function HomeChip({ to, icon, label }: { to: string; icon: IconName; label: string }) {
   return (
     <Link
