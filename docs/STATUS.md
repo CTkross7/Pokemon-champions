@@ -668,3 +668,10 @@
 - ✅ i18n(ko/en) home.popularSamples/Parties, gallery.sortRecent/Popular, teams.modeTeam/modeMon/changeMon/monModeHint
 - ✅ 버전 1.9.1→**1.10.0**, versionCode 11. 웹+worker라 배포로 앱 반영
 - 검증: tsc·빌드·worker 번들 통과
+
+## Phase 18.3 — 아이콘/UI 리뉴얼(차별화) + 빌드 상세 펼쳐보기 (v1.10.1, 2026-07-16, 사용자 요청)
+- ✅ **불꽃 이모지 제거**: 🔥→하트 아이콘(Icon heart, rose)으로 좋아요 표기 통일(홈·갤러리). 잔여 🔥 0
+- ✅ **홈 인기 섹션 리뉴얼**: 포케챔스식 가로 캐러셀 → **랭킹 리스트**(순위 배지 1~3 볼트강조, 겹친 스프라이트, 하트 카운트)로 구조 차별화
+- ✅ **빌드 상세 펼쳐보기**: 갤러리 카드 '빌드 상세' 토글 → 포켓몬별 **특성·도구(한글)·기술 4개(타입배지+한글)·SP 배분(스탯별+합계)**. moves/items 데이터 로드해 id→이름 변환
+- ✅ i18n(ko/en) gallery.buildDetail. 버전 1.10.0→**1.10.1**, versionCode 12. 웹 배포로 앱 반영
+- 검증: tsc·빌드 통과, 잔여 🔥 없음

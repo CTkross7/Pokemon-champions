@@ -285,7 +285,7 @@ export default function Home() {
   )
 }
 
-/** Horizontal row of popular samples/parties — sprite preview + 🔥 like count. */
+/** Ranked list of popular samples/parties — rank badge + sprite(s) + likes. */
 function PopularRow({
   title,
   samples,
@@ -306,46 +306,55 @@ function PopularRow({
           {t('home.viewAll')} →
         </Link>
       </div>
-      <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
-        {samples.map((s) => {
+      <ol className="card divide-y divide-zinc-100 overflow-hidden p-0 dark:divide-white/6">
+        {samples.slice(0, 5).map((s, i) => {
           const species = sampleSpecies(s.team, byId)
+          const top3 = i < 3
           return (
-            <Link
-              key={s.id}
-              to="/gallery"
-              className="card group flex w-64 shrink-0 snap-start items-center gap-3 p-4 transition-all hover:-translate-y-0.5 hover:border-volt-500/60 dark:hover:border-volt-400/40"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1.5">
-                  <p className="truncate text-sm font-extrabold">{s.title}</p>
-                  <span className="inline-flex shrink-0 items-center gap-0.5 text-[12px] font-extrabold text-orange-500">
-                    🔥 {s.likes}
-                  </span>
-                </div>
-                <p className="truncate text-[11px] font-medium text-zinc-400 dark:text-zinc-500">{s.author}</p>
-                {s.description && (
-                  <p className="mt-1 line-clamp-1 text-[11px] text-zinc-500 dark:text-zinc-400">{s.description}</p>
-                )}
-              </div>
-              {single ? (
-                species[0] ? (
-                  <Sprite species={species[0]} size={56} className="shrink-0 transition-transform group-hover:scale-110" />
+            <li key={s.id}>
+              <Link
+                to="/gallery"
+                className="group flex items-center gap-3 px-3.5 py-2.5 transition-colors hover:bg-zinc-50 dark:hover:bg-white/[0.03]"
+              >
+                <span
+                  className={`grid size-6 shrink-0 place-items-center rounded-lg text-[12px] font-extrabold ${
+                    top3
+                      ? 'bg-volt-400 text-black'
+                      : 'bg-zinc-100 text-zinc-400 dark:bg-white/6 dark:text-zinc-500'
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                {single ? (
+                  species[0] ? (
+                    <Sprite species={species[0]} size={36} className="shrink-0" />
+                  ) : (
+                    <span className="grid size-9 shrink-0 place-items-center text-zinc-300">
+                      <Icon name="sparkles" size={18} />
+                    </span>
+                  )
                 ) : (
-                  <span className="grid size-14 shrink-0 place-items-center text-zinc-300">
-                    <Icon name="sparkles" size={22} />
-                  </span>
-                )
-              ) : (
-                <div className="grid shrink-0 grid-cols-3 gap-0.5">
-                  {species.slice(0, 6).map((sp, i) => (
-                    <Sprite key={i} species={sp} size={24} />
-                  ))}
+                  <div className="flex shrink-0 -space-x-2">
+                    {species.slice(0, 4).map((sp, k) => (
+                      <span key={k} className="rounded-full bg-white ring-1 ring-zinc-100 dark:bg-card-dark dark:ring-white/10">
+                        <Sprite species={sp} size={26} />
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-bold">{s.title}</p>
+                  <p className="truncate text-[11px] font-medium text-zinc-400 dark:text-zinc-500">{s.author}</p>
                 </div>
-              )}
-            </Link>
+                <span className="inline-flex shrink-0 items-center gap-1 text-[12px] font-extrabold text-rose-500">
+                  <Icon name="heart" size={13} />
+                  {s.likes}
+                </span>
+              </Link>
+            </li>
           )
         })}
-      </div>
+      </ol>
     </section>
   )
 }

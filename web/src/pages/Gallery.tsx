@@ -14,11 +14,14 @@ import {
 } from '@/lib/api'
 import { decodeTeam } from '@/lib/share'
 import { sampleSpecies } from '@/lib/sampleSprites'
-import { loadPokedexAll, type Species } from '@/lib/dex'
-import { useTeams } from '@/store/teams'
+import { loadPokedexAll, loadMoves, type Species, type MoveData } from '@/lib/dex'
+import { loadItems, type ItemEntry } from '@/lib/items'
+import { spTotal, STAT_KEYS } from '@/lib/champions'
+import { useTeams, type TeamMon } from '@/store/teams'
 import { useAuth } from '@/lib/auth'
 import ReportButton from '@/components/ReportButton'
 import Sprite from '@/components/Sprite'
+import TypeBadge from '@/components/TypeBadge'
 import Icon from '@/components/Icon'
 
 export default function Gallery() {
@@ -34,10 +37,15 @@ export default function Gallery() {
   const [sort, setSort] = useState<'recent' | 'popular'>('recent')
   const [liked, setLiked] = useState<Record<string, boolean>>({})
   const [openId, setOpenId] = useState<string | null>(null)
+  const [buildId, setBuildId] = useState<string | null>(null)
   const [byId, setById] = useState<Map<string, Species>>(new Map())
+  const [moves, setMoves] = useState<Record<string, MoveData>>({})
+  const [itemByName, setItemByName] = useState<Map<string, ItemEntry>>(new Map())
 
   useEffect(() => {
     loadPokedexAll().then((all) => setById(new Map(all.map((s) => [s.id, s]))), () => {})
+    loadMoves().then(setMoves, () => {})
+    loadItems().then((list) => setItemByName(new Map(list.map((i) => [i.name, i]))), () => {})
   }, [])
 
   const load = (
@@ -209,9 +217,10 @@ export default function Gallery() {
                   <button
                     type="button"
                     onClick={() => onLike(s.id)}
-                    className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold ${liked[s.id] ? 'bg-orange-500/15 text-orange-600 dark:text-orange-400' : 'bg-zinc-100 text-zinc-500 dark:bg-white/6 dark:text-zinc-400'}`}
+                    className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold transition-colors ${liked[s.id] ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400' : 'bg-zinc-100 text-zinc-500 dark:bg-white/6 dark:text-zinc-400'}`}
                   >
-                    🔥 {s.likes}
+                    <Icon name="heart" size={13} />
+                    {s.likes}
                   </button>
                   <button
                     type="button"
@@ -223,16 +232,30 @@ export default function Gallery() {
                 </div>
               </div>
 
-              {/* Comments toggle */}
-              <button
-                type="button"
-                onClick={() => setOpenId(openId === s.id ? null : s.id)}
-                className="mt-3 flex items-center gap-1 text-[12px] font-bold text-zinc-500 hover:text-volt-600 dark:text-zinc-400 dark:hover:text-volt-400"
-              >
-                <Icon name="chat" size={14} />
-                {t('gallery.comments', { count: s.comments ?? 0 })}
-                <Icon name="chevronRight" size={12} className={openId === s.id ? 'rotate-90 transition-transform' : 'transition-transform'} />
-              </button>
+              {/* Build detail + comments toggles */}
+              <div className="mt-3 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setBuildId(buildId === s.id ? null : s.id)}
+                  className="flex items-center gap-1 text-[12px] font-bold text-zinc-500 hover:text-volt-600 dark:text-zinc-400 dark:hover:text-volt-400"
+                >
+                  <Icon name="grid" size={13} />
+                  {t('gallery.buildDetail')}
+                  <Icon name="chevronRight" size={12} className={buildId === s.id ? 'rotate-90 transition-transform' : 'transition-transform'} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOpenId(openId === s.id ? null : s.id)}
+                  className="flex items-center gap-1 text-[12px] font-bold text-zinc-500 hover:text-volt-600 dark:text-zinc-400 dark:hover:text-volt-400"
+                >
+                  <Icon name="chat" size={14} />
+                  {t('gallery.comments', { count: s.comments ?? 0 })}
+                  <Icon name="chevronRight" size={12} className={openId === s.id ? 'rotate-90 transition-transform' : 'transition-transform'} />
+                </button>
+              </div>
+              {buildId === s.id && (
+                <SampleBuildDetail team={s.team} byId={byId} moves={moves} itemByName={itemByName} ko={i18n.language === 'ko'} />
+              )}
               {openId === s.id && (
                 <CommentSection
                   sampleId={s.id}
@@ -247,6 +270,83 @@ export default function Gallery() {
       )}
 
       <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-600">{t('gallery.note')}</p>
+    </div>
+  )
+}
+
+const STAT_LABEL: Record<string, { ko: string; en: string }> = {
+  hp: { ko: 'HP', en: 'HP' },
+  atk: { ko: '공격', en: 'Atk' },
+  def: { ko: '방어', en: 'Def' },
+  spa: { ko: '특공', en: 'SpA' },
+  spd: { ko: '특방', en: 'SpD' },
+  spe: { ko: '스피드', en: 'Spe' },
+}
+
+/** Expanded build detail: each Pokemon's ability · item · 4 moves · SP spread. */
+function SampleBuildDetail({
+  team,
+  byId,
+  moves,
+  itemByName,
+  ko,
+}: {
+  team?: string
+  byId: Map<string, Species>
+  moves: Record<string, MoveData>
+  itemByName: Map<string, ItemEntry>
+  ko: boolean
+}) {
+  const decoded = team ? decodeTeam(team) : null
+  const mons = (decoded?.mons ?? []).filter((m): m is TeamMon => !!m)
+  if (mons.length === 0) return null
+  return (
+    <div className="mt-3 space-y-2 border-t border-zinc-100 pt-3 dark:border-white/6">
+      {mons.map((m, i) => {
+        const sp = byId.get(m.speciesId)
+        if (!sp) return null
+        const ability = sp.abilities.find((a) => a.name === m.ability)
+        const item = itemByName.get(m.item)
+        return (
+          <div key={i} className="rounded-xl border border-zinc-100 p-2.5 dark:border-white/6">
+            <div className="flex items-center gap-2">
+              <Sprite species={sp} size={32} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-[13px] font-bold">{ko ? sp.ko : sp.name}</p>
+                <p className="truncate text-[10px] text-zinc-400 dark:text-zinc-500">
+                  {ability ? (ko ? ability.ko : ability.name) : m.ability || '-'}
+                  {m.item && ` · ${item ? (ko ? item.ko : item.name) : m.item}`}
+                </p>
+              </div>
+            </div>
+            <div className="mt-1.5 flex flex-wrap gap-1">
+              {m.moves.filter(Boolean).map((id) => {
+                const mv = moves[id]
+                return (
+                  <span
+                    key={id}
+                    className="inline-flex items-center gap-1 rounded-full border border-zinc-200 px-2 py-0.5 text-[10px] font-bold text-zinc-600 dark:border-white/10 dark:text-zinc-300"
+                  >
+                    {mv && <TypeBadge type={mv.type} size="sm" />}
+                    {mv ? (ko ? mv.ko : mv.name) : id}
+                  </span>
+                )
+              })}
+            </div>
+            {spTotal(m.sp) > 0 && (
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px] text-zinc-500 dark:text-zinc-400">
+                {STAT_KEYS.filter((k) => m.sp[k] > 0).map((k) => (
+                  <span key={k}>
+                    <span className="font-bold text-zinc-600 dark:text-zinc-300">{ko ? STAT_LABEL[k].ko : STAT_LABEL[k].en}</span>{' '}
+                    {m.sp[k]}
+                  </span>
+                ))}
+                <span className="text-zinc-400 dark:text-zinc-600">· SP {spTotal(m.sp)}/66</span>
+              </div>
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }
