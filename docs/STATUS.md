@@ -675,3 +675,9 @@
 - ✅ **빌드 상세 펼쳐보기**: 갤러리 카드 '빌드 상세' 토글 → 포켓몬별 **특성·도구(한글)·기술 4개(타입배지+한글)·SP 배분(스탯별+합계)**. moves/items 데이터 로드해 id→이름 변환
 - ✅ i18n(ko/en) gallery.buildDetail. 버전 1.10.0→**1.10.1**, versionCode 12. 웹 배포로 앱 반영
 - 검증: tsc·빌드 통과, 잔여 🔥 없음
+
+## Phase 18.4 — 팀 삭제 기기간 싱크 서버 권위화 + 시스템 언어 기본값 (v1.10.2, 2026-07-16, 사용자 재보고)
+- ✅ **삭제 싱크 근본 수정(서버 권위)**: 이전엔 클라이언트 push가 blob 전체를 덮어써, tombstone을 모르는 기기가 push하면 서버 삭제기록 소실→부활. 이제 **Worker PUT이 기존 deletedIds와 union**(누적, 1000개 상한) + **tombstone된 id의 팀을 서버에서 제거**. 어떤 기기도 삭제팀을 되살릴 수 없음(기기 교체·stale 로컬 무관)
+- ✅ **시스템 언어 기본값**: i18n.systemLanguage() — navigator.language(s)에 ko 있으면 ko, 아니면 en. i18n lng·fallbackLng('en')·settings 기본 language를 시스템값으로. 설정에서 명시 변경 시 persist 우선
+- ✅ 버전 1.10.1→**1.10.2**, versionCode 13. 웹+worker라 배포로 앱 반영
+- 검증: tsc·빌드·worker 번들 통과

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import i18n, { type Language } from '@/i18n'
+import i18n, { systemLanguage, type Language } from '@/i18n'
 
 // 'system' follows the OS preference via matchMedia; 'dark'/'light' force it.
 export type Theme = 'dark' | 'light' | 'system'
@@ -32,7 +32,9 @@ export const useSettings = create<SettingsState>()(
   persist(
     (set) => ({
       theme: 'dark',
-      language: 'ko',
+      // First-time default follows the system locale (ko only if the device is
+      // Korean, else en). A persisted choice from Settings overrides this.
+      language: systemLanguage(),
       setTheme: (theme) => {
         applyTheme(theme)
         set({ theme })

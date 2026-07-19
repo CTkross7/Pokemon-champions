@@ -60,11 +60,28 @@ async function handleApi(request: Request, env: Env, url: URL): Promise<Response
     if (request.method === 'PUT') {
       const body = (await request.json().catch(() => ({}))) as { teams?: unknown; deletedIds?: unknown }
       if (!Array.isArray(body.teams)) return json({ error: 'invalid' }, 400)
-      // Tombstones for deleted team ids, so deletions sync across devices.
-      const deletedIds = Array.isArray(body.deletedIds)
-        ? body.deletedIds.filter((x): x is string => typeof x === 'string').slice(-500)
+      const incomingDeleted = Array.isArray(body.deletedIds)
+        ? body.deletedIds.filter((x): x is string => typeof x === 'string')
         : []
-      const data = JSON.stringify({ teams: body.teams, deletedIds }).slice(0, 200_000) // ~200 KB cap
+      // Tombstones are AUTHORITATIVE on the server: union the incoming set with
+      // whatever is already stored, so a device with a stale tombstone list can
+      // never wipe another device's deletion. Then prune any team whose id is
+      // tombstoned — that's what stops a deleted team from "coming back" when a
+      // second device pushes its still-present local copy.
+      const prev = await db.prepare('SELECT data FROM user_teams WHERE user_id = ?').bind(user.id).first<{ data: string }>()
+      let prevDeleted: string[] = []
+      try {
+        const p = prev ? JSON.parse(prev.data) : null
+        if (p && !Array.isArray(p) && Array.isArray(p.deletedIds)) prevDeleted = p.deletedIds as string[]
+      } catch {
+        /* ignore malformed prior blob */
+      }
+      const deletedSet = new Set<string>([...prevDeleted, ...incomingDeleted])
+      const deletedIds = [...deletedSet].slice(-1000)
+      const teams = (body.teams as { id?: unknown }[]).filter(
+        (t) => !(t && typeof t.id === 'string' && deletedSet.has(t.id)),
+      )
+      const data = JSON.stringify({ teams, deletedIds }).slice(0, 200_000) // ~200 KB cap
       await db
         .prepare(
           'INSERT INTO user_teams (user_id, data, updated_at) VALUES (?, ?, ?) ' +
