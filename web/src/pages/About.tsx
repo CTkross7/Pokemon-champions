@@ -19,6 +19,7 @@ export default function About() {
   const sources = t('about.dataSources', { returnObjects: true }) as unknown as Item[]
   const why = t('about.why', { returnObjects: true }) as unknown as Item[]
   const how = t('about.how', { returnObjects: true }) as unknown as Item[]
+  const legal = t('about.legal', { returnObjects: true }) as unknown as { h: string; p: string }[]
 
   return (
     <article className="mx-auto max-w-2xl space-y-6">
@@ -139,6 +140,25 @@ export default function About() {
             <p className="text-lg font-extrabold tracking-tight">CTkross</p>
           </div>
         </div>
+      </section>
+
+      {/* Legal / IP notice — explicit fan-project + trademark attribution and a
+          good-faith takedown posture (rights holders can request removal). */}
+      <section className="card p-6">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-9 place-items-center rounded-xl bg-zinc-100 text-zinc-600 dark:bg-white/8 dark:text-zinc-300">
+            <Icon name="shield" size={18} />
+          </span>
+          <h2 className="text-[15px] font-bold">{t('about.legalTitle')}</h2>
+        </div>
+        <ul className="mt-4 space-y-3">
+          {(Array.isArray(legal) ? legal : []).map((l) => (
+            <li key={l.h}>
+              <p className="text-[13px] font-bold">{l.h}</p>
+              <p className="mt-0.5 text-[12px] leading-relaxed text-zinc-500 dark:text-zinc-400">{l.p}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <p className="text-[11px] leading-relaxed text-zinc-400 dark:text-zinc-500">{t('app.disclaimer')}</p>

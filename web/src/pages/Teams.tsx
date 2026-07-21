@@ -10,6 +10,7 @@ import { useAuth } from '@/lib/auth'
 import { loadRegulation } from '@/lib/regulation'
 import { loadUsage, resolveUsageMon, type UsageData } from '@/lib/stats'
 import { recommendedMoveIds } from '@/lib/moveFilter'
+import { TYPES, TYPE_KO, type TypeName } from '@/lib/typechart'
 import { isMonComplete, teamIssues } from '@/lib/sampleValidation'
 import { useTeams, emptyMon, type TeamMon } from '@/store/teams'
 import SpeciesPicker from '@/components/SpeciesPicker'
@@ -91,6 +92,19 @@ function MonEditor({
   })
   const hiddenCount = moveOptions.length - (showAllMoves ? moveOptions.length : filteredMoves.length)
 
+  // Currently-picked moves, in selection order — pinned above the pool so the
+  // user never scrolls to see what they chose.
+  const selectedMoves = mon.moves
+    .map((id) => ({ id, move: moves[id] }))
+    .filter((x): x is { id: string; move: MoveData } => Boolean(x.move))
+  // Selectable pool grouped by type (same 상성 together), selected moves removed
+  // since they're shown in the pinned section. Preserves the STAB/power sort
+  // from moveOptions within each type group; groups follow the type-chart order.
+  const groupedMoves = TYPES.map((type) => ({
+    type,
+    list: filteredMoves.filter(({ id, move }) => move.type === type && !mon.moves.includes(id)),
+  })).filter((g) => g.list.length > 0)
+
   const toggleMove = (id: string) =>
     onChange({
       ...mon,
@@ -145,34 +159,70 @@ function MonEditor({
             </span>
           </span>
         </div>
+
+        {/* Selected moves — pinned at the top so the current picks are always
+            visible at a glance (no scrolling through the pool to review them).
+            Tap a chip to remove it. */}
+        <div className="mt-1.5 rounded-xl border border-volt-500/40 bg-volt-400/5 p-2 dark:border-volt-400/30">
+          <span className="text-[10px] font-bold text-volt-700 dark:text-volt-300">
+            {t('teams.selectedMoves')} {mon.moves.length}/4
+          </span>
+          <div className="mt-1.5 flex flex-wrap gap-1">
+            {selectedMoves.map(({ id, move }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => toggleMove(id)}
+                className="flex items-center gap-1 rounded-full border border-volt-500 bg-volt-400/15 px-2 py-0.5 text-[11px] font-bold text-volt-700 transition-colors dark:border-volt-400/60 dark:text-volt-300"
+              >
+                <TypeBadge type={move.type} size="sm" />
+                {i18n.language === 'ko' ? move.ko : move.name}
+                <Icon name="x" size={11} strokeWidth={2.6} className="opacity-70" />
+              </button>
+            ))}
+            {selectedMoves.length === 0 && (
+              <span className="px-1 py-0.5 text-[11px] text-zinc-400 dark:text-zinc-500">
+                {t('teams.noMoveSelected')}
+              </span>
+            )}
+          </div>
+        </div>
+
         <input
           type="search"
           value={moveQuery}
           onChange={(e) => setMoveQuery(e.target.value)}
           placeholder={t('teams.searchMove')}
-          className="mt-1.5 h-8 w-full rounded-lg border border-zinc-200 bg-white px-2.5 text-xs outline-none focus:border-volt-500 dark:border-white/10 dark:bg-black/40 dark:focus:border-volt-400"
+          className="mt-2 h-8 w-full rounded-lg border border-zinc-200 bg-white px-2.5 text-xs outline-none focus:border-volt-500 dark:border-white/10 dark:bg-black/40 dark:focus:border-volt-400"
         />
-        <div className="mt-2 flex max-h-56 flex-wrap gap-1 overflow-y-auto">
-          {filteredMoves.map(({ id, move }) => {
-            const active = mon.moves.includes(id)
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => toggleMove(id)}
-                className={[
-                  'flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold transition-colors',
-                  active
-                    ? 'border-volt-500 bg-volt-400/15 text-volt-700 dark:border-volt-400/60 dark:text-volt-300'
-                    : 'border-zinc-200 text-zinc-600 dark:border-white/10 dark:text-zinc-300',
-                ].join(' ')}
-              >
-                <TypeBadge type={move.type} size="sm" />
-                {i18n.language === 'ko' ? move.ko : move.name}
-              </button>
-            )
-          })}
-          {filteredMoves.length === 0 && (
+        {/* Selectable pool, grouped by type (same 상성 together). Already-picked
+            moves are omitted here since they live in the pinned section above. */}
+        <div className="mt-2 max-h-56 space-y-2.5 overflow-y-auto">
+          {groupedMoves.map(({ type, list }) => (
+            <div key={type}>
+              <div className="mb-1 flex items-center gap-1.5">
+                <TypeBadge type={type} size="sm" />
+                <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500">
+                  {i18n.language === 'ko' ? TYPE_KO[type as TypeName] ?? type : type}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {list.map(({ id, move }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => toggleMove(id)}
+                    disabled={mon.moves.length >= 4}
+                    className="flex items-center gap-1 rounded-full border border-zinc-200 px-2 py-0.5 text-[11px] font-bold text-zinc-600 transition-colors hover:border-volt-500 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-zinc-200 dark:border-white/10 dark:text-zinc-300 dark:hover:border-volt-400/60 dark:disabled:hover:border-white/10"
+                  >
+                    <TypeBadge type={move.type} size="sm" />
+                    {i18n.language === 'ko' ? move.ko : move.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+          {groupedMoves.length === 0 && (
             <span className="px-1 py-1 text-[11px] text-zinc-400">{t('dex.noResults')}</span>
           )}
         </div>

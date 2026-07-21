@@ -230,7 +230,26 @@
       }
     ],
     "updateTitle": "Data update policy",
-    "updateBody": "Pokemon/move/ability/item data come from PokeAPI and Pokemon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokemon or balance changes automatically."
+    "updateBody": "Pokemon/move/ability/item data come from PokeAPI and Pokemon Showdown (champions mod); usage statistics from the competitive ladder. A GitHub Actions pipeline periodically re-collects and validates the sources, reflecting game updates such as new Pokemon or balance changes automatically.",
+    "legalTitle": "Copyright & Trademark Notice",
+    "legal": [
+      {
+        "h": "Unofficial fan project",
+        "p": "ChampsNote is an unofficial, fan-made utility. It is not affiliated with, sponsored by, endorsed by, or licensed by The Pokemon Company, Nintendo, Game Freak, Creatures Inc., or any related company."
+      },
+      {
+        "h": "Trademarks & copyright",
+        "p": "‘Pokemon’, ‘Pokemon Champions’, and all Pokemon names, characters, and images are trademarks and copyrighted works of their respective owners. This service references them only for identification and descriptive purposes and claims no ownership."
+      },
+      {
+        "h": "Image sources",
+        "p": "Some images, such as Pokemon sprites, are shown via community open data (PokeAPI); their copyright belongs to the respective owners. Game data (base stats, moves, types, etc.) is provided as factual reference and its accuracy is not guaranteed."
+      },
+      {
+        "h": "Rights-holder requests",
+        "p": "Upon a request from a rights holder or an authorized party, the relevant content will be corrected or removed promptly. Please contact us at the email below."
+      }
+    ]
   },
   "common": {
     "underConstruction": "This feature is under construction.",
@@ -349,6 +368,8 @@
     "moves": "Moves",
     "movesRecommended": "Recommended",
     "movesAll": "All",
+    "selectedMoves": "Selected moves",
+    "noMoveSelected": "No moves selected yet",
     "showAllMoves": "Show all moves (+{{count}})",
     "showRecommended": "Recommended only",
     "searchMove": "Search move",
