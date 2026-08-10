@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-03T06:29:20.252Z",
+ "generatedAt": "2026-08-10T04:42:57.855Z",
  "source": "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/champions/formats-data.ts",
  "count": 310,
  "species": [
@@ -548,7 +548,7 @@
   "malamar": "UU",
   "malamarmega": "UU",
   "barbaracle": "UU",
-  "barbaraclemega": "UU",
+  "barbaraclemega": "UUBL",
   "dragalge": "UU",
   "dragalgemega": "OU",
   "clawitzer": "UU",
