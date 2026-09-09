@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: claude/pokemon-champion-app-design-ynor2x
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
@@ -52,5 +52,5 @@ jobs:
           else
             COUNT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('web/public/data/pokedex.json')).species.length)")
             git commit -m "chore(data): auto-refresh Pokémon datasets ($COUNT species)"
-            git push origin claude/pokemon-champion-app-design-ynor2x
+            git push origin main
           fi
