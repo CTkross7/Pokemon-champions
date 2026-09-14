@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-17T03:54:45.582Z",
+ "generatedAt": "2026-09-14T08:44:39.619Z",
  "source": "https://raw.githubusercontent.com/smogon/pokemon-showdown/master/data/mods/champions/moves.ts",
  "banned": [
   "absorb",
@@ -29,7 +29,6 @@
   "confusion",
   "conversion",
   "conversion2",
-  "courtchange",
   "crushgrip",
   "cut",
   "darkvoid",
@@ -40,13 +39,11 @@
   "doodle",
   "doomdesire",
   "doublekick",
-  "doubleshock",
   "dragonascent",
   "dragonbreath",
   "dragonenergy",
   "dragonhammer",
   "dreameater",
-  "drumbeating",
   "dynamaxcannon",
   "echoedvoice",
   "electrodrift",
@@ -71,7 +68,6 @@
   "fusionflare",
   "glaciallance",
   "glaciate",
-  "glaiverush",
   "grasspledge",
   "growl",
   "gust",
@@ -90,7 +86,6 @@
   "iceburn",
   "incinerate",
   "ivycudgel",
-  "jawlock",
   "judgment",
   "junglehealing",
   "leafage",
@@ -108,7 +103,6 @@
   "metalclaw",
   "metronome",
   "mightycleave",
-  "milkdrink",
   "mimic",
   "mist",
   "mistball",
@@ -117,7 +111,6 @@
   "noxioustorque",
   "orderup",
   "originpulse",
-  "overdrive",
   "payday",
   "peck",
   "photongeyser",
@@ -133,12 +126,10 @@
   "psyblade",
   "psychoboost",
   "psystrike",
-  "pyroball",
   "razorleaf",
   "relicsong",
   "retaliate",
   "revelationdance",
-  "revivalblessing",
   "roaroftime",
   "rocksmash",
   "rockthrow",
@@ -151,17 +142,14 @@
   "secretsword",
   "seedflare",
   "shadowforce",
-  "shiftgear",
   "shockwave",
   "shoreup",
   "silktrap",
   "sketch",
   "slam",
-  "slash",
   "sludge",
   "smog",
   "smokescreen",
-  "snipeshot",
   "spacialrend",
   "spark",
   "spinout",
@@ -203,8 +191,7 @@
   "wildboltstorm",
   "wingattack",
   "withdraw",
-  "workup",
-  "zingzap"
+  "workup"
  ],
  "reenabled": [
   "burnup",
@@ -212,6 +199,8 @@
   "electrify",
   "kingsshield",
   "lightofruin",
+  "meteorassault",
+  "octolock",
   "powershift",
   "snaptrap",
   "stormthrow",
@@ -280,6 +269,9 @@
   "makeitrain": {
    "accuracy": 95
   },
+  "meteorassault": {
+   "basePower": 170
+  },
   "mountaingale": {
    "basePower": 120
   },
@@ -313,6 +305,9 @@
   "shelltrap": {
    "pp": 10
   },
+  "slash": {
+   "basePower": 80
+  },
   "snipeshot": {
    "basePower": 85
   },
@@ -328,6 +323,9 @@
   "spiritshackle": {
    "basePower": 90
   },
+  "strengthsap": {
+   "pp": 5
+  },
   "syrupbomb": {
    "accuracy": 90
   },
@@ -336,6 +334,9 @@
   },
   "tropkick": {
    "basePower": 85
+  },
+  "wish": {
+   "pp": 5
   }
  }
 }
